@@ -1,2 +1,2 @@
 :: use to compile main.c
-gcc -m32 -mwindows main.c -o c.exe
+gcc main.c -lwinmm -lgdi32 -lmsimg32 -o c.exe && c.exe
