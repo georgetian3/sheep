@@ -4,13 +4,15 @@
 #include <time.h>
 #include <stdlib.h>
 
+#include <math.h>
+
 #define N_TILE_TYPES 3
 #define N_TILES 9
 
 #define TILE_WIDTH 64
 #define TILE_HEIGHT 64
 
-#define FPS 60
+#define FPS 30
 
 HWND tile_buttons[N_TILES];
 HWND create_button(HWND hwnd, long long id) {
@@ -21,7 +23,6 @@ HWND create_button(HWND hwnd, long long id) {
     }
 
 }
-
 
 HBITMAP tile_bitmaps[N_TILE_TYPES];
 void load_tiles() {
@@ -62,22 +63,73 @@ void set_image(HWND btn, HBITMAP bitmap) {
     }
 }
 
-void move_button(HWND btn, int x, int y) {
-    BOOL res = SetWindowPos(btn, NULL, x, y, 0, 0, SWP_NOSIZE);
-    if (res == FALSE) {
-        printf("move_button failed\n");
-        exit(1);
+struct MoveArgs {
+    HWND btn;
+    int x;
+    int y;
+    double speed;
+    BOOL threaded;
+};
+
+void move_button(HWND btn, int x, int y, double speed, BOOL threaded) {
+    if (speed == 0) {
+        //printf("SetWindowPos %d %d\n", x, y);
+        BOOL res = SetWindowPos(btn, NULL, x, y, 0, 0, SWP_NOSIZE);
+        if (res == FALSE) {
+            printf("move_button failed\n");
+            exit(1);
+        }
+        return;
     }
+    if (threaded) {
+        POINT start = win_pos(btn);
+        double dx = x - start.x;
+        double dy = y - start.y;
+        double dist = sqrt(pow(dx, 2) + pow(dy, 2));
+        double frames = dist / speed * FPS;
+        double dxpf = dx / frames;
+        double dypf = dy / frames;
+        //printf("x y dist dx dy dxpf dypf start.x start.y frames %f %f %f %f %f %f %f %f %f %f\n", x, y, dist, dx, dy, dxpf, dypf, start.x, start.y, frames);
+        for (int i = 0; i < frames; i++) {
+            //printf("x y dist dx dy dxpf dypf start.x start.y frames %f %f %f %f %f %f %f %f %f %f\n", x, y, dist, dx, dy, dxpf, dypf, start.x, start.y, frames);
+            move_button(btn, start.x + i * dxpf, start.y + i * dypf, 0, FALSE);
+        }
+        move_button(btn, x, y, 0, FALSE);
+        return;
+    }
+
+    // https://learn.microsoft.com/en-us/windows/win32/procthread/creating-threads
+    // https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createthread
+    struct MoveArgs* moveArgs = (struct MoveArgs*)malloc(sizeof(struct MoveArgs));
+
+    moveArgs->btn = btn;
+    moveArgs->x = x;
+    moveArgs->y = y;
+    moveArgs->speed = speed;
+    moveArgs->threaded = TRUE;
+
+    /* HANDLE thread = CreateThread(
+        NULL,
+        0,
+        (LPTHREAD_START_ROUTINE)move_button,
+        moveArgs,
+        0,
+        NULL
+    ); */
+
+
+
+    //free(moveArgs);
+
+    move_button(btn, x, y, speed, TRUE);
+
+
 }
 
 void show_button(HWND btn, BOOL visible) {
     ShowWindow(btn, visible ? SW_SHOW : SW_HIDE);
 }
 
-
-void animate_button(HWND btn, int x, int y, double speed) {
-    ;
-}
 
 void delete_button(HWND btn) {
     DestroyWindow(btn);
@@ -92,7 +144,18 @@ int rand_int(int min, int max) {
 }
 
 HWND id_to_hwnd(HWND parent, int id) {
+    //https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdlgitem
     return GetDlgItem(parent, id);
+}
+
+void set_tiles() {
+    int rows = 3;
+    int cols = 3;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            ;
+        }
+    }
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -101,19 +164,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             load_tiles();
             // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
             tile_buttons[0] = create_button(hwnd, 100);
-            printf("%d\n", tile_buttons[0]);
-            tile_buttons[1] = create_button(hwnd, 200);
             set_image(tile_buttons[0], tile_bitmaps[0]);
-            move_button(tile_buttons[1], 70, 70);
             break;
         }
         case WM_COMMAND: {
             // https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
-            printf("%d\n", LOWORD(wParam));
-            //show_button(tile_buttons[0], FALSE);
-            printf("%d\n", id_to_hwnd(hwnd, LOWORD(wParam)));
-            delete_button(tile_buttons[1]);
-            //move_button(tile_buttons[1], rand_int(50, 200), rand_int(50, 200));
+            move_button(tile_buttons[0], 200, 200, 0.5, FALSE);
             break;
         }
         case WM_DESTROY: {
