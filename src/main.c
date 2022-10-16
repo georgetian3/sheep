@@ -26,12 +26,12 @@ HWND create_button(HWND hwnd, long long id) {
 HBITMAP tile_bitmaps[N_TILE_TYPES];
 void load_tiles() {
     const char* filenames[] = {
-        "../res/1.bmp",
-        "../res/2.bmp",
-        "../res/3.bmp",
+        "../res/carrot.bmp",
+        "../res/corn.bmp",
+        "../res/grass.bmp",
     };
     for (int i = 0; i < N_TILE_TYPES; i++) {
-        tile_bitmaps[i] = (HBITMAP)LoadImage(NULL, filenames[i], IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+        tile_bitmaps[i] = (HBITMAP)LoadImage(NULL, filenames[i], IMAGE_BITMAP, 64, 64, LR_LOADFROMFILE);
         if (tile_bitmaps[i] == NULL) {
             printf("LoadImage failed: %d", i);
             exit(1);
@@ -79,6 +79,10 @@ void animate_button(HWND btn, int x, int y, double speed) {
     ;
 }
 
+void delete_button(HWND btn) {
+    DestroyWindow(btn);
+}
+
 int rand_int(int min, int max) {
     return rand() % (max - min) + min;
 }
@@ -92,14 +96,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             tile_buttons[0] = create_button(hwnd, 100);
             tile_buttons[1] = create_button(hwnd, 200);
             set_image(tile_buttons[0], tile_bitmaps[0]);
-            move_button(tile_buttons[1], 10, 10);
+            move_button(tile_buttons[1], 70, 70);
             break;
         }
         case WM_COMMAND: {
             // https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
             printf("%d\n", LOWORD(wParam));
-            show_button(tile_buttons[0], FALSE);
-            move_button(tile_buttons[1], rand_int(50, 200), rand_int(50, 200));
+            //show_button(tile_buttons[0], FALSE);
+            delete_button(tile_buttons[1]);
+            //move_button(tile_buttons[1], rand_int(50, 200), rand_int(50, 200));
             break;
         }
         case WM_DESTROY: {
