@@ -4,7 +4,6 @@
 #include <time.h>
 #include <stdlib.h>
 
-
 #define N_TILE_TYPES 3
 #define N_TILES 9
 
@@ -12,7 +11,6 @@
 #define TILE_HEIGHT 64
 
 #define FPS 60
-
 
 HWND tile_buttons[N_TILES];
 HWND create_button(HWND hwnd, long long id) {
@@ -72,6 +70,11 @@ void move_button(HWND btn, int x, int y) {
     }
 }
 
+void show_button(HWND btn, BOOL visible) {
+    ShowWindow(btn, visible ? SW_SHOW : SW_HIDE);
+}
+
+
 void animate_button(HWND btn, int x, int y, double speed) {
     ;
 }
@@ -95,6 +98,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_COMMAND: {
             // https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
             printf("%d\n", LOWORD(wParam));
+            show_button(tile_buttons[0], FALSE);
             move_button(tile_buttons[1], rand_int(50, 200), rand_int(50, 200));
             break;
         }
