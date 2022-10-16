@@ -28,24 +28,30 @@ int WINAPI WinMain(HINSTANCE hInstance,
 }
 
 
-HWND createButton(HWND hwnd, const char* bitmap, int id, int x, int y) {
-    HBITMAP bm = (HBITMAP)LoadImage(0, bitmap, IMAGE_BITMAP, 64, 64, LR_LOADFROMFILE);
-    if (bm  == NULL) {
+HWND createButton(HWND hwnd, const char* bitmap, HMENU id, int x, int y) {
+    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
+    HBITMAP bm = (HBITMAP)LoadImage(NULL, bitmap, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    if (bm == NULL) {
         printf("LoadImage failed\n");
+    } else {
+        printf("LoadImage succeeded: %u\n", bm);
     }
 
-    HWND btn = (HWND)CreateWindow(TEXT("button"), 0, WS_VISIBLE | WS_CHILD | BS_BITMAP | BS_FLAT, x, y, 64, 64, hwnd, (HMENU)id, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
+
+    HWND btn = (HWND)CreateWindow(TEXT("button"), 0, WS_VISIBLE | WS_CHILD | BS_BITMAP, x, y, 64, 64, hwnd, id, NULL, NULL);
     
     if (btn == NULL) {
         printf("CreateWindow failed\n");
         return NULL;
+    } else {
+        printf("CreateWindow succeeded: %u\n", btn);
     }
 
     LRESULT res = SendMessage(
         btn,
-        (UINT)BM_SETIMAGE,
-        (WPARAM)IMAGE_BITMAP,
-        (LPARAM)bm
+        BM_SETIMAGE,
+        IMAGE_BITMAP,
+        bm
     );
     if (res == (LRESULT)NULL) {
         printf("SendMessage failed\n");
@@ -74,10 +80,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
         case WM_COMMAND: {
             // https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
             //printf("%d\n", LOWORD(wParam));
-            LRESULT res = enableButton(btn1, FALSE);
-            EnableWindow(btn2, TRUE);
+            EnableWindow(btn2, FALSE);
             UpdateWindow(btn2);
-            printf("%d\n", res);
             break;
         }
         case WM_DESTROY: {
