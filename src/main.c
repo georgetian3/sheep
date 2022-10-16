@@ -98,6 +98,13 @@ void set_image(HWND btn, HBITMAP bitmap) {
         IMAGE_BITMAP,
         (LPARAM)bitmap
     );
+    HBITMAP bm = (HBITMAP)SendMessage(
+        btn,
+        BM_GETIMAGE,
+        IMAGE_BITMAP,
+        0
+    );
+    printf("setimage hbitmap %d %d\n", bitmap, bm);
     if (res == (LRESULT)NULL) {
         printf("SendMessage failed\n");
         //exit(1);
@@ -244,8 +251,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             //InitBackground(hwnd, bg);
             // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
             tile_buttons[0] = create_button(hwnd, 100);
+            set_image(tile_buttons[0], tile_bitmaps[1]);
+
             printf("i: %d\n", tile_type(tile_buttons[0]));
-            set_image(tile_buttons[0], tile_bitmaps[0]);
             break;
         }
         case WM_COMMAND: {
