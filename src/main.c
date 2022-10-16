@@ -18,6 +18,8 @@
 
 #define FPS 30
 
+HWND main_win;
+
 // 初始化背景函数
 HBITMAP InitBackground(HWND hWnd, HBITMAP bmp_src) {
 
@@ -104,7 +106,6 @@ void set_image(HWND btn, HBITMAP bitmap) {
         IMAGE_BITMAP,
         0
     );
-    printf("setimage hbitmap %d %d\n", bitmap, bm);
     if (res == (LRESULT)NULL) {
         printf("SendMessage failed\n");
         //exit(1);
@@ -141,7 +142,7 @@ void move_button(HWND btn, int x, int y, double speed, BOOL threaded) {
         for (int i = 0; i < frames; i++) {
             //printf("x y dist dx dy dxpf dypf start.x start.y frames %f %f %f %f %f %f %f %f %f %f\n", x, y, dist, dx, dy, dxpf, dypf, start.x, start.y, frames);
             move_button(btn, start.x + i * dxpf, start.y + i * dypf, 0, FALSE);
-            RedrawWindow(btn ,NULL,NULL,RDW_INVALIDATE | RDW_INTERNALPAINT);
+            RedrawWindow(main_win, NULL, NULL, RDW_INTERNALPAINT);
         }
         move_button(btn, x, y, 0, FALSE);
         return;
@@ -194,13 +195,13 @@ int rand_int(int min, int max) {
 
 int tile_type(HWND btn) {
     // https://learn.microsoft.com/en-us/windows/win32/controls/bm-getimage
+    // given a button, returns the index of the hbitmap applied to it in tile_bitmaps
     HBITMAP bm = (HBITMAP)SendMessage(
         btn,
         BM_GETIMAGE,
         IMAGE_BITMAP,
         0
     );
-    printf("hbitmap %d\n", bm);
     for (int i = 0; i < N_TILE_TYPES; i++) {
         if (bm == tile_bitmaps[i]) {
             return i;
@@ -243,17 +244,15 @@ void lost() {
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    main_win = hwnd;
     switch(msg) {
         case WM_CREATE: {
             PlaySound("../res/welcome.wav", NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
             load_tiles();
-            HBITMAP bg = (HBITMAP)LoadImage(NULL, "../res/bg.bmp", IMAGE_BITMAP, 64, 64, LR_LOADFROMFILE);
-            //InitBackground(hwnd, bg);
             // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
             tile_buttons[0] = create_button(hwnd, 100);
-            set_image(tile_buttons[0], tile_bitmaps[1]);
+            set_image(tile_buttons[0], tile_bitmaps[0]);
 
-            printf("i: %d\n", tile_type(tile_buttons[0]));
             break;
         }
         case WM_COMMAND: {
