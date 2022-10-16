@@ -95,8 +95,6 @@ HWND id_to_hwnd(HWND parent, int id) {
     return GetDlgItem(parent, id);
 }
 
-
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
         case WM_CREATE: {
