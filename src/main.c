@@ -83,9 +83,18 @@ void delete_button(HWND btn) {
     DestroyWindow(btn);
 }
 
+void enable_button(HWND btn, BOOL enable) {
+    EnableWindow(btn, enable);
+}
+
 int rand_int(int min, int max) {
     return rand() % (max - min) + min;
 }
+
+HWND id_to_hwnd(HWND parent, int id) {
+    return GetDlgItem(parent, id);
+}
+
 
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -94,6 +103,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             load_tiles();
             // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
             tile_buttons[0] = create_button(hwnd, 100);
+            printf("%d\n", tile_buttons[0]);
             tile_buttons[1] = create_button(hwnd, 200);
             set_image(tile_buttons[0], tile_bitmaps[0]);
             move_button(tile_buttons[1], 70, 70);
@@ -103,6 +113,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             // https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
             printf("%d\n", LOWORD(wParam));
             //show_button(tile_buttons[0], FALSE);
+            printf("%d\n", id_to_hwnd(hwnd, LOWORD(wParam)));
             delete_button(tile_buttons[1]);
             //move_button(tile_buttons[1], rand_int(50, 200), rand_int(50, 200));
             break;
