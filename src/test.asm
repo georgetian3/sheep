@@ -1,6 +1,5 @@
 ; *** minimalistic code to create a window; see also \masm32\examples\exampl01\generic\generic.asm and Iczelion tutorial #3 ***
-
-include includes.inc        ; set defaults and include frequently used libraries (Kernel32, User32, CRT, ...)
+include masm32rt.inc        ; set defaults and include frequently used libraries (Kernel32, User32, CRT, ...)
 
 .data        ; initialised data section
 txClass        db "MyWinClass", 0                ; class name, will be registered below
