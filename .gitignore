@@ -8,3 +8,5 @@ Release
 *.obg
 *.exe
 *.log
+*.o
+*.s
