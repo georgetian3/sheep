@@ -1,6 +1,10 @@
-*.exe
 .vs
-Debug/
-Release/
+.vscode
+Debug
+Release
 *.sln
 *.vcxproj*
+*.lst
+*.obg
+*.exe
+*.log
