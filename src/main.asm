@@ -73,7 +73,7 @@ load_tiles PROC
 	filenames_carrot BYTE "../res/carrot.bmp"
 	filenames_corn BYTE "../res/corn.bmp"
 	filenames_grass BYTE "../res/grass.bmp"
-	invoke LoadImageW, whatever, filenames_carrot, 0, 64, 64, 0x00000010
+	invoke LoadImageW, whatever, filenames_carrot, 0, 64, 64, 00000010h
 	.IF eax ==0
 		invoke crt_printf, offset img_error
 	.ELSE
