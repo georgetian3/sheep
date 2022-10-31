@@ -136,28 +136,28 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 
+const char titleStr[] = "Sheep";
 
 
 
 
-
-int WINAPI WinMain(HINSTANCE hInstance,
-                   HINSTANCE hPrevInstance,
-                   LPSTR lpCmdLine,
+int WINAPI WinMain(HINSTANCE hInst,
+                   HINSTANCE hPrevInst,
+                   LPSTR pCmdLine,
                    int nCmdShow) {
     srand(time(NULL));
     
     MSG msg;    
     WNDCLASS wc = {0};
-    wc.lpszClassName = "Buttons";
-    wc.hInstance     = hInstance ;
+    wc.lpfnWndProc   = WndProc;
+    wc.hInstance     = hInst;
+    wc.lpszClassName = titleStr;
     wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
-    wc.lpfnWndProc   = WndProc ;
     wc.hCursor       = LoadCursor(0, IDC_ARROW);
     RegisterClass(&wc);
     CreateWindow(
-        wc.lpszClassName,
-        "Sheep",
+        titleStr,
+        titleStr,
         WS_OVERLAPPEDWINDOW | WS_VISIBLE,
         0,
         0,
@@ -165,7 +165,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
         WINDOW_HEIGHT,
         0,
         0,
-        hInstance,
+        hInst,
         0
     );  
 
