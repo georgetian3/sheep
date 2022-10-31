@@ -19,6 +19,7 @@ TILE_HEIGHT BYTE 64
 tile_bitmaps DWORD 3 DUP(?)
 whatever BYTE ?
 img_error byte "LoadImage failed"
+img_succeed byte "LoadImage succeed"
 
 ;animation.h data
 FPS BYTE 60
@@ -75,7 +76,9 @@ load_tiles PROC
 	invoke LoadImageW, whatever, filenames_carrot, 0, 64, 64, 0x00000010
 	.IF eax ==0
 		invoke crt_printf, offset img_error
-	.ENDif
+	.ELSE
+		invoke crt_printf, offset img_succeed
+	.ENDIF
 	ret
 load_tiles ENDP
 
@@ -169,6 +172,7 @@ WinProc PROC, hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
     .IF ebx == WM_CREATE
         INVOKE  CreateButton, hWnd, 100, 100, 0
         INVOKE  ShowButton, eax, 1
+		invoke load_tiles
 
       jmp WinProcExit
     .ELSEIF ebx == WM_CLOSE
