@@ -115,7 +115,7 @@ WINAPI                      typedef PROTO STDCALL
 
 ; 8 bit   BYTE
 ; ~~~~~
-;CHAR                        typedef BYTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;CHAR                        typedef BYTE
 UCHAR                       typedef BYTE
 ;;; TBYTE                       typedef BYTE ; naming conflist with MASM data type
 
@@ -26886,7 +26886,7 @@ FlatnessDefault EQU 0.25
 
 ;;;; end gdiplus
 
-include winextra.inc
+;include winextra.inc
 
 ; �������������������������������������������������������������������������
 ; It is not recomended that WINDOWS.INC be modified but if you need to add
