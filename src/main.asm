@@ -1,30 +1,43 @@
+.386
+.model flat, stdcall  ; 32 bit memory model
+option casemap :none  ; case sensitive
 
-; This program displays a resizable application window and
-; several popup message boxes.
-; Thanks to Tom Joyce for creating a prototype
-; from which this program was derived.
-; Last update: 9/24/01
-
-INCLUDE C:\masm32\Irvine\Irvine32.inc
-INCLUDE C:\masm32\Irvine\GraphWin.inc
-
-INCLUDELIB C:\masm32\Irvine\Irvine32.lib
-
-
-include         C:\masm32\include\msvcrt.inc
-includelib      C:\masm32\lib\msvcrt.lib
-
-includelib      C:\masm32\Irvine\Kernel32.lib
-includelib      C:\masm32\Irvine\User32.Lib
+include         includes.inc
 
 include         button.inc
 
 ;==================== DATA =======================
 .data
+WindowName	BYTE "Sheep",0
+className	BYTE "Sheep",0
+
+;tile.h data
+N_TILE_TYPE BYTE 3
+N_TILES BYTE 9
+TILE_WIDTH BYTE 64
+TILE_HEIGHT BYTE 64
+tile_bitmaps DWORD 3 DUP(?)
+whatever BYTE ?
+img_error byte "LoadImage failed"
+
+;animation.h data
+FPS BYTE 60
+MSPF BYTE 17
 
 
-WindowName  BYTE "Sheep",0
-className   BYTE "Sheep",0
+MovingTile STRUCT
+	button DWORD ?
+	start_x WORD ?
+	start_y WORD ?
+	start_time WORD ?
+	dxpf REAL8 ?
+	dypf REAL8 ?
+	frame WORD ?
+	frames WORD ?
+	moving BYTE ?
+MovingTile ENDS
+
+
 
 ; Define the Application's Window class structure.
 MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL, \
@@ -38,8 +51,25 @@ hInstance DWORD ?
 buttonStr       byte    "button", 0
 cwF             byte    "CreateWindow failed", 10, 13, 0
 
+szText MACRO Name, Text:VARARG
+    LOCAL lbl
+        jmp lbl
+        Name db Text,0
+        lbl:
+ENDM
+
 ;=================== CODE =========================
 .code
+load_tiles PROC
+	filenames_carrot BYTE "../res/carrot.bmp"
+	filenames_corn BYTE "../res/corn.bmp"
+	filenames_grass BYTE "../res/grass.bmp"
+	invoke LoadImageW, whatever, filenames_carrot, 0, 64, 64, 0x00000010
+	.IF eax ==0
+		invoke crt_printf, offset img_error
+	.ENDif
+	ret
+load_tiles ENDP
 
 CreateButton PROC USES ebx ecx edx hWnd:DWORD, id:DWORD, width0:DWORD, height:DWORD
     
@@ -133,7 +163,5 @@ WinProc PROC, hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 WinProcExit:
 	ret
 WinProc ENDP
-
-
 
 END WinMain
