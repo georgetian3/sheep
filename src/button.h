@@ -8,7 +8,7 @@
 
 HWND create_button(HWND hwnd, long long id, int width, int height) {
     // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
-    HWND btn = (HWND)CreateWindow("button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | WS_CLIPSIBLINGS, 0, 0, width, height, hwnd, (HMENU)id, NULL, NULL);
+    HWND btn = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | WS_CLIPSIBLINGS, 0, 0, width, height, hwnd, (HMENU)id, NULL, NULL);
     if (btn == NULL) {
         printf("CreateWindow failed\n");
     }
