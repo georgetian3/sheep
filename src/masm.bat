@@ -1,11 +1,11 @@
 @echo off
 
-if exist %1.exe del %1.exe
+if exist main.exe del main.exe
 
-C:\MASM32\BIN\Ml.exe /c /coff /Fl %1.asm
+C:\MASM32\BIN\Ml.exe /c /coff /Fl main.asm
 if errorlevel 1 goto err
 
-C:\MASM32\BIN\Link.exe /SUBSYSTEM:CONSOLE %1.obj
+C:\MASM32\BIN\Link.exe /SUBSYSTEM:CONSOLE main.obj
 if errorlevel 1 goto err
 
 echo Build completed successfully!
@@ -21,6 +21,6 @@ echo.
 
 :cleanup
 
-if exist %1.lst del %1.lst
-if exist %1.obj del %1.obj
-if exist %1.exe start /WAIT /B %1.exe
+if exist main.lst del main.lst
+if exist main.obj del main.obj
+if exist main.exe start /WAIT /B main.exe

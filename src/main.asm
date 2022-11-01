@@ -2,114 +2,98 @@
 .model flat, stdcall  ; 32 bit memory model
 option casemap :none  ; case sensitive
 
-include         includes.inc
-
-include         button.inc
-
-;==================== DATA =======================
-.data
-WindowName	BYTE "Sheep",0
-className	BYTE "Sheep",0
-
-;tile.h data
-N_TILE_TYPE BYTE 3
-N_TILES BYTE 9
-TILE_WIDTH BYTE 64
-TILE_HEIGHT BYTE 64
-tile_bitmaps DWORD 3 DUP(?)
-whatever BYTE ?
-img_error byte "LoadImage failed"
-img_succeed byte "LoadImage succeed"
-
-;animation.h data
-FPS BYTE 60
-MSPF BYTE 17
+include includes.inc
+include macros.inc
 
 
-MovingTile STRUCT
-	button DWORD ?
-	start_x WORD ?
-	start_y WORD ?
-	start_time WORD ?
-	dxpf REAL8 ?
-	dypf REAL8 ?
-	frame WORD ?
-	frames WORD ?
-	moving BYTE ?
-MovingTile ENDS
+;#############################################################
+.DATA
 
+
+WindowName  byte "Sheep", 0
+msg         MSGStruct <>
+winRect     RECT <>
+hMainWnd    DWORD ?
+hInstance   DWORD ?
+
+emptyStr    byte    0
 
 
 ; Define the Application's Window class structure.
-MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,className>
+MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
 
-msg          MSGStruct <>
-winRect   RECT <>
-hMainWnd  DWORD ?
-hInstance DWORD ?
 
-buttonStr       byte    "button", 0
-cwF             byte    "CreateWindow failed", 10, 13, 0
-success     byte "SUCCESS", 10, 13, 0
-error       byte "ERROR", 10, 13, 0
 
-szText MACRO Name, Text:VARARG
-    LOCAL lbl
-        jmp lbl
-        Name db Text,0
-        lbl:
-ENDM
 
-szText MACRO Name, Text:VARARG
-    LOCAL lbl
-        jmp lbl
-        Name db Text,0
-        lbl:
-ENDM
 
-;=================== CODE =========================
-.code
-load_tiles PROC
-	filenames_carrot BYTE "../res/carrot.bmp"
-	filenames_corn BYTE "../res/corn.bmp"
-	filenames_grass BYTE "../res/grass.bmp"
-	invoke LoadImageW, whatever, filenames_carrot, 0, 64, 64, 00000010h
-	.IF eax ==0
-		invoke crt_printf, offset img_error
-	.ELSE
-		invoke crt_printf, offset img_succeed
-	.ENDIF
-	ret
-load_tiles ENDP
 
-CreateButton PROC hParent:DWORD,wd:DWORD,ht:DWORD,ID:DWORD
+;#############################################################
+.CODE
 
-; BmpButton PROTO :DWORD,:DWORD,:DWORD,:DWORD,:DWORD,:DWORD
-; invoke BmpButton,hWnd,20,20,100,25,500
 
-    szText bmpBtnCl,"BUTTON"
-    szText blnk2,0
+include button.inc
+include animation.inc
 
-        invoke CreateWindowEx,0,
-                ADDR bmpBtnCl,ADDR blnk2,
-                WS_CHILD or WS_VISIBLE or BS_BITMAP,
-                0,0,wd,ht,hParent,ID,
-                hInstance,NULL
+WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
-        .IF eax == 0
-            INVOKE  crt_printf, OFFSET error
+    LOCAL point:POINT
+
+        mov ebx, uMsg
+
+        .IF ebx == WM_COMMAND
+            ; lParam: hWnd of button
+            ; LOWORD(wParam): id
+            ; HIWORD(wParam): event
+            
+            String  clicked, "Button clicked", 10, 13
+            Print   OFFSET clicked
+            INVOKE  WinPos, lParam, ADDR point
+
+            String  intStr, "%d", 10, 13
+            Print   OFFSET intStr, point.x
+            Print   OFFSET intStr, point.y
+        .ELSEIF ebx == WM_CREATE
+            INVOKE  CreateButton, hWnd, 100, 100, 100, 100, 0
+            
+            ;INVOKE  ShowButton, eax, 0
+        .ELSEIF ebx == WM_CLOSE
+            INVOKE  PostQuitMessage,0
         .ELSE
-            INVOKE  crt_printf, OFFSET success
+            INVOKE  DefWindowProc, hWnd, uMsg, wParam, lParam
         .ENDIF
 
-    ret
+    WinProcExit:
+        ret
+WinProc ENDP
 
-CreateButton ENDP
 
-ShowButton PROC USES ebx ecx edx hWnd:DWORD, visible:BYTE
-        INVOKE  ShowWindow, hWnd, visible
-    ret
-ShowButton ENDP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 WinMain PROC
@@ -132,7 +116,7 @@ WinMain PROC
 
 ; Create the application's main window.
 ; Returns a handle to the main window in EAX.
-    INVOKE CreateWindowEx, 0, ADDR className,
+    INVOKE CreateWindowEx, 0, ADDR WindowName,
       ADDR WindowName,MAIN_WINDOW_STYLE,
       CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,
       CW_USEDEFAULT,NULL,NULL,hInstance,NULL
@@ -165,26 +149,8 @@ Exit_Program:
       INVOKE ExitProcess,0
 WinMain ENDP
 
-;-----------------------------------------------------
-WinProc PROC, hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
-    mov ebx, uMsg
 
-    .IF ebx == WM_CREATE
-        INVOKE  CreateButton, hWnd, 100, 100, 0
-        INVOKE  ShowButton, eax, 1
-		invoke load_tiles
 
-      jmp WinProcExit
-    .ELSEIF ebx == WM_CLOSE
-      INVOKE PostQuitMessage,0
-      jmp WinProcExit
-    .ELSE
-      INVOKE DefWindowProc, hWnd, uMsg, wParam, lParam
-      jmp WinProcExit
-    .ENDIF
 
-WinProcExit:
-    ret
-WinProc ENDP
 
 END WinMain
