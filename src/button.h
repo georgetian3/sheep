@@ -6,13 +6,13 @@
 
 #include "sound.h"
 
-HWND create_button(HWND hwnd, long long id, int width, int height) {
+HWND create_button(HWND parent, long long id, int width, int height) {
     // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
-    HWND btn = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | WS_CLIPSIBLINGS, 0, 0, width, height, hwnd, (HMENU)id, NULL, NULL);
+    HWND btn = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | WS_CLIPSIBLINGS | BS_OWNERDRAW, 0, 0, width, height, parent, (HMENU)id, NULL, NULL);
     if (btn == NULL) {
         printf("CreateWindow failed\n");
     }
-
+    return btn;
 }
 
 
@@ -23,21 +23,11 @@ void set_image(HWND btn, HBITMAP bitmap) {
         IMAGE_BITMAP,
         (LPARAM)bitmap
     );
-    HBITMAP bm = (HBITMAP)SendMessage(
-        btn,
-        BM_GETIMAGE,
-        IMAGE_BITMAP,
-        0
-    );
     if (res == (LRESULT)NULL) {
         printf("SendMessage failed\n");
         //exit(1);
     }
 }
-
-
-
-
 
 void show_button(HWND btn, BOOL visible) {
     ShowWindow(btn, visible ? SW_SHOW : SW_HIDE);
@@ -61,7 +51,8 @@ HWND id_to_hwnd(HWND parent, int id) {
 
 void handle_button_event(HWND btn, int id, int event) {
     printf("%d %d %d\n", btn, id, event);
-    move_button(btn, rand_int(0, 400), rand_int(0, 400), 0.5);
+    //move_button(btn, rand_int(0, 400), rand_int(0, 400), 0.5);
+
 }
 
 #endif
