@@ -11,7 +11,7 @@
 #include <windows.h>
 #include "button.h"
 
-HBITMAP tile_bitmaps[N_TILE_TYPES];
+HBITMAP tile_bitmaps[2][N_TILE_TYPES];
 void load_tiles() {
     const char* filenames[] = {
         "../res/carrot.bmp",
@@ -96,7 +96,8 @@ void delete_tile(HWND hWnd) {
 }
 
 void draw_tile(HWND hWnd) {
-    DrawStateW(((DRAWITEMSTRUCT*)hWnd)->hDC, 0, 0, (LPARAM)tile_bitmaps[0], 0, 0, 0, 0, 0, DST_BITMAP);
+    struct Tile* tile = get_tile(hWnd);
+    DrawStateW(((DRAWITEMSTRUCT*)hWnd)->hDC, 0, 0, (LPARAM)tile_bitmaps[tile->enabled][tile->type], 0, 0, 0, 0, 0, DST_BITMAP);
 }
 
 #endif
