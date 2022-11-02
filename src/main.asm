@@ -8,7 +8,17 @@ include macros.inc
 
 ;#############################################################
 .DATA
+N_TILE_TYPES BYTE 3
+N_TILES BYTE 9
+TILE_WIDTH BYTE 64
+TILE_HEIGHT BYTE 64
 
+filenames_carrot BYTE "../res/carrot.bmp", 0
+filenames_corn BYTE "../res/corn.bmp", 0
+filenames_grass BYTE "../res/grass.bmp", 0
+tile_bitmaps DWORD 3 DUP(?)
+tile_buttons DWORD 9 DUP(?)
+LOAD_PRINT BYTE "LoadImage failed", 0ah, 0dh, 0
 
 WindowName  byte "Sheep", 0
 msg         MSGStruct <>
@@ -33,6 +43,7 @@ MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,Window
 
 include button.inc
 include animation.inc
+include tile.inc
 
 WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
@@ -54,6 +65,7 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
             INVOKE  CreateButton, hWnd, 100, 100, 100, 100, 0
+            INVOKE load_tiles
             
             ;INVOKE  ShowButton, eax, 0
         .ELSEIF ebx == WM_CLOSE
