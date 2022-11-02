@@ -38,7 +38,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_DRAWITEM: {
             printf("drawitem\n");
-            DrawStateW(((DRAWITEMSTRUCT*)lParam)->hDC, 0, 0, (LPARAM)tile_bitmaps[0], 0, 0, 0, 0, 0, DST_BITMAP | DSS_DISABLED);
+            draw_tile((HWND)lParam);
+            
         }
         case WM_PAINT: {
             //printf("Paint event\n");
