@@ -1,3 +1,5 @@
+
+
 load_tiles PROC USES eax ebx ecx edx esi edi
     invoke LoadImageA, 0, offset filenames_carrot, IMAGE_BITMAP, 64, 64, LR_LOADFROMFILE
     .IF eax == 0

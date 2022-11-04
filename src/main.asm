@@ -44,6 +44,7 @@ MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,Window
 include button.inc
 include animation.inc
 include tile.inc
+include random.inc
 
 WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
