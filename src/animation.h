@@ -2,21 +2,12 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "tile.h"
+#include "button.h"
 
 #define FPS 60
 #define MSPF 1000.0 / FPS
 
 
-
-
-POINT win_pos(HWND hwnd, POINT* point) {
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-    MapWindowPoints(HWND_DESKTOP, GetParent(hwnd), (LPPOINT)&point, 1);
-    //point->x = rect.left;
-    //point->y = rect.top;
-}
 
 
 void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
@@ -25,7 +16,7 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
         printf("Move button not found\n");
         exit(1);
     }
-    if (btn->status != BUTTON_STATUS_ENABLED) {
+    if (btn->state != STATE_ENABLED) {
         printf("Button not supposed to be moving\n");
         exit(1);
     }
@@ -41,16 +32,16 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     }
     btn->frame++;
     if (btn->frame > btn->frames) {
-        btn->status = BUTTON_STATUS_ENABLED;
+        set_state(btn, STATE_ENABLED);
         KillTimer(hWnd, idEvent);
     }
     
 }
 
-void move_button(HWND hWnd, int x, int y, double time) {
+void move_button(struct Button* btn, int x, int y, double time) {
     
     if (time == 0) {
-        BOOL res = SetWindowPos(hWnd, NULL, x, y, 0, 0, SWP_NOSIZE);
+        BOOL res = SetWindowPos(btn->hWnd, NULL, x, y, 0, 0, SWP_NOSIZE);
         if (res == FALSE) {
             printf("move_button failed\n");
             exit(1);
@@ -58,22 +49,21 @@ void move_button(HWND hWnd, int x, int y, double time) {
         return;
     }
 
-    struct Button* btn = get_button(hWnd);
-    if (btn->status == BUTTON_STATUS_MOVING) {
+    if (btn->state == STATE_MOVING) {
         printf("Already moving\n");
         exit(1);
     }
 
-    btn->status = BUTTON_STATUS_MOVING;
+    set_state(btn, STATE_MOVING);
 
-    win_pos(hWnd, &btn->start_pos);
+    win_pos(btn->hWnd, &btn->start_pos);
     btn->frame = 1;
     btn->start_time = GetTickCount();
     btn->frames = time * FPS;
     btn->dxpf = 1.0 * (x - btn->start_pos.x) / btn->frames;
     btn->dypf = 1.0 * (y - btn->start_pos.y) / btn->frames;
 
-    int res = SetTimer(hWnd, 0, MSPF, (TIMERPROC)__move_button);
+    int res = SetTimer(btn->hWnd, 0, MSPF, (TIMERPROC)__move_button);
     if (res == 0) {
         printf("SetTimer failed\n");
         exit(1);
