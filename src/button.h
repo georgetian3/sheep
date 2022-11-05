@@ -58,6 +58,7 @@ struct Button {
     HBITMAP img_disabled;
     int type;
     int id;
+    int k; // vertical axis
 
     // properties used for button animation
     POINT start_pos;
@@ -94,27 +95,28 @@ struct Button* create_button(
         HWND parent, int status,
         const char* img_enabled,
         const char* img_disabled,
-        int id, int x, int y, int wd, int ht) {
+        int id, int x, int y, int k, int wd, int ht) {
 
     if (__button_count >= N_BUTTONS) {
         return 0;
     }
     for (int i = 0; i < N_TILES; i++) {
         if (__buttons[i] == 0) {
-            struct Button* new_button = (struct Button*)malloc(sizeof(struct Button));
+            struct Button* new_btn = (struct Button*)malloc(sizeof(struct Button));
 
-            new_button->hWnd = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | WS_CLIPSIBLINGS | BS_OWNERDRAW, x, y, wd, ht, parent, (HMENU)id, NULL, NULL);
+            new_btn->hWnd = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | WS_CLIPSIBLINGS | BS_OWNERDRAW, x, y, wd, ht, parent, (HMENU)id, NULL, NULL);
 
-            if (new_button->hWnd == NULL) {
+            if (new_btn->hWnd == NULL) {
                 printf("CreateWindow failed\n");
             }
             if (status == BUTTON_STATUS_MOVING) {
                 printf("Don't create moving button\n");
                 exit(1);
             }
-            new_button->status = status;
-            __buttons[i] = new_button;
-            return new_button;
+            new_btn->k = k;
+            new_btn->status = status;
+            __buttons[i] = new_btn;
+            return new_btn;
         }
     }
     return 0;
