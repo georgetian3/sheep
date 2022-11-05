@@ -13,16 +13,12 @@ const char* sound_files[] = {
     "../res/match.wav"
 };
 
-typedef enum {None = -1, Welcome, Game, Click, Match} SoundType;
 
-void play_sound(SoundType sound, BOOL loop, BOOL interrupt) {
-    if (interrupt) {
-        PlaySound(NULL, NULL, 0);
-    }
-    if (sound == None) {
+void play_sound(int sound) {
+    if (sound == -1) {
         return;
     }
-    PlaySound(sound_files[sound], NULL, SND_ASYNC | SND_FILENAME | SND_LOOP * loop | SND_NOSTOP);
+    PlaySound(sound_files[sound], NULL, SND_ASYNC | SND_FILENAME | SND_LOOP | SND_NOSTOP);
 }
 
 

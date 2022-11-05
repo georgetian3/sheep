@@ -1,7 +1,6 @@
 #ifndef TILE_H
 #define TILE_H
 
-
 #define N_TILE_TYPES 3
 #define N_TILES 9
 
@@ -11,7 +10,7 @@
 #include <windows.h>
 #include "button.h"
 
-const char* filenames[][] = {
+const char* filenames[2][N_TILE_TYPES] = {
     {
         "../res/carrot.bmp",
         "../res/corn.bmp",
