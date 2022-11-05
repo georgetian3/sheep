@@ -54,8 +54,8 @@ struct Button {
 
     int status;
 
-    const char* img_enabled;
-    const char* img_disabled;
+    HBITMAP img_enabled;
+    HBITMAP img_disabled;
     int type;
     int id;
 
@@ -132,8 +132,12 @@ void delete_button(HWND hWnd) {
 }
 
 void draw_button(HWND hWnd) {
-    struct Tile* tile = get_tile(hWnd);
-    DrawStateW(((DRAWITEMSTRUCT*)hWnd)->hDC, 0, 0, (LPARAM)tile_bitmaps[tile->enabled][tile->type], 0, 0, 0, 0, 0, DST_BITMAP);
+    struct Button* btn = get_button(hWnd);
+
+    DrawStateW(
+        ((DRAWITEMSTRUCT*)hWnd)->hDC, 0, 0,
+        (LPARAM)(btn->status == 0 ? btn->img_disabled : btn->img_enabled), 0, 0, 0, 0, 0, DST_BITMAP
+    );
 }
 
 #endif

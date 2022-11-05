@@ -20,15 +20,10 @@ struct Tile *t1, *t2;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
         case WM_CREATE: {
-            //printf("%d %d %d\n", bg_bmp, bg, res);
-            //PlaySound("../res/welcome.wav", NULL, SND_FILENAME | SND_LOOP | SND_ASYNC);
+
             load_tiles();
-            // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagea
+
             t1 = create_tile(hWnd, 1, 0, 0, 10, 10, 10);
-
-            //SoundType s = Welcome;
-            //play_sound(s, TRUE, TRUE);
-
             break;
         }
         case WM_COMMAND: {
@@ -38,7 +33,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_DRAWITEM: {
             printf("drawitem\n");
-            draw_tile((HWND)lParam);
+            draw_button((HWND)lParam);
             
         }
         case WM_PAINT: {

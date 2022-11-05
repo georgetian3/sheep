@@ -1,7 +1,6 @@
 #ifndef TILE_H
 #define TILE_H
 
-
 #define N_TILE_TYPES 3
 #define N_TILES 9
 
