@@ -15,53 +15,54 @@
 #include "tile.h"
 #include "sound.h"
 
-struct Button *t1, *t2;
+void handle_button_click(HWND parent, struct Button* btn) {
+    printf("handle_button_click, ptr %u hwnd %u type %u\n", btn, btn->hWnd, btn->type);
+    //move_button(hWnd, 400, 400, 2);
+
+
+    InvalidateRect(btn->hWnd, 0, 0);
+}
+
+struct Button *b1, *b2;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
-        case WM_CREATE: {
-
-            load_tiles();
-
-            t1 = create_button(
-                hWnd,
-                BUTTON_STATUS_ENABLED,
-                tile_bitmaps[0][0],
-                tile_bitmaps[1][0],
-                100, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-            );
-            break;
+        case WM_DRAWITEM: {
+            //printf("WM_DRAWITEM\n");
+            draw_button(hWnd, wParam, (DRAWITEMSTRUCT*)lParam);
         }
         case WM_COMMAND: {
+            //printf("WM_COMMAND\n");
             // https://learn.microsoft.com/en-us/windows/win32/controls/bn-clicked
-            handle_button_event((HWND)lParam, LOWORD(wParam), HIWORD(wParam));
+            struct Button* btn = get_button((HWND)lParam);
+            if (btn && btn->state == STATE_ENABLED) {
+                handle_button_click(hWnd, btn);
+            }
             break;
         }
-        case WM_DRAWITEM: {
-            printf("drawitem\n");
-            draw_button(hWnd, wParam, (DRAWITEMSTRUCT*)lParam);
-            
-        }
-        case WM_PAINT: {
-            //printf("Paint event\n");
+        case WM_CREATE: {
+            load_bitmaps();
+
+            for (int i = 0; i < 10; i++) {
+                create_button(
+                    hWnd,
+                    STATE_ENABLED,
+                    i % N_TILE_TYPES,
+                    i, 32 * i, 32 * i, 1, TILE_WIDTH, TILE_HEIGHT
+                );
+            }
             break;
         }
         case WM_DESTROY: {
             PostQuitMessage(0);
             break;
         }
-        case WM_ERASEBKGND: {
-            
-            //printf("erase\n");
-            //LoadScreen(hwnd);
-
-        }
         default: {
-            //printf("???\n");
+            return DefWindowProc(hWnd, msg, wParam, lParam);
         }
     }
   
-    return DefWindowProc(hWnd, msg, wParam, lParam);
+    return 0;
 }
 
 
@@ -97,10 +98,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 const char titleStr[] = "Sheep";
-
-
-
-
 int WINAPI WinMain(HINSTANCE hInst,
                    HINSTANCE hPrevInst,
                    LPSTR pCmdLine,
@@ -115,18 +112,8 @@ int WINAPI WinMain(HINSTANCE hInst,
     wc.hbrBackground = GetSysColorBrush(COLOR_3DFACE);
     wc.hCursor       = LoadCursor(0, IDC_ARROW);
     RegisterClass(&wc);
-    CreateWindow(
-        titleStr,
-        titleStr,
-        WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-        0,
-        0,
-        WINDOW_WIDTH,
-        WINDOW_HEIGHT,
-        0,
-        0,
-        hInst,
-        0
+    CreateWindow(titleStr, titleStr, WS_OVERLAPPEDWINDOW | WS_VISIBLE,
+        0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, hInst, 0
     );  
 
     while(GetMessage(&msg, NULL, 0, 0)) {
