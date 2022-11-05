@@ -9,14 +9,7 @@
 
 struct MovingTile {
     HWND button;
-    int start_x;
-    int start_y;
-    int start_time;
-    double dxpf;
-    double dypf;
-    int frame;
-    int frames;
-    BOOL moving;
+
 };
 
 
