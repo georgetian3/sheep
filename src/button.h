@@ -29,6 +29,7 @@ void show_button(HWND btn, BOOL visible) {
 }
 
 void enable_button(HWND btn, BOOL enable) {
+
     EnableWindow(btn, enable);
 }
 
@@ -93,8 +94,8 @@ struct Button* get_button(HWND hWnd) {
  */
 struct Button* create_button(
         HWND parent, int status,
-        const char* img_enabled,
-        const char* img_disabled,
+        HBITMAP img_enabled,
+        HBITMAP img_disabled,
         int id, int x, int y, int k, int wd, int ht) {
 
     if (__button_count >= N_BUTTONS) {

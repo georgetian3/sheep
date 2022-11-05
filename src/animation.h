@@ -42,7 +42,7 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     btn->frame++;
     if (btn->frame > btn->frames) {
         btn->status = BUTTON_STATUS_ENABLED;
-        KillTimer(btn, idEvent);
+        KillTimer(hWnd, idEvent);
     }
     
 }

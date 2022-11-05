@@ -23,7 +23,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
             load_tiles();
 
-            t1 = create_tile(hWnd, 1, 0, 0, 10, 10, 10);
+            t1 = create_button(
+                hWnd,
+                BUTTON_STATUS_ENABLED,
+                tile_bitmaps[0][0],
+                tile_bitmaps[1][0],
+                100, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+            );
             break;
         }
         case WM_COMMAND: {

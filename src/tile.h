@@ -10,7 +10,7 @@
 #include <windows.h>
 #include "button.h"
 
-const char* filenames[][] = {
+const char* filenames[2][N_TILE_TYPES] = {
     {
         "../res/carrot.bmp",
         "../res/corn.bmp",
