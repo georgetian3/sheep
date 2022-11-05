@@ -7,25 +7,7 @@ include macros.inc
 
 ;#############################################################
 .DATA
-N_TILE_TYPES BYTE 3
-N_TILES BYTE 9
-TILE_WIDTH BYTE 64
-TILE_HEIGHT BYTE 64
 
-filenames_carrot BYTE "../res/carrot.bmp", 0
-filenames_corn BYTE "../res/corn.bmp", 0
-filenames_grass BYTE "../res/grass.bmp", 0
-filenames DWORD offset filenames_carrot, offset filenames_corn, offset filenames_grass
-tile_bitmaps DWORD 3 DUP(?)
-tile_buttons DWORD 9 DUP(?)
-LOAD_PRINT BYTE "LoadImage failed", 0ah, 0dh, 0
-
-sound_files_welcome BYTE "../res/welcome.wav", 0
-sound_files_game BYTE "../res/game.wav", 0
-sound_files_clicked BYTE "../res/clicked.wav", 0
-sound_files_match BYTE "../res/match.wav", 0
-sound_files DWORD offset sound_files_welcome, offset sound_files_game, offset sound_files_clicked, offset sound_files_match
-tryout BYTE "%s", 0ah, 0dh, 0
 
 
 WindowName  byte "Sheep", 0
@@ -76,8 +58,8 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         .ELSEIF ebx == WM_CREATE
             INVOKE  CreateButton, hWnd, 100, 100, 100, 100, 0
             ;INVOKE load_tiles
-            
-            ;INVOKE  ShowButton, eax, 0
+            INVOKE  play_sound, 0, 0, 0
+            INVOKE  ShowButton, eax, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage,0
         .ELSE

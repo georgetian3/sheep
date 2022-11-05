@@ -1,3 +1,15 @@
+N_TILE_TYPES BYTE 3
+N_TILES BYTE 9
+TILE_WIDTH BYTE 64
+TILE_HEIGHT BYTE 64
+
+filenames_carrot BYTE "../res/carrot.bmp", 0
+filenames_corn BYTE "../res/corn.bmp", 0
+filenames_grass BYTE "../res/grass.bmp", 0
+filenames DWORD offset filenames_carrot, offset filenames_corn, offset filenames_grass
+tile_bitmaps DWORD 3 DUP(?)
+tile_buttons DWORD 9 DUP(?)
+LOAD_PRINT BYTE "LoadImage failed", 0ah, 0dh, 0
 
 
 load_tiles PROC USES eax ebx ecx edx esi edi
