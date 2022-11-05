@@ -8,7 +8,6 @@
 #define TILE_HEIGHT 64
 
 #include <windows.h>
-#include "button.h"
 
 const char* filenames[2][N_TILE_TYPES] = {
     {

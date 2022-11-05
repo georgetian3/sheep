@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "tile.h"
+#include "button.h"
 
 #define FPS 60
 #define MSPF 1000.0 / FPS

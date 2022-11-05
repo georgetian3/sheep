@@ -39,7 +39,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_DRAWITEM: {
             printf("drawitem\n");
-            draw_button((HWND)lParam);
+            draw_button(hWnd, wParam, (DRAWITEMSTRUCT*)lParam);
             
         }
         case WM_PAINT: {

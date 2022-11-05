@@ -5,6 +5,7 @@
 #include <windows.h>
 
 #include "sound.h"
+#include "tile.h"
 
 #define N_BUTTONS 100
 
@@ -39,6 +40,8 @@ void show_button(HWND btn, BOOL visible) {
     ShowWindow(btn, visible ? SW_SHOW : SW_HIDE);
 }
 
+
+
 void enable_button(HWND btn, BOOL enable) {
 
     EnableWindow(btn, enable);
@@ -50,12 +53,7 @@ HWND id_to_hwnd(HWND parent, int id) {
 }
 
 
-void handle_button_event(HWND btn, int id, int event) {
 
-    printf("%d %d %d\n", btn, id, event);
-    //move_button(btn, rand_int(0, 400), rand_int(0, 400), 0.5);
-
-}
 
 
 /*
@@ -96,6 +94,8 @@ struct Button* create_button(
 
             if (new_btn->hWnd == NULL) {
                 printf("CreateWindow failed\n");
+            } else {
+                printf("New hwnd %u\n", new_btn->hWnd);
             }
             if (status == BUTTON_STATUS_MOVING) {
                 printf("Don't create moving button\n");
@@ -103,6 +103,8 @@ struct Button* create_button(
             }
             new_btn->k = k;
             new_btn->status = status;
+            new_btn->img_enabled = img_enabled;
+            new_btn->img_disabled = img_disabled;
             __buttons[i] = new_btn;
             __button_count++;
             return new_btn;
@@ -122,13 +124,23 @@ void delete_button(HWND hWnd) {
     }
 }
 
-void draw_button(HWND hWnd) {
-    printf("in frawbutton %u\n", hWnd);
-    struct Button* btn = get_button(hWnd);
+void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
+    struct Button* btn = get_button(id_to_hwnd(parent, id));
     DrawStateW(
-        ((DRAWITEMSTRUCT*)hWnd)->hDC, 0, 0,
-        (LPARAM)(btn->status == 0 ? btn->img_disabled : btn->img_enabled), 0, 0, 0, 0, 0, DST_BITMAP
+        dis->hDC, 0, 0,
+        (LPARAM)(btn->status == 0 ? btn->img_disabled : btn->img_enabled),
+         0, 0, 0, 0, 0, DST_BITMAP
     );
+}
+
+void handle_button_event(HWND hWnd, int id, int event) {
+
+    printf("%d %d %d\n", hWnd, id, event);
+    struct Button* btn = get_button(hWnd);
+    btn->status = BUTTON_STATUS_DISABLED;
+    InvalidateRect(hWnd, 0, 0);
+    //move_button(btn, rand_int(0, 400), rand_int(0, 400), 0.5);
+
 }
 
 #endif
