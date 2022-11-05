@@ -15,7 +15,7 @@
 #include "tile.h"
 #include "sound.h"
 
-struct Tile *t1, *t2;
+struct Button *t1, *t2;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
@@ -105,7 +105,7 @@ int WINAPI WinMain(HINSTANCE hInst,
                    HINSTANCE hPrevInst,
                    LPSTR pCmdLine,
                    int nCmdShow) {
-    srand(time(NULL));
+    //srand(time(NULL));
     
     MSG msg;    
     WNDCLASS wc = {0};
