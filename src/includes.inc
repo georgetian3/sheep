@@ -22,9 +22,11 @@ includelib C:\masm32\lib\shell32.lib
 include C:\masm32\include\user32.inc
 includelib C:\masm32\lib\user32.lib
 
+include C:\masm32\include\winmm.inc
+includelib C:\masm32\lib\winmm.lib
+
 include windows.inc
 include GraphWin.inc
-
 
 ;INCLUDE C:\masm32\Irvine\Irvine32.inc
 ;INCLUDELIB C:\masm32\Irvine\Irvine32.lib
