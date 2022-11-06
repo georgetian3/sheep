@@ -18,19 +18,13 @@ void build_map(HWND hwnd, const char name[]) {
     for (int i=0;i<16;i++){
         fscanf(fp,"%d",&tiles_num[i]);
     }
-    for(int i=0;i<16;i++){
-        printf("%d\n",tiles_num[i]);
-    }
     int *item = (int*)malloc(sizeof(int)*total);
     memset(item,-1,sizeof(item));
     
     for (int i = 0; i < total;) {
-        printf("i= %d\n",i);
         for(int type=0;type<16;type++){
-            printf("type = %d\n",type);
             for(int j=0;j<tiles_num[type]*3;j++,i++){
                 item[i]=type;
-                printf("i=%d j=%d type= %d\n",i,j,type);
             }
         }
     }
@@ -44,7 +38,7 @@ void build_map(HWND hwnd, const char name[]) {
 	while(fscanf(fp, "%d", &flag)!=EOF) {
         printf("i=%d j=%d k=%d, flag=%d num=%d\n", i, j, k, flag,total);
 		if (flag) {
-			create_button(hwnd, STATE_ENABLED, item[total++], TILE_WIDTH / 2 + i * TILE_WIDTH / 2, TILE_HEIGHT / 2 + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
+			create_button(hwnd, STATE_ENABLED,item[total++], TILE_WIDTH / 2 + i * TILE_WIDTH / 2, TILE_HEIGHT / 2 + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
 		}
 		i++;
 		if (i == map_width) {
