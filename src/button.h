@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "sound.h"
+//#include "sound.h"
 #include "tile.h"
 
 #define N_BUTTONS 100
@@ -13,6 +13,7 @@
 #define STATE_ENABLED      1
 #define STATE_HIDDEN       2
 #define N_STATES           3
+
 
 struct Button {
     HWND hWnd;

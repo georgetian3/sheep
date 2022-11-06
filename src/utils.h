@@ -87,9 +87,9 @@ void insert_slot(struct Button* btn, int index) {
     for (int i = slot_count - 1; i >= index; i--) {
         move_button(slot[i], slot_x(i), SLOT_Y, 1);
     }
-    move_button(btn, slot_x(index), SLOT_Y, 1);
     btn->in_slot = TRUE;
     slot_count++;
+    move_button(btn, slot_x(index), SLOT_Y, 1);
 }
 
 void match_slot(int index) {

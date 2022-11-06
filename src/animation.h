@@ -8,6 +8,10 @@
 #define MSPF 1000.0 / FPS
 
 
+void move_callback(struct Button* btn) {
+    if (0) {
+    }
+}
 
 
 void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
@@ -34,13 +38,14 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     if (btn->frame > btn->frames) {
         btn->moving = FALSE;
         KillTimer(hWnd, idEvent);
+        move_callback(btn);
     }
     
 }
 
 void move_button(struct Button* btn, int x, int y, double time) {
-    
-    if (time == 0) {
+    printf("Move button\n");
+    if (FALSE && time == 0) {
         BOOL res = SetWindowPos(btn->hWnd, NULL, x, y, 0, 0, SWP_NOSIZE);
         if (res == FALSE) {
             printf("move_button failed\n");

@@ -1,3 +1,5 @@
+#pragma warning(disable:4996)
+
 #include "animation.h"
 #include "button.h"
 #include "utils.h"
@@ -15,32 +17,26 @@
 #include <math.h>
 
 
-
-
-void InitGame(HWND hWnd, WPARAM wParam, LPARAM lParam);
-void TimerUpdate(HWND hWnd, WPARAM wParam, LPARAM lParam);
-//void UpdateUnits(HWND hWnd);
 void Paint(HWND hWnd);
 
 
 
 
-struct Stage* currentStage = NULL; //当前场景状态
 
 
 void update() {
     struct Button *a, *b;
     for (int i = 0; i < N_TILES; i++) {
         b = get_button_index(i);
-        if (b->moving) {
+        if (b && b->moving) {
             continue;
         }
         for (int j = 0; j < N_TILES; j++) {
             a = get_button_index(j);
-            if (a->moving) {
+            if (a && a->moving) {
                 continue;
             }
-            if (a && b && (b->in_slot || overlap(a, b))) {
+            if (b->in_slot || overlap(a, b)) {
                 set_active(b, FALSE);
                 b->gray = TRUE;
                 //set_state(b, STATE_DISABLED);
@@ -54,48 +50,12 @@ void update() {
 
 
 
-HBITMAP bmp_Background, bmp_src;
-// 初始化背景函数
-HBITMAP InitBackGround(HWND hWnd) {
-
-    bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
-
-    PAINTSTRUCT ps;
-    HDC hdc_window = BeginPaint(hWnd, &ps);
-
-    HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
-    HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
-
-    //初始化缓存
-    HBITMAP    bmp_output = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-    SelectObject(hdc_memBuffer, bmp_output);
-
-    //加载资源
-    SelectObject(hdc_loadBmp, bmp_src);
-    TransparentBlt(
-        hdc_memBuffer,0, 0,
-        WINDOW_WIDTH, WINDOW_HEIGHT,
-        hdc_loadBmp, 0,0,
-        WINDOW_WIDTH, WINDOW_HEIGHT,
-        RGB(255, 255, 255));
-    // 最后将所有的信息绘制到屏幕上
-    BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
-
-    // 回收资源所占的内存（非常重要）
-    DeleteDC(hdc_memBuffer);
-    DeleteDC(hdc_loadBmp);
-
-    // 结束绘制
-    EndPaint(hWnd, &ps);
-
-    return bmp_output;
-}
-
-
+HBITMAP bmp_src;
 
 
 
 void update_slot(struct Button* btn) {
+    printf("Update slot\n");
     int insert_index; // index of to insert btn
     int count = 1; // number of tiles of the same type
 
@@ -109,11 +69,12 @@ void update_slot(struct Button* btn) {
     }
     
     insert_slot(btn, insert_index);
-
+    printf("finished insert_slot\n");
     if (count == MATCH_COUNT) {
         match_slot(insert_index);
+        printf("finished match slot\n");
     }
-
+    printf("finished update slot\n");
 }
 
 
@@ -204,7 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_CREATE: {
 
             printf("WM_CREATE\n");
-            bmp_Background = InitBackGround(hWnd);
+            bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
             printf("Done InitBackGround\n");
             //初始化开始场景
             //InitStage(hWnd, STAGE_STARTMENU,lParam);
