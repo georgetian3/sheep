@@ -38,7 +38,8 @@ const char* dark = "_dark";
 #define MAX_FILENAME_LEN 255
 
 HBITMAP bitmaps[2][N_TILE_TYPES];
-
+HBITMAP start_bmp;
+HBITMAP end_bmp;
 
 HBITMAP load_bitmap(const char* filename, int wd, int ht) {
     return LoadImage(NULL, filename, IMAGE_BITMAP, wd, ht, LR_LOADFROMFILE);
@@ -63,6 +64,8 @@ void load_bitmaps() {
             }
         }
     }
+    start_bmp=load_bitmap("../res/start.bmp",200,80);
+    end_bmp = load_bitmap("../res/end.bmp",200,56);
 }
 
 

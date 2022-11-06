@@ -7,7 +7,7 @@
 //#include "sound.h"
 #include "tile.h"
 
-#define N_BUTTONS 100
+#define N_BUTTONS 500
 
 #define STATE_DISABLED     0
 #define STATE_ENABLED      1
@@ -34,6 +34,8 @@ struct Button {
     int frame; // current frame
     int frames; // number of frames of movement
 };
+struct Button* start_game;
+struct Button* end_game;
 
 int __button_count = 0;
 struct Button* __buttons[N_BUTTONS] = {0};
@@ -171,17 +173,30 @@ void delete_button_hwnd(HWND hWnd) {
 void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
     //printf("Draw button\n");
     struct Button* btn = get_button(id_to_hwnd(parent, id));
+
     if (btn == 0) {
         printf("Draw button not found\n");
         exit(1);
-    } else {
-        //printf("Drawing button ptr %d hwnd %d state %u type %d\n", btn, btn->hWnd, btn->state, btn->type);
-    }
-    DrawStateW(
+    } else if(btn == start_game){
+        DrawStateW(
+        dis->hDC, 0, 0,
+        (LPARAM)(start_bmp),
+         0, 0, 0, 0, 0, DST_BITMAP
+    );
+    } else if (btn==end_game){
+        DrawStateW(
+        dis->hDC, 0, 0,
+        (LPARAM)(end_bmp),
+         0, 0, 0, 0, 0, DST_BITMAP
+    );
+    }else{
+        DrawStateW(
         dis->hDC, 0, 0,
         (LPARAM)(bitmaps[!btn->gray][btn->type]),
          0, 0, 0, 0, 0, DST_BITMAP
     );
+    }
+    
 }
 
 

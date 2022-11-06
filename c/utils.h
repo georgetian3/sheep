@@ -32,9 +32,10 @@
 #define SLOT_SIZE           7
 #define MATCH_COUNT         3
 
-#define SLOT_MOVE_TIME      0.5
+#define SLOT_MOVE_TIME      0.2
 
 int slot_count = 0;
+int stage = 1;
 struct Button* slot[SLOT_SIZE] = {0};
 
 struct Stage {
@@ -126,7 +127,5 @@ void insert_slot(struct Button* btn, int index) {
 }
 
 
-void lose() {
-    printf("Lose\n");
-}
+
 #endif
