@@ -5,7 +5,8 @@
 #include "utils.h"
 #define MAX_FILENAME_LEN 255
 #define MAX_SIZE 64
-void build_map(HWND hwnd, const char name[]) {
+
+int build_map(HWND hwnd, const char name[]) {
 	int i = 0, j = 0, k = 0;
 	FILE* fp = NULL;
 	char filename[MAX_FILENAME_LEN]={0};
@@ -36,6 +37,7 @@ void build_map(HWND hwnd, const char name[]) {
 	while(fscanf(fp, "%d", &flag)!=EOF) {
         printf("i=%d j=%d k=%d, flag=%d num=%d\n", i, j, k, flag,total);
 		if (flag) {
+            printf("%d\n",item[total]);
 			create_button(hwnd, STATE_ENABLED,item[total++], TILE_WIDTH / 2 + i * TILE_WIDTH / 2, TILE_HEIGHT / 2 + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
 		}
 		i++;
@@ -49,4 +51,5 @@ void build_map(HWND hwnd, const char name[]) {
 		}
 	}
     fclose(fp);
+    return total;
 }

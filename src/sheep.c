@@ -17,7 +17,7 @@
 
 #include <math.h>
 
-
+int total = 0;
 
 
 void update() {
@@ -52,7 +52,22 @@ void update() {
 }
 
 
-
+void lose(HWND hWnd) {
+    for(int i=0;i<N_BUTTONS;i++){
+        delete_button_struct(__buttons[i]);
+    }
+    start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,-1,200,80);
+}
+int win(HWND hWnd){
+    if(stage==1){
+        int total=build_map(hWnd,"map2.txt");
+        update();
+        stage++;
+        return total;
+    }else{
+        start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,-1,200,80);
+    }
+}
 
 
 
@@ -88,12 +103,20 @@ void handle_button_click(HWND parent, struct Button* btn) {
         }
         update_slot(btn);
         update();
+        total --;
         if (slot_count >= SLOT_SIZE) {
-            lose();
+            lose(parent);
+        }
+        if(total==0){
+            total=win(parent);
         }
     }
-
-
+    if(btn==start_game){
+        delete_button_struct(start_game);
+        printf("freed!\n");
+        total=build_map(parent,"map1.txt");
+        update();
+    }
     InvalidateRect(btn->hWnd, 0, 0);
 }
 
@@ -116,11 +139,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_CREATE: {
 
-            //printf("WM_CREATE\n");
+            printf("WM_CREATE\n");
             bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
             load_bitmaps();
-            build_map(hWnd,"map2.txt");
-            update();
+            start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,0,200,80);
             break;
         }
         case WM_PAINT: {
