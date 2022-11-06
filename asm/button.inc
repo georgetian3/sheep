@@ -9,10 +9,10 @@ N_STATES equ 4
 Button STRUCT
     hWnd DWORD ?
 
-    active BYTE ?
-    moving BYTE ?
-    gray BYTE ?
-    in_slot BYTE ?
+    active DWORD ?
+    moving DWORD ?
+    gray DWORD ?
+    in_slot DWORD ?
     callback DWORD ?
     type_ DWORD ?
     id DWORD ?
