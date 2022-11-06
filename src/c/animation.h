@@ -20,10 +20,10 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
         exit(1);
     }
 
-    BOOL res = SetWindowPos(hWnd, NULL,
+    BOOL res = SetWindowPos(hWnd, HWND_TOP,
         btn->start_pos.x + btn->dxpf * btn->frame,
         btn->start_pos.y + btn->dypf * btn->frame,
-        0, 0, SWP_NOSIZE
+        0, 0, SWP_NOSIZE|SWP_NOZORDER
     );
     if (res == FALSE) {
         printf("__move_button failed\n");
@@ -37,13 +37,13 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
             btn->callback();
         }
     }
-    //InvalidateRect(btn->hWnd, 0, 0);
+    InvalidateRect(btn->hWnd, 0, 0);
 }
 
 void move_button(struct Button* btn, int x, int y, double time) {
     printf("Move button\n");
     if (time == 0) {
-        BOOL res = SetWindowPos(btn->hWnd, NULL, x, y, 0, 0, SWP_NOSIZE);
+        BOOL res = SetWindowPos(btn->hWnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE|SWP_NOZORDER);
         if (res == FALSE) {
             printf("move_button failed\n");
             exit(1);

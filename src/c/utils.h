@@ -36,6 +36,7 @@
 
 int slot_count = 0;
 int stage = 1;
+int total=0;
 struct Button* slot[SLOT_SIZE] = {0};
 
 struct Stage {
@@ -101,14 +102,15 @@ void match_slot() {
                     slot[j - count] = slot[j];
                 }
                 slot_count -= count;
+                last_button = 0;
                 return;
             }
         } else {
             count = 1;
             prev_type = slot[i]->type;
         }
-    }
-    //update();
+    } 
+   //update();
 }
 
 void insert_slot(struct Button* btn, int index) {
@@ -122,9 +124,11 @@ void insert_slot(struct Button* btn, int index) {
     slot[index] = btn;
     btn->in_slot = TRUE;
     btn->callback = match_slot;
-    slot_count++;
     move_button(btn, slot_x(index), SLOT_Y, SLOT_MOVE_TIME);
+    slot_count++;
+
 }
+
 
 
 
