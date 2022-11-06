@@ -3,6 +3,7 @@
 #include "animation.h"
 #include "button.h"
 #include "utils.h"
+#include "map.h"
 #include <stdio.h>
 
 #include <windows.h>
@@ -31,16 +32,23 @@ void update() {
         if (b && b->moving) {
             continue;
         }
+        int flag = TRUE;
         for (int j = 0; j < N_TILES; j++) {
             a = get_button_index(j);
             if (a && a->moving) {
                 continue;
             }
+            printf("%d %d\n",b->in_slot,overlap(a,b));
             if (b->in_slot || overlap(a, b)) {
-                set_active(b, FALSE);
-                b->gray = TRUE;
-                //set_state(b, STATE_DISABLED);
+                flag = FALSE;
             }
+        }
+        if(flag==FALSE){
+            set_active(b, FALSE);
+            b->gray = TRUE;
+        }else{
+            set_active(b, TRUE);
+            b->gray = FALSE;
         }
     }
 }
@@ -74,28 +82,17 @@ void update_slot(struct Button* btn) {
         match_slot(insert_index);
         printf("finished match slot\n");
     }
-    printf("finished update slot\n");
+    printf("finished update slot btn slot is %d\n",btn->in_slot);
+
 }
 
 
 
 // 初始化游戏场景函数
 void InitStage(HWND hWnd, int stageID,LPARAM lParam) {
-    int item[NUM] = {0};
-    for (int i = 0; i < NUM;) {
-        for (int j = 0; j < NUM_CORN*3; j++, i++) {
-            item[i] = 0;
-        }
-        for (int j = 0; j < NUM_GRASS*3; j++, i++) {
-            item[i] = 1;
-        }
-        for (int j = 0; j < NUM_CARROT*3; j++, i++) {
-            item[i] = 2;
-        }
-    }
-    shuffle(item, NUM);
     //memset(map, -1, sizeof(map));
-
+    build_map(hWnd, "map1.txt");
+    update();
 }
         
 
@@ -168,12 +165,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
             printf("Done InitBackGround\n");
             //初始化开始场景
-            //InitStage(hWnd, STAGE_STARTMENU,lParam);
+            InitStage(hWnd, STAGE_STARTMENU,lParam);
             printf("Done InitStage\n");
             //初始化主计时器
             //SetTimer(hWnd, TIMER_GAMETIMER, TIMER_GAMETIMER_ELAPSE, NULL);
             load_bitmaps();
-            create_button(hWnd, STATE_ENABLED, TYPE_GRASS, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT);
             break;
         }
         case WM_PAINT: {

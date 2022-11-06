@@ -24,13 +24,10 @@
 #define MAP_WIDTH            8
 #define MAP_LENGTH            8
 #define MAP_HEIGHT            2
-#define NUM_GRASS            1
-#define NUM_CARROT            2
-#define NUM_CORN            3
-#define NUM                    18
 
 
 #define SLOT_X              100
+#define SLOT_X_OFFSET       20
 #define SLOT_Y              809
 #define SLOT_SIZE           7
 #define MATCH_COUNT         3
@@ -51,15 +48,16 @@ BOOL overlap(struct Button* a, struct Button* b) {
     if (a->k <= b->k) {
         return FALSE;
     }
+    if(a->in_slot){
+        return FALSE;
+    }
     POINT pt_a, pt_b;
     win_pos(a->hWnd, &pt_a);
     win_pos(b->hWnd, &pt_b);
-
     if (pt_b.x >= pt_a.x + TILE_WIDTH ||
         pt_b.x <= pt_a.x - TILE_WIDTH ||
         pt_b.y >= pt_a.y + TILE_HEIGHT ||
         pt_b.y <= pt_a.y - TILE_HEIGHT) {
-
         return FALSE;
     }
 
@@ -78,18 +76,22 @@ void shuffle(int arr[], int n) {
 }
 
 int slot_x(int slot_index) {
-    return SLOT_X + slot_index * TILE_WIDTH;
+    return SLOT_X + slot_index * (TILE_WIDTH + SLOT_X_OFFSET);
 }
 
 void insert_slot(struct Button* btn, int index) {
     // moves tile at and to the right of index one slot to the right
     // moves btn to the newly freed slot
+    printf("insert slot\n");
     for (int i = slot_count - 1; i >= index; i--) {
-        move_button(slot[i], slot_x(i), SLOT_Y, 1);
+        move_button(slot[i], slot_x(i + 1), SLOT_Y, 0.5);
+        slot[i + 1] = slot[i];
     }
+    slot[index] = btn;
     btn->in_slot = TRUE;
+    printf("btn inslot %d",btn->in_slot);
     slot_count++;
-    move_button(btn, slot_x(index), SLOT_Y, 1);
+    move_button(btn, slot_x(index), SLOT_Y, 0.5);
 }
 
 void match_slot(int index) {
@@ -104,4 +106,8 @@ void match_slot(int index) {
     slot_count -= MATCH_COUNT;
 }
 
+
+void lose() {
+    printf("Lose\n");
+}
 #endif

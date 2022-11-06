@@ -2,7 +2,7 @@
 #define TILE_H
 
 #define N_TILE_TYPES 5
-#define N_TILES 9
+#define N_TILES 18
 #define N_BUTTON_TYPES 4
 
 #define TILE_WIDTH 64

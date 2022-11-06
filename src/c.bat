@@ -1,2 +1,3 @@
 :: use to compile main.c
-gcc sheep.c -lwinmm -lmsimg32 -lgdi32 && .\a.exe
+::-lwinmm -lmsimg32 
+gcc sheep.c -lgdi32 --std=c99 && .\a.exe
