@@ -10,7 +10,7 @@ int build_map(HWND hwnd, const char name[]) {
 	int i = 0, j = 0, k = 0;
 	FILE* fp = NULL;
 	char filename[MAX_FILENAME_LEN]={0};
-	strcat(filename, "../res/");
+	strcat(filename, "../../res/");
 	strcat(filename, name);
 	fp = fopen(filename, "r");
     int total = 0 ; 

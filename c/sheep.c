@@ -17,7 +17,6 @@
 
 #include <math.h>
 
-int total = 0;
 
 
 void update() {
@@ -41,22 +40,28 @@ void update() {
                 set_active(b, FALSE);
                 b->gray = TRUE;
                 flag=FALSE;
+                win_pos(b->hWnd,&b->start_pos);
+                //move_button(b,b->start_pos.x,b->start_pos.y,0);
             }
         }
         if(flag==TRUE){
             set_active(b, TRUE);
             b->gray = FALSE;
-            InvalidateRect(b->hWnd,0,0);
         }
     }
+     for(int i =0 ;i<N_BUTTONS;i++){
+         struct Button * btn;
+         btn = get_button_index(i);
+         if(btn){
+             InvalidateRect(btn->hWnd,0,0);
+            printf("%d",i);
+       }
+     }
 }
 
 
 void lose(HWND hWnd) {
-    for(int i=0;i<N_BUTTONS;i++){
-        delete_button_struct(__buttons[i]);
-    }
-    start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,-1,200,80);
+    exit(0);
 }
 int win(HWND hWnd){
     if(stage==1){
@@ -90,6 +95,7 @@ void update_slot(struct Button* btn) {
     }
     
     insert_slot(btn, insert_index);
+    last_index = insert_index;
     //printf("finished insert_slot\n");
     //printf("finished update slot\n");
 }
@@ -101,23 +107,43 @@ void handle_button_click(HWND parent, struct Button* btn) {
         if (btn->in_slot) {
             return;
         }
+        win_pos(btn->hWnd, &btn->start_pos);
+        last_x = btn->start_pos.x;
+        last_y = btn->start_pos.y;
+        last_button = btn;
         update_slot(btn);
         update();
-        total --;
-        if (slot_count >= SLOT_SIZE) {
+        total--;
+        if (slot_count > SLOT_SIZE) {
             lose(parent);
         }
         if(total==0){
             total=win(parent);
         }
     }
-    if(btn==start_game){
+    else if(btn==start_game){
         delete_button_struct(start_game);
+        start_game = 0;
         printf("freed!\n");
-        total=build_map(parent,"map1.txt");
+        undo_btn=create_button(parent,STATE_ENABLED,-1,500,800,-1,64,64);
+        total=build_map(parent,"map2.txt");
         update();
     }
-    InvalidateRect(btn->hWnd, 0, 0);
+    else if(btn==undo_btn){
+        if(last_button){
+            last_button->callback=update;
+            last_button->in_slot=FALSE;
+            move_button(last_button,last_x,last_y,0.5);
+            total++;
+            last_button=0;
+            for(int i=last_index+1;i<slot_count;i++){
+                move_button(slot[i], slot_x(i - 1), SLOT_Y, SLOT_MOVE_TIME);
+                slot[i-1] = slot[i];
+            }
+            slot_count--;
+        }
+    }
+    //InvalidateRect(btn->hWnd, 0, 0);
 }
 
 
@@ -140,7 +166,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_CREATE: {
 
             printf("WM_CREATE\n");
-            bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
+            bmp_src = load_bitmap("../../res/bg.bmp", 0, 0);
             load_bitmaps();
             start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,0,200,80);
             break;

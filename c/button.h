@@ -36,10 +36,13 @@ struct Button {
 };
 struct Button* start_game;
 struct Button* end_game;
-
+struct Button* undo_btn;
 int __button_count = 0;
 struct Button* __buttons[N_BUTTONS] = {0};
-
+int last_x =0;
+int last_y =0;
+int last_index = -1;
+struct Button* last_button = 0;
 int __search_struct(struct Button* btn) {
     for (int i = 0; i < N_BUTTONS; i++) {
         if (__buttons[i] == btn) {
@@ -121,7 +124,7 @@ struct Button* create_button(
     }
 
     struct Button* new_btn = (struct Button*)malloc(sizeof(struct Button));
-    new_btn->hWnd = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | BS_OWNERDRAW, x, y, wd, ht, parent, (HMENU)__id_count, NULL, NULL);
+    new_btn->hWnd = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | BS_OWNERDRAW , x, y, wd, ht, parent, (HMENU)__id_count, NULL, NULL);
 
     if (new_btn->hWnd == NULL) {
         printf("CreateWindow failed\n");
@@ -174,29 +177,24 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
     //printf("Draw button\n");
     struct Button* btn = get_button(id_to_hwnd(parent, id));
 
+    LPARAM lBitmap;
+
     if (btn == 0) {
         printf("Draw button not found\n");
         exit(1);
     } else if(btn == start_game){
-        DrawStateW(
-        dis->hDC, 0, 0,
-        (LPARAM)(start_bmp),
-         0, 0, 0, 0, 0, DST_BITMAP
-    );
+        lBitmap = start_bmp;
     } else if (btn==end_game){
-        DrawStateW(
+        lBitmap = end_bmp;
+    } else{
+        lBitmap = bitmaps[!btn->gray][btn->type];
+    }
+    DrawStateW(
         dis->hDC, 0, 0,
         (LPARAM)(end_bmp),
          0, 0, 0, 0, 0, DST_BITMAP
     );
-    }else{
-        DrawStateW(
-        dis->hDC, 0, 0,
-        (LPARAM)(bitmaps[!btn->gray][btn->type]),
-         0, 0, 0, 0, 0, DST_BITMAP
-    );
-    }
-    
+
 }
 
 

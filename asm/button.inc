@@ -8,7 +8,6 @@ N_STATES equ 4
 
 Button STRUCT
     hWnd DWORD ?
-
     active DWORD ?
     moving DWORD ?
     gray DWORD ?
@@ -43,22 +42,27 @@ __search_struct PROC uses ebx ecx edx esi edi btn:DWORD
 __search_struct ENDP
 
 __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
-    mov ecx, 0
-    .WHILE (ecx < N_BUTTONS)
-        mov edx, 4
-        mul ecx
-        mov eax, hWnd
-        mov ebx, (Button PTR [__buttons[edx]]).hWnd
-        .IF (ebx == eax)
-            .IF (__buttons[edx])
-                mov eax, edx
-                jmp F1
-            .ENDIF
-        .ENDIF
-        inc ecx
-    .ENDW
-    mov eax, -1
-    F1:
+        mov     ecx, 0
+        mov     eax, 4
+        mov     ebx, N_BUTTONS
+        mul     ebx
+        mov     ebx, eax
+        mov     edx, hWnd
+        .WHILE ecx < ebx
+                mov     eax, __buttons[ecx]
+                .IF eax == 0
+                    jmp     break
+                .ENDIF
+                mov     ebx, (Button PTR [eax]).hWnd
+                .IF ebx == edx
+                    mov     eax, ecx
+                    ret
+                .ENDIF
+            break:
+                add     ecx, 4
+        .ENDW
+    not_found:
+        mov     eax, -1
         ret
 __search_hwnd ENDP
 
@@ -83,11 +87,12 @@ id_to_hwnd ENDP
 get_button_index PROC uses ebx ecx edx esi edi index:DWORD
     String err, "get_button bad index", 0ah, 0dh
     .IF (index < 0)
-        mov eax, 1
+        mov eax, -1
+        ret
     .ENDIF
     mov ebx, index
     .IF (ebx >= N_BUTTONS)
-        mov eax, 1
+        mov eax, -1
     .ENDIF
     .IF (eax)
         CheckError addr err
@@ -99,15 +104,13 @@ get_button_index PROC uses ebx ecx edx esi edi index:DWORD
 get_button_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
-    INVOKE __search_hwnd, hWnd
-    mov ebx, eax
-    .IF (ebx == -1)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-    mov eax, __buttons[ebx]
-    F1:
-        ret
+        INVOKE __search_hwnd, hWnd
+        .IF eax == -1
+            mov eax, 0
+            ret
+        .ENDIF
+        mov eax, __buttons[eax]
+    ret
 get_button ENDP
 
 
@@ -118,16 +121,12 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         String btn, "BUTTON"
         String malloc_failed, "malloc failed", 10, 13
         String btnErr, "CreateButton failed", 10, 13
-        String here, "HERE", 10, 13
-
-        
-        String  hexStr, "hexStr %x", 10, 13
-        String  decStr, "decStr %d", 10, 13
 
         .IF __button_count >= N_BUTTONS
                 Print   OFFSET btnErr
                 ret
         .ENDIF
+
 
         INVOKE  __search_struct, 0
         mov     index, eax
@@ -140,7 +139,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mul     index
         mov     index, eax
 
-        Print   OFFSET decStr, index
         
         INVOKE  id_to_hwnd, parent, __id_count
         .WHILE eax
@@ -153,7 +151,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 Print   OFFSET malloc_failed
         .ENDIF
         mov     new_btn, eax
-        Print   OFFSET hexStr, new_btn
         mov     edi, eax
         mov     [edi], eax
         INVOKE  CreateWindowEx,0,
@@ -162,26 +159,27 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 x,y,wd,ht,parent,__id_count,
                 0, 0
 
+        mov     edi, new_btn
+
         .IF eax == 0
                 Print window_failed
         .ENDIF
 
-        mov     (Button PTR [new_btn]).hWnd, eax
+        mov     (Button PTR [edi]).hWnd, eax
         mov     eax, k
-        mov     (Button PTR [new_btn]).k, eax
+        mov     (Button PTR [edi]).k, eax
         mov     eax, type_
-        mov     (Button PTR [new_btn]).type_, eax
-        mov     (Button PTR [new_btn]).active, 1
-        mov     (Button PTR [new_btn]).gray, 0
-        mov     (Button PTR [new_btn]).moving, 0
-        mov     (Button PTR [new_btn]).in_slot, 0
-        ;lea eax, new_btn
+        mov     (Button PTR [edi]).type_, eax
+        mov     (Button PTR [edi]).gray, 0
+        mov     (Button PTR [edi]).moving, 0
+        mov     (Button PTR [edi]).active, 1
+        mov     (Button PTR [edi]).in_slot, 0
+
         mov     edi, OFFSET __buttons
         add     edi, index
         mov     eax, new_btn
         mov     [edi], eax
-        inc     __button_count
-        Print   OFFSET here
+        inc     __button_count        
 
     ret
 create_button ENDP
@@ -227,27 +225,27 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
     String error, "Draw button not found", 0ah, 0dh
     String msg_draw, "Drawing button ptr %d hwnd %d state %u type %d", 0ah, 0dh
     INVOKE id_to_hwnd, parent, id
-    mov ebx, eax
-    INVOKE get_button, ebx
+    INVOKE get_button, eax
+
     mov btn_draw, eax
-    .IF (eax == 0)
-        CheckError error
-    .ELSE
-        ; pushad
-        ; INVOKE crt_printf, offset msg, btn, btn.hWnd, btn.state, btn.type
-        ; popad
+    Print   OFFSET decStr, btn_draw
+    .IF eax == 0
+            Print   OFFSET error
     .ENDIF
-    lea ebx, (Button PTR [btn_draw]).gray
+    mov     edi, btn_draw
+    lea     ebx, (Button PTR [edi]).gray
     not ebx
+    Print   OFFSET here
     mov esi, dword ptr bitmaps[ebx]
-    mov edx, (Button PTR [btn_draw]).type_
+    mov edx, (Button PTR [edi]).type_
     mov eax, 0
     .WHILE (edx >= 0)
         add eax, 4
         dec edx
     .ENDW
     mov ecx, [esi + eax]
-    mov eax, (DRAWITEMSTRUCT PTR [dis]).hdc
+    mov edi, dis
+    mov eax, (DRAWITEMSTRUCT PTR [edi]).hdc
     INVOKE DrawStateW, eax, 0, 0, ecx, 0, 0, 0, 0, 0, DST_BITMAP
     ret
 draw_button ENDP
