@@ -25,6 +25,7 @@ struct Button {
     int type;
     int id;
     int k; // vertical axis
+    BOOL in_slot;   
     // properties used for button animation
     POINT start_pos;
     int start_time;
@@ -67,7 +68,7 @@ HWND id_to_hwnd(HWND parent, int id) {
     return GetDlgItem(parent, id);
 }
 
-
+    
 
 struct Button* get_button_index(int index) {
     if (index < 0 || index >= N_BUTTONS) {
