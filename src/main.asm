@@ -8,8 +8,6 @@ include macros.inc
 ;#############################################################
 .DATA
 
-
-
 WindowName  byte "Sheep", 0
 msg         MSGStruct <>
 winRect     RECT <>
@@ -18,6 +16,10 @@ hInstance   DWORD ?
 
 emptyStr    byte    0
 
+; button.inc required data
+__button_count DWORD 0
+__buttons DWORD N_BUTTONS DUP(0)
+__id_count DWORD 0
 
 ; Define the Application's Window class structure.
 MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
