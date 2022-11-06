@@ -1,7 +1,23 @@
-N_TILE_TYPES equ 3
-N_TILES equ 9
+N_TILE_TYPES equ 5
+N_TILES equ 18
+N_BUTTON_TYPES equ 4
 TILE_WIDTH equ 64
 TILE_HEIGHT equ 64
+
+TYPE_START equ -2
+TYPE_SETTINGS equ -1
+TYPE_CARROT equ 0
+TYPE_CORN equ 1
+TYPE_GRASS equ 2
+TYPE_TREE equ 3
+TYPE_FORK equ 4
+TYPE_FIRE equ 5
+TYPE_GLOVE equ 6
+TYPE_COTTON equ 7
+TYPE_RICE equ 8
+TYPE_HAY equ 9
+
+MAX_FILENAME_LEN equ 255
 
 filenames_carrot BYTE "../res/carrot.bmp", 0
 filenames_corn BYTE "../res/corn.bmp", 0
@@ -50,3 +66,12 @@ load_tiles PROC USES eax ebx ecx edx esi edi
     F1:
         ret
 load_tiles ENDP
+
+load_bitmap PROC uses ebx ecx edx esi edi filename:DWORD, wd:DWORD, ht:DWORD
+    INVOKE LoadImageA, 0, filename, IMAGE_BITMAP, wd, ht, LR_LOADFROMFILE
+    ret
+load_bitmap ENDP
+
+load_bitmaps PROC uses eax ebx ecx edx esi edi
+
+load_bitmaps ENDP
