@@ -5,9 +5,8 @@
 #include "button.h"
 
 
-#define WINDOW_TITLEBARHEIGHT    32
 #define WINDOW_WIDTH            768
-#define WINDOW_HEIGHT            1024
+#define WINDOW_HEIGHT           1024
 
 
 #define STAGE_STARTMENU            0
@@ -15,24 +14,12 @@
 
 
 #define UNIT_SIZE_X                80
-#define UNIT_SIZE_Y                73
-#define UNIT_LAST_FRAME            11
-
-
-
-#define BG_NEW_COLUMNS          32      
-#define BG_NEW_ROWS             24
-#define BG_NEW_CELL_WIDTH        32        
-#define BG_NEW_CELL_HEIGHT        32        
+#define UNIT_SIZE_Y                73  
 
 
 #define BUTTON_STARTGAME            1001
 #define BUTTON_STARTGAME_WIDTH        212
 #define BUTTON_STARTGAME_HEIGHT        76
-
-#define TIMER_GAMETIMER                1
-#define TIMER_GAMETIMER_ELAPSE        30
-#define UNIT_SPEED                    3.0
 
 #define MAP_WIDTH            8
 #define MAP_LENGTH            8
@@ -52,12 +39,12 @@ int slot_count = 0;
 struct Button* slot[SLOT_SIZE] = {0};
 
 struct Stage {
-    int stageID;
-    HBITMAP bg;
+    int id;
     int timeCountDown;
-    BOOL timerOn;
-
+    HBITMAP bg;
 };
+
+
 
 BOOL overlap(struct Button* a, struct Button* b) {
     /* returns TRUE if a overlaps b, FALSE otherwise */
@@ -82,7 +69,7 @@ BOOL overlap(struct Button* a, struct Button* b) {
 void shuffle(int arr[], int n) {
     /* shuffles (randomizes) arr of length n */
     int temp;
-    while (n--) {
+    while (--n) {
         int i = rand() % n;
         temp = arr[n];
         arr[n] = arr[i];

@@ -16,7 +16,7 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
         printf("Move button not found\n");
         exit(1);
     }
-    if (btn->state != STATE_ENABLED) {
+    if (!btn->moving) {
         printf("Button not supposed to be moving\n");
         exit(1);
     }
@@ -32,7 +32,7 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     }
     btn->frame++;
     if (btn->frame > btn->frames) {
-        set_state(btn, STATE_ENABLED);
+        btn->moving = FALSE;
         KillTimer(hWnd, idEvent);
     }
     
@@ -49,12 +49,12 @@ void move_button(struct Button* btn, int x, int y, double time) {
         return;
     }
 
-    if (btn->state == STATE_MOVING) {
+    if (btn->moving) {
         printf("Already moving\n");
         exit(1);
     }
 
-    set_state(btn, STATE_MOVING);
+    btn->moving = TRUE;
 
     win_pos(btn->hWnd, &btn->start_pos);
     btn->frame = 1;

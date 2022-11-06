@@ -46,11 +46,11 @@ void update() {
 
 
 
-HBITMAP bmp_Background;
+HBITMAP bmp_Background, bmp_src;
 // 初始化背景函数
 HBITMAP InitBackGround(HWND hWnd) {
 
-    HBITMAP bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
+    bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
 
     PAINTSTRUCT ps;
     HDC hdc_window = BeginPaint(hWnd, &ps);
@@ -84,12 +84,6 @@ HBITMAP InitBackGround(HWND hWnd) {
 }
 
 
-
-
-void TimerUpdate(HWND hWnd, WPARAM wParam, LPARAM lParam) {
-    //UpdateUnits(hWnd);
-    InvalidateRect(hWnd, NULL, FALSE);
-}
 
 
 
@@ -132,85 +126,12 @@ void InitStage(HWND hWnd, int stageID,LPARAM lParam) {
     }
     shuffle(item, NUM);
     //memset(map, -1, sizeof(map));
-    int flag = 0;
-    for (int i = 0; i < MAP_WIDTH; i+=3) {
-        for (int j = 0; j < MAP_LENGTH; j+=3) {
-            for (int k = 0; k < MAP_HEIGHT; k++) {
-                //map[i][j][k] = item[flag];
-                flag++;
-            }
-        }
-    }
-    if (currentStage != NULL) free(currentStage);
-    currentStage = (struct Stage*)malloc(sizeof(struct Stage));
-    currentStage->stageID = stageID;
-    for (int i = 0; i < MAP_WIDTH; i++) {
-        for (int j = 0; j < MAP_LENGTH; j++) {
-            for (int k = 0; k < MAP_HEIGHT; k++) { 
-                //HWND btn = createButton(hWnd, lParam, 100 * k + i  * 10 + j, 10 * k + UNIT_SIZE_X/2 + i * UNIT_SIZE_X/2, 10 * k + UNIT_SIZE_Y/2 + j * UNIT_SIZE_Y/2, map[i][j][k]);
-                //button_type[i][j][k] = map[i][j][k];
-                //all_button[i][j][k] = btn;
-            }
-            
-        }
-    }
-    update(hWnd);
-    //createButton(hWnd, lParam, 0, 64, 64);
 
-    if (stageID == STAGE_STARTMENU) {
-        currentStage->bg = bmp_Background;
-        currentStage->timeCountDown = 0;
-        currentStage->timerOn = FALSE;
-
-        //显示开始界面的按钮
-        /* for (int i = 0; i < buttons.size(); i++) {
-            struct Button* button = buttons[i];
-            if (button->buttonID == BUTTON_STARTGAME) {
-                button->visible = TRUE;
-            }
-            else {
-                button->visible = FALSE;
-            }
-        } */
-
-
-    }
-    else if (stageID >= STAGE_1 && stageID <= STAGE_1)
-    {
-        currentStage->bg = bmp_Background;
-        currentStage->timeCountDown = 10000;
-        currentStage->timerOn = TRUE;
-
-        //显示游戏界面的按钮
-        /* for (int i = 0; i < buttons.size(); i++) {
-            struct Button* button = buttons[i];
-            if (false) 
-            {
-                button->visible = true;
-            }
-            else {
-                button->visible = false;
-            }
-        } */
-
-        // 按场景初始化单位
-        switch (stageID) {
-            case STAGE_1:
-                break;
-            default:
-                break;
-        }
-
-
-    }
-
-    //刷新显示
-    InvalidateRect(hWnd, NULL, FALSE);
 }
+        
 
 
 void Paint(HWND hWnd) {
-
     PAINTSTRUCT ps;
     HDC hdc_window = BeginPaint(hWnd, &ps);
 
@@ -222,19 +143,11 @@ void Paint(HWND hWnd) {
     SelectObject(hdc_memBuffer, blankBmp);
 
     // 绘制背景到缓存
-    SelectObject(hdc_loadBmp, currentStage->bg);
+    SelectObject(hdc_loadBmp, bmp_src);
 
     BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);
 
-    // 按场景分类绘制内容到缓存
-    if (currentStage->stageID == STAGE_STARTMENU) {
 
-    }
-    else if (currentStage->stageID >= STAGE_1 && currentStage->stageID <= STAGE_1) 
-    {
-
-
-    }
 
     // 最后将所有的信息绘制到屏幕上
     BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
@@ -251,7 +164,6 @@ void Paint(HWND hWnd) {
 
 void handle_button_click(HWND parent, struct Button* btn) {
     printf("handle_button_click, ptr %u hwnd %u\n", btn, btn->hWnd);
-
     if (is_tile(btn)) {
         if (btn->in_slot) {
             return;
@@ -270,9 +182,11 @@ void handle_button_click(HWND parent, struct Button* btn) {
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
         case WM_DRAWITEM: {
+            printf("WM_DRAWITEM\n");
             draw_button(hWnd, (int)wParam, (DRAWITEMSTRUCT*)lParam);
         }
         case WM_COMMAND: {
+            printf("WM_COMMAND\n");
             struct Button* btn = get_button((HWND)lParam);
             if (btn && btn->state == STATE_ENABLED) {
                 handle_button_click(hWnd, btn);
@@ -285,14 +199,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             bmp_Background = InitBackGround(hWnd);
             printf("Done InitBackGround\n");
             //初始化开始场景
-            InitStage(hWnd, STAGE_STARTMENU,lParam);
+            //InitStage(hWnd, STAGE_STARTMENU,lParam);
             printf("Done InitStage\n");
             //初始化主计时器
-            SetTimer(hWnd, TIMER_GAMETIMER, TIMER_GAMETIMER_ELAPSE, NULL);
+            //SetTimer(hWnd, TIMER_GAMETIMER, TIMER_GAMETIMER_ELAPSE, NULL);
             load_bitmaps();
+            create_button(hWnd, STATE_ENABLED, TYPE_GRASS, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT);
             break;
         }
         case WM_PAINT: {
+            printf("WM_PAINT\n");
             Paint(hWnd);
             break;
         }
@@ -301,7 +217,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             break;
         }
         case WM_TIMER: {
-            if (currentStage != NULL && currentStage->timerOn) TimerUpdate(hWnd, wParam, lParam);
+            printf("WM_TIMER\n");
             break;
         }
 

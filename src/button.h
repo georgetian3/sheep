@@ -11,14 +11,14 @@
 
 #define STATE_DISABLED     0
 #define STATE_ENABLED      1
-#define STATE_MOVING       2
-#define STATE_HIDDEN       3
-#define N_STATES           4
+#define STATE_HIDDEN       2
+#define N_STATES           3
 
 struct Button {
     HWND hWnd;
 
     int state;
+    BOOL moving;
 
     int type;
     int id;
@@ -93,16 +93,13 @@ int __id_count = 0;
 
 struct Button* create_button(
         HWND parent, int state, int type,
-        int id, int x, int y, int k, int wd, int ht) {
+        int x, int y, int k, int wd, int ht) {
     /*
     * returns the pointer to the newly created Button struct,
     * or if the struct cannot be created
     */
 
-    if (state == STATE_MOVING) {
-        printf("Don't create moving button\n");
-        exit(1);
-    }
+
     if (__button_count >= N_BUTTONS) {
         return 0;
     }
@@ -127,6 +124,7 @@ struct Button* create_button(
 
     new_btn->k = k;
     new_btn->state = state;
+    new_btn->moving = FALSE;
     new_btn->in_slot = FALSE;
     new_btn->type = type;
     __buttons[index] = new_btn;
@@ -183,7 +181,7 @@ void set_state(struct Button* btn, int state) {
         printf("Bad state\n");
         exit(1);
     }
-    EnableWindow(btn->hWnd, state == STATE_ENABLED);
+    EnableWindow(btn->hWnd, state == STATE_ENABLED && !btn->moving);
     btn->state = state;
 }
 
