@@ -42,7 +42,7 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
         INVOKE KillTimer, hWnd, idEvent
         mov ecx, (Button PTR [btn_mov]).callback
         .IF (ecx)
-            INVOKE (Button PTR [btn_mov]).callback
+            ;INVOKE (Button PTR [btn_mov]).callback
         .ENDIF
     .ENDIF
     ret
@@ -74,7 +74,7 @@ WinPos PROC USES eax ebx ecx edx esi edi hWnd:DWORD, pPoint:DWORD
 WinPos ENDP
 
 
-move_button PROC USES eax ebx ecx edx esi edi btn_:DWORD, x:DWORD, y:DWORD, time:REAL8
+move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time:REAL8
     COMMENT !
         Parameters
             [in] hWnd: handle to the button
