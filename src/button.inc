@@ -65,7 +65,12 @@ win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
     INVOKE GetWindowRect, hWnd, rect
     INVOKE GetParent, hWnd
     mov ebx, eax
-    INVOKE MapWindowPoints, HWND_DESKTOP, ebx, [point], 1
+    INVOKE MapWindowPoints, HWND_DESKTOP, ebx, rect, 2
+    mov ecx, (RECT PTR [rect]).left
+    mov (POINT PTR [point]).x, ecx
+    mov ecx, (RECT PTR [rect]).top
+    mov (POINT PTR [point]).y, ecx
+    ret
 win_pos ENDP
 
 id_to_hwnd PROC uses ebx ecx edx esi edi parent:DWORD, id:DWORD

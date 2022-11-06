@@ -28,12 +28,13 @@ filenames_dark_corn BYTE "../res/corn_dark.bmp", 0
 filenames_dark_grass BYTE "../res/grass_dark.bmp", 0
 filenames_dark DWORD offset filenames_dark_carrot, offset filenames_dark_corn, offset filenames_dark_grass
 filenames DWORD offset filenames_regular, offset filenames_dark
+dir BYTE "../res/", 0
+ext BYTE ".bmp", 0
+dark BYTE "_dark", 0
 
 bitmaps_tile_type DWORD N_TILE_TYPES DUP(?)
 bitmaps DWORD 2 DUP(bitmaps_tile_type)
 LOAD_PRINT BYTE "LoadImage failed", 0ah, 0dh, 0
-stry BYTE "%s", 0ah, 0dh, 0
-
 
 load_tiles PROC USES eax ebx ecx edx esi edi
     mov ecx, 0
@@ -73,5 +74,5 @@ load_bitmap PROC uses ebx ecx edx esi edi filename:DWORD, wd:DWORD, ht:DWORD
 load_bitmap ENDP
 
 load_bitmaps PROC uses eax ebx ecx edx esi edi
-
+    ret
 load_bitmaps ENDP
