@@ -26,7 +26,7 @@ __buttons DWORD N_BUTTONS DUP(?)
 MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
 
 
-
+SLOT_MOVE_TIME REAL8 0.2
 
 
 
@@ -40,6 +40,7 @@ include tile.inc
 include random.inc
 include utils.inc
 include sound.inc
+include sheep.inc
 
 WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
@@ -108,6 +109,9 @@ WinProc ENDP
 
 
 WinMain PROC
+
+    finit
+
 ; Get a handle to the current process.
     INVOKE GetModuleHandle, NULL
     mov hInstance, eax

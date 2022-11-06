@@ -1,27 +1,15 @@
-#pragma warning(disable:4996)
 
-#include "animation.h"
-#include "button.h"
-#include "utils.h"
-#include "map.h"
-#include <stdio.h>
+update PROC USES eax ebx ecx edx esi edi
+    LOCAL a:DWORD, b:DWORD
 
-#include <windows.h>
-#include <windowsx.h>
-#include <stdlib.h>
-#include <malloc.h>
-#include <memory.h>
-#include <tchar.h>
-#include <time.h>
-#include <mmsystem.h>
-
-#include <math.h>
+    ret
+update ENDP
 
 
 
 
-void update() {
-    struct Button *a, *b;
+
+COMMENT `
     for (int i = 0; i < N_BUTTONS; i++) {
         b = get_button_index(i);
         if (!b || !is_tile(b) || b->moving) {
@@ -61,7 +49,7 @@ HBITMAP bmp_src;
 
 
 void update_slot(struct Button* btn) {
-    printf("Update slot\n");
+    //printf("Update slot\n");
     int insert_index; // index of to insert btn
     int count = 1; // number of tiles of the same type
 
@@ -75,13 +63,13 @@ void update_slot(struct Button* btn) {
     }
     
     insert_slot(btn, insert_index);
-    printf("finished insert_slot\n");
-    printf("finished update slot\n");
+    //printf("finished insert_slot\n");
+    //printf("finished update slot\n");
 }
 
 
 void handle_button_click(HWND parent, struct Button* btn) {
-    printf("handle_button_click, ptr %u hwnd %u\n", btn, btn->hWnd);
+    //printf("handle_button_click, ptr %u hwnd %u\n", btn, btn->hWnd);
     if (is_tile(btn)) {
         if (btn->in_slot) {
             return;
@@ -103,11 +91,11 @@ void handle_button_click(HWND parent, struct Button* btn) {
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
         case WM_DRAWITEM: {
-            printf("WM_DRAWITEM\n");
+            //printf("WM_DRAWITEM\n");
             draw_button(hWnd, (int)wParam, (DRAWITEMSTRUCT*)lParam);
         }
         case WM_COMMAND: {
-            printf("WM_COMMAND\n");
+            //printf("WM_COMMAND\n");
             struct Button* btn = get_button((HWND)lParam);
             if (btn && btn->active) {
                 handle_button_click(hWnd, btn);
@@ -116,15 +104,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_CREATE: {
 
-            printf("WM_CREATE\n");
+            //printf("WM_CREATE\n");
             bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
             load_bitmaps();
-            build_map(hWnd,"map1.txt");
+            build_map(hWnd,"map2.txt");
             update();
             break;
         }
         case WM_PAINT: {
-            printf("WM_PAINT\n");
+            //printf("WM_PAINT\n");
             PAINTSTRUCT ps;
             HDC hdc_window = BeginPaint(hWnd, &ps);
             HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
@@ -145,7 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             break;
         }
         case WM_TIMER: {
-            printf("WM_TIMER\n");
+            //printf("WM_TIMER\n");
             break;
         }
 
@@ -180,3 +168,5 @@ int WINAPI WinMain(
     }
     return (int)msg.wParam;
 }
+
+`

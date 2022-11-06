@@ -1,7 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-#define N_TILE_TYPES 5
+#define N_TILE_TYPES 16
 #define N_TILES 18
 #define N_BUTTON_TYPES 4
 
@@ -26,7 +26,9 @@
 
 
 const char* tile_names[N_TILE_TYPES] = {
-    "carrot", "corn", "grass", "tree", "fork",
+    "carrot", "corn", "grass", "tree", "fork","bell",
+    "brush","bucket","cabbage","fire","firewood","gloves",
+    "milk","pliers","rice","rope"
 };
 
 const char* dir = "../res/";
@@ -36,7 +38,8 @@ const char* dark = "_dark";
 #define MAX_FILENAME_LEN 255
 
 HBITMAP bitmaps[2][N_TILE_TYPES];
-
+HBITMAP start_bmp;
+HBITMAP end_bmp;
 
 HBITMAP load_bitmap(const char* filename, int wd, int ht) {
     return LoadImage(NULL, filename, IMAGE_BITMAP, wd, ht, LR_LOADFROMFILE);
@@ -61,6 +64,8 @@ void load_bitmaps() {
             }
         }
     }
+    start_bmp=load_bitmap("../res/start.bmp",200,80);
+    end_bmp = load_bitmap("../res/end.bmp",200,56);
 }
 
 

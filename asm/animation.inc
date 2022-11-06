@@ -74,7 +74,7 @@ WinPos PROC USES eax ebx ecx edx esi edi hWnd:DWORD, pPoint:DWORD
 WinPos ENDP
 
 
-MoveButton PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time:REAL8
+move_button PROC USES eax ebx ecx edx esi edi btn_:DWORD, x:DWORD, y:DWORD, time:REAL8
     COMMENT !
         Parameters
             [in] hWnd: handle to the button
@@ -83,4 +83,4 @@ MoveButton PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time:
     !
 
     ret
-MoveButton ENDP
+move_button ENDP
