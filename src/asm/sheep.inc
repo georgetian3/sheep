@@ -2,7 +2,8 @@
 update PROC USES eax ebx ecx edx esi edi
     LOCAL a:DWORD, b:DWORD
 
-    .FOR 
+    ret
+update ENDP
 
 
 

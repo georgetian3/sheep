@@ -145,7 +145,7 @@ void __delete_button(int i) {
     DestroyWindow(__buttons[i]->hWnd);
     free(__buttons[i]);
     __buttons[i] = 0;
-    __button_count++;
+    __button_count--;
 }
 
 
