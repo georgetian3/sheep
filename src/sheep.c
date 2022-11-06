@@ -38,6 +38,7 @@ void update() {
             if (a && a->moving) {
                 continue;
             }
+            printf("%d %d ",b->in_slot,overlap(a,b));
             if (b->in_slot || overlap(a, b)) {
                 set_active(b, FALSE);
                 b->gray = TRUE;

@@ -50,17 +50,17 @@ struct Stage {
 BOOL overlap(struct Button* a, struct Button* b) {
     /* returns TRUE if a overlaps b, FALSE otherwise */
     if (a->k <= b->k) {
+        printf("here false");
         return FALSE;
     }
     POINT pt_a, pt_b;
     win_pos(a->hWnd, &pt_a);
     win_pos(b->hWnd, &pt_b);
-
+    printf("%d %d",pt_b.x,pt_a.x);
     if (pt_b.x >= pt_a.x + TILE_WIDTH ||
         pt_b.x <= pt_a.x - TILE_WIDTH ||
         pt_b.y >= pt_a.y + TILE_HEIGHT ||
         pt_b.y <= pt_a.y - TILE_HEIGHT) {
-
         return FALSE;
     }
 
