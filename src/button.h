@@ -26,7 +26,6 @@ struct Button {
     int type;
     int id;
     int k; // vertical axis
-    BOOL in_slot;   
     // properties used for button animation
     POINT start_pos;
     int start_time;
