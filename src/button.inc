@@ -139,7 +139,7 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
     INVOKE crt_malloc, SIZEOF Button
     mov new_btn, eax
     INVOKE CreateWindowEx,0,
-            ADDR btn, 0,
+            ADDR btn_msg, 0,
             WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
             x,y,wd,ht,parent,__id_count,
             0, 0

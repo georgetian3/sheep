@@ -11,22 +11,22 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
     .IF (btn_mov == 0)
         CheckError notfound
     .ENDIF
-    mov ebx, (Button PTR [btn_mov]).moving
+    lea ebx, (Button PTR [btn_mov]).moving
     not ebx
     .IF (ebx)
         CheckError wrongstat
     .ENDIF
 
-    mov ecx, (Button PTR [btn_mov]).start_pos
+    lea ecx, (Button PTR [btn_mov]).start_pos
     mov ebx, (POINT PTR [ecx]).x
-    mov eax, (Button PTR [btn_mov]).dxpf
+    lea eax, (Button PTR [btn_mov]).dxpf
     mul (Button PTR [btn_mov]).frame
     add eax, ebx
     mov edx, eax
 
-    mov ecx, (Button PTR [btn_mov]).start_pos
+    lea ecx, (Button PTR [btn_mov]).start_pos
     mov ebx, (POINT PTR [ecx]).y
-    mov eax, (Button PTR [btn_mov]).dypf
+    lea eax, (Button PTR [btn_mov]).dypf
     mul (Button PTR [btn_mov]).frame
     add eax, ebx
     mov edi, eax
