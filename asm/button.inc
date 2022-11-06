@@ -221,32 +221,46 @@ delete_button_hwnd PROC uses eax ebx ecx edx esi edi hWnd:DWORD
 delete_button_hwnd ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
-    local btn_draw:DWORD
-    String error, "Draw button not found", 0ah, 0dh
-    String msg_draw, "Drawing button ptr %d hwnd %d state %u type %d", 0ah, 0dh
-    INVOKE id_to_hwnd, parent, id
-    INVOKE get_button, eax
+        local btn_draw:DWORD, lBitmap:DWORD
+        String error, "Draw button not found", 0ah, 0dh
+        String msg_draw, "Drawing button ptr %d hwnd %d state %u type %d", 0ah, 0dh
+        INVOKE id_to_hwnd, parent, id
+        INVOKE get_button, eax
 
-    mov btn_draw, eax
-    Print   OFFSET decStr, btn_draw
-    .IF eax == 0
-            Print   OFFSET error
-    .ENDIF
-    mov     edi, btn_draw
-    lea     ebx, (Button PTR [edi]).gray
-    not ebx
-    Print   OFFSET here
-    mov esi, dword ptr bitmaps[ebx]
-    mov edx, (Button PTR [edi]).type_
-    mov eax, 0
-    .WHILE (edx >= 0)
-        add eax, 4
-        dec edx
-    .ENDW
-    mov ecx, [esi + eax]
-    mov edi, dis
-    mov eax, (DRAWITEMSTRUCT PTR [edi]).hdc
-    INVOKE DrawStateW, eax, 0, 0, ecx, 0, 0, 0, 0, 0, DST_BITMAP
+        mov btn_draw, eax
+        Print   OFFSET decStr, btn_draw
+        .IF eax == 0
+                Print   OFFSET error
+        .ENDIF
+
+        mov     edi, btn_draw
+
+        .IF btn_draw == start_game
+                mov     eax, start_game
+        .ELSEIF btn_draw == end_game
+                mov     eax, end_game
+        .ELSEIF btn_draw == undo_btn
+                mov     eax, undo_bmp
+        .ELSE
+                mov     ebx, (Button PTR [edi]).gray
+                not     ebx
+                mov     esi, dword ptr bitmaps[ebx]
+                mov     edx, (Button PTR [edi]).type_
+        .ENDIF
+        
+        mov     lBitmap, eax
+
+        
+        Print   OFFSET here
+        mov eax, 0
+        .WHILE (edx >= 0)
+            add eax, 4
+            dec edx
+        .ENDW
+        mov ecx, [esi + eax]
+        mov edi, dis
+        mov eax, (DRAWITEMSTRUCT PTR [edi]).hdc
+        INVOKE DrawStateW, eax, 0, 0, ecx, 0, 0, 0, 0, 0, DST_BITMAP
     ret
 draw_button ENDP
 
