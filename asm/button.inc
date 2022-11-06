@@ -110,55 +110,78 @@ get_button ENDP
 
 
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
-    local new_btn:DWORD, index:DWORD
-    String empty_struct, "No Empty Button Struct???", 0ah, 0dh
-    String window_failed, "CreateWindow failed", 0ah, 0dh
-    String btn, "BUTTON"
-    String btnErr, "CreateButton failed", 10, 13
+        LOCAL new_btn:DWORD, index:DWORD
+        String empty_struct, "No Empty Button Struct???", 0ah, 0dh
+        String window_failed, "CreateWindow failed", 0ah, 0dh
+        String malloc_failed, "Malloc fialed", 10, 13
+        String btn, "BUTTON"
+        String btnErr, "CreateButton failed", 10, 13
+        String here, "HERE", 10, 13
 
-    .if(__button_count >= N_BUTTONS)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-    INVOKE __search_struct, 0
-    mov index, eax
-    .IF (index == -1)
-        CheckError addr empty_struct
-    .ENDIF
-    
-    INVOKE id_to_hwnd, parent, __id_count
-    mov ebx, eax
-    .WHILE(ebx)
-        inc __id_count
-        INVOKE id_to_hwnd, parent, __id_count
-        mov ebx, eax
-    .ENDW
+        
+        String  hexStr, "hexStr %x", 10, 13
+        String  decStr, "decStr %d", 10, 13
 
-    INVOKE crt_malloc, SIZEOF Button
-    mov new_btn, eax
-    INVOKE CreateWindowEx,0,
-            ADDR btn, 0,
-            WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
-            x,y,wd,ht,parent,__id_count,
-            0, 0
-    mov (Button PTR [new_btn]).hWnd, eax
+        .IF __button_count >= N_BUTTONS
+                Print   OFFSET btnErr
+                ret
+        .ENDIF
 
-    .IF (eax == 0)
-        CheckError window_failed
-    .ENDIF
-    mov eax, k
-    mov (Button PTR [new_btn]).k, eax
-    mov (Button PTR [new_btn]).active, 1
-    mov (Button PTR [new_btn]).gray, 0
-    mov (Button PTR [new_btn]).moving, 0
-    mov (Button PTR [new_btn]).in_slot, 0
-    mov eax, type_
-    mov (Button PTR [new_btn]).type_, eax
-    lea eax, new_btn
-    mov __buttons[index], eax
-    inc __button_count
-    F1:
-        ret
+        INVOKE  __search_struct, 0
+        mov     index, eax
+        .IF (index == -1)
+                Print   empty_struct
+        .ENDIF
+
+
+        mov     eax, 4
+        mul     index
+        mov     index, eax
+
+        Print   OFFSET decStr, index
+        
+        INVOKE  id_to_hwnd, parent, __id_count
+        .WHILE eax
+                inc     __id_count
+                INVOKE  id_to_hwnd, parent, __id_count
+        .ENDW
+
+        INVOKE  crt_malloc, SIZEOF Button
+        .IF eax == 0
+                Print   OFFSET malloc_failed
+        .ENDIF
+        mov     new_btn, eax
+        Print   OFFSET hexStr, new_btn
+        mov     edi, eax
+        mov     [edi], eax
+        INVOKE  CreateWindowEx,0,
+                ADDR btn, 0,
+                WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
+                x,y,wd,ht,parent,__id_count,
+                0, 0
+
+        .IF eax == 0
+                Print window_failed
+        .ENDIF
+
+        mov     (Button PTR [new_btn]).hWnd, eax
+        mov     eax, k
+        mov     (Button PTR [new_btn]).k, eax
+        mov     eax, type_
+        mov     (Button PTR [new_btn]).type_, eax
+        mov     (Button PTR [new_btn]).active, 1
+        mov     (Button PTR [new_btn]).gray, 0
+        mov     (Button PTR [new_btn]).moving, 0
+        mov     (Button PTR [new_btn]).in_slot, 0
+        ;lea eax, new_btn
+        mov     edi, OFFSET __buttons
+        add     edi, index
+        mov     eax, new_btn
+        mov     [edi], eax
+        inc     __button_count
+        Print   OFFSET here
+
+    ret
 create_button ENDP
 
 __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD

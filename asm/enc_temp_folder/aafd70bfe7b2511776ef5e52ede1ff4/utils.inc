@@ -141,7 +141,6 @@ insert_slot PROC USES eax ebx ecx edx esi edi btn_:DWORD, index:DWORD
         
         dec ecx
     .ENDW !
-    ret
 insert_slot ENDP
 
 lose PROC

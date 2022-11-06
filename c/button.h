@@ -98,7 +98,7 @@ struct Button* get_button(HWND hWnd) {
 int __id_count = 0;
 
 struct Button* create_button(
-        HWND parent, int state, int type,
+        HWND parent, int type,
         int x, int y, int k, int wd, int ht) {
     /*
     * returns the pointer to the newly created Button struct,
