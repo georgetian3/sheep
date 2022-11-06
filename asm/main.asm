@@ -58,15 +58,17 @@ slot DWORD SLOT_SIZE DUP(0)
 ;#############################################################
 .CODE
 
+
 include macros.inc
-include button.inc
-include animation.inc
 include tile.inc
+include button.inc
+COMMENT `
+include animation.inc
 include random.inc
 include utils.inc
 include sound.inc
 include sheep.inc
-
+`
 Print WindowName
 
 
@@ -76,6 +78,7 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
     ;LOCAL point:POINT
         String wm_create, "WM_CREATE", 10, 13
         String wm_command, "WM_COMMAND", 10, 13
+        String ttt, "ttt", 10, 13
         mov ebx, uMsg
 
         .IF ebx == WM_COMMAND
@@ -96,32 +99,16 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             Print   OFFSET wm_create
             INVOKE  load_tiles
             
-            INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-            Print   OFFSET here
+            ;INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+            Print   OFFSET ttt
             ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage, 0
         .ELSE
             INVOKE  DefWindowProc, hWnd, uMsg, wParam, lParam
         .ENDIF
-
     ret
 WinProc ENDP
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
