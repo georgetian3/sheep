@@ -1,27 +1,3 @@
-WINDOW_WIDTH equ 768
-WINDOW_HEIGHT equ 1024
-STAGE_STARTMENU equ 0
-STAGE_1 equ 1
-UNIT_SIZE_X equ 80
-UNIT_SIZE_Y equ 73
-BUTTON_STARTGAME equ 1001
-BUTTON_STARTGAME_WIDTH equ 212
-BUTTON_STARTGAME_HEIGHT equ 76
-
-MAP_WIDTH equ 8
-MAP_LENGTH equ 8
-MAP_HEIGHT equ 2
-
-SLOT_X equ 100
-SLOT_X_OFFSET equ 20
-SLOT_Y equ 809
-SLOT_SIZE equ 7
-MATCH_COUNT equ 3
-
-SLOT_MOVE_TIME equ 0.5
-
-slot_count DWORD 0
-slot DWORD SLOT_SIZE DUP(0)
 
 Stage Struct
     id DWORD ?
@@ -133,10 +109,8 @@ match_slot PROC uses eax ebx ecx edx esi edi
                     mov ebx, edx
                     sub ebx, count
                     INVOKE slot_x, ebx
-                    push eax
-                    mov  eax, 0.2
-                    INVOKE move_button, slot[edx], eax, SLOT_Y, eax; SLOT_MOVE_TIME
-                    pop eax
+
+                    ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
                     mov esi, slot[edx]
                     mov slot[ebx], esi
                 .ENDW
@@ -157,15 +131,30 @@ match_slot PROC uses eax ebx ecx edx esi edi
     ret
 match_slot ENDP
 
-insert_slot PROC USES eax ebx ecx edx esi edi btn:DWORD, index:DWORD
-    String insertprint, "Insert Slot", 0ah, 0dh
-    Print insertprint
-    mov ecx, slot_count
-    dec ecx
-    .WHILE (ecx >= index)
-        
+
+insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
+        String insertprint, "Insert Slot", 0ah, 0dh
+        Print insertprint
+        mov ecx, slot_count
         dec ecx
-    .ENDW
+        COMMENT !
+        .WHILE (ecx >= index)
+            mov ebx, ecx
+            inc ebx
+            INVOKE slot_x, ebx
+            INVOKE move_button, slot[ecx], eax, SLOT_Y, SLOT_MOVE_TIME
+            mov esi, slot[ecx]
+            mov slot[ebx], esi
+            dec ecx
+        .ENDW
+        mov eax, btn_insert
+        mov slot[index], eax
+        mov (Button PTR [btn_insert]).in_slot, 1
+        mov (Button PTR [btn_insert]).callback, match_slot
+        inc slot_count
+        INVOKE slot_x, index
+        INVOKE move_button, btn_insert, eax, SLOT_Y, SLOT_MOVE_TIME
+    ret
 insert_slot ENDP
 
 lose PROC

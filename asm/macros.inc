@@ -7,7 +7,7 @@ ENDM
 
 Print MACRO strPtrs:VARARG
     pushad
-    INVOKE crt_printf, strPtrs
+    invoke crt_printf, strPtrs
     popad
 ENDM
 

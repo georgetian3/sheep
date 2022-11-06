@@ -101,7 +101,7 @@ struct Button* get_button(HWND hWnd) {
 int __id_count = 0;
 
 struct Button* create_button(
-        HWND parent, int state, int type,
+        HWND parent, int type,
         int x, int y, int k, int wd, int ht) {
     /*
     * returns the pointer to the newly created Button struct,
@@ -177,36 +177,30 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
     //printf("Draw button\n");
     struct Button* btn = get_button(id_to_hwnd(parent, id));
 
+    LPARAM lBitmap;
+
     if (btn == 0) {
         printf("Draw button not found\n");
         exit(1);
     } else if(btn == start_game){
-        DrawStateW(
-        dis->hDC, 0, 0,
-        (LPARAM)(start_bmp),
-         0, 0, 0, 0, 0, DST_BITMAP
-    );
+        lBitmap = start_bmp;
     } else if (btn==end_game){
-        DrawStateW(
+        lBitmap = end_bmp;
+    } 
+    else{
+        lBitmap = bitmaps[!btn->gray][btn->type];
+    }
+    DrawStateW(
         dis->hDC, 0, 0,
         (LPARAM)(end_bmp),
          0, 0, 0, 0, 0, DST_BITMAP
     );
-    }else if(btn==undo_btn){
-        DrawStateW(
-        dis->hDC, 0, 0,
-        (LPARAM)(undo_bmp),
-         0, 0, 0, 0, 0, DST_BITMAP
-    );
-    }
-    else{
+    }else{
         DrawStateW(
         dis->hDC, 0, 0,
         (LPARAM)(bitmaps[!btn->gray][btn->type]),
          0, 0, 0, 0, 0, DST_BITMAP
     );
-    }
-    
 }
 
 
