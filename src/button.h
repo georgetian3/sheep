@@ -22,7 +22,7 @@ struct Button {
     BOOL moving;
     BOOL gray;
     BOOL in_slot;
-
+    void (*callback)();
     int type;
     int id;
     int k; // vertical axis
@@ -60,7 +60,9 @@ int __search_hwnd(HWND hWnd) {
 void win_pos(HWND hWnd, POINT* point) {
     RECT rect;
     GetWindowRect(hWnd, &rect);
-    MapWindowPoints(HWND_DESKTOP, GetParent(hWnd), (LPPOINT)&point, 1);
+    MapWindowPoints(HWND_DESKTOP, GetParent(hWnd), (LPPOINT)&rect, 2);
+    point->x = rect.left;
+    point->y = rect.top;
 }
 
 HWND id_to_hwnd(HWND parent, int id) {
@@ -130,6 +132,7 @@ struct Button* create_button(
     new_btn->moving = FALSE;
     new_btn->in_slot = FALSE;
     new_btn->type = type;
+    new_btn->callback = 0;
     __buttons[index] = new_btn;
     __button_count++;
 
@@ -165,6 +168,7 @@ void delete_button_hwnd(HWND hWnd) {
 }
 
 void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
+    //printf("Draw button\n");
     struct Button* btn = get_button(id_to_hwnd(parent, id));
     if (btn == 0) {
         printf("Draw button not found\n");
