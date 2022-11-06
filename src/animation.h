@@ -8,13 +8,6 @@
 #define MSPF 1000.0 / FPS
 
 
-void move_callback(struct Button* btn) {
-    if (btn->in_slot) {
-        
-    }
-}
-
-
 void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     //printf("__Move button\n");
     struct Button* btn = get_button(hWnd);
@@ -44,7 +37,7 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
             btn->callback();
         }
     }
-    InvalidateRect(btn->hWnd, 0, 0);
+    //InvalidateRect(btn->hWnd, 0, 0);
 }
 
 void move_button(struct Button* btn, int x, int y, double time) {
@@ -59,11 +52,6 @@ void move_button(struct Button* btn, int x, int y, double time) {
             btn->callback();
         }
         return;
-    }
-
-    if (btn->moving) {
-        printf("Already moving\n");
-        exit(1);
     }
 
     win_pos(btn->hWnd, &btn->start_pos);
