@@ -24,6 +24,15 @@ Button STRUCT
     start_pos POINT <>
 Button ENDS
 
+start_game DWORD ?
+end_game DWORD ?
+undo_btn DWORD ?
+last_x DWORD 0
+last_y DWORD 0
+last_index DWORD -1
+last_button DWORD 0
+
+
 __search_struct PROC uses ebx ecx edx esi edi btn:DWORD
     mov ecx, 0
     .WHILE (ecx < N_BUTTONS)
