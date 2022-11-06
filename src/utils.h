@@ -24,10 +24,6 @@
 #define MAP_WIDTH            8
 #define MAP_LENGTH            8
 #define MAP_HEIGHT            2
-#define NUM_GRASS            1
-#define NUM_CARROT            2
-#define NUM_CORN            3
-#define NUM                    18
 
 
 #define SLOT_X              100
@@ -66,7 +62,6 @@ BOOL overlap(struct Button* a, struct Button* b) {
         pt_b.x <= pt_a.x - TILE_WIDTH ||
         pt_b.y >= pt_a.y + TILE_HEIGHT ||
         pt_b.y <= pt_a.y - TILE_HEIGHT) {
-
         return FALSE;
     }
 
@@ -133,9 +128,5 @@ void insert_slot(struct Button* btn, int index) {
 
 void lose() {
     printf("Lose\n");
-
-
-
-
 }
 #endif
