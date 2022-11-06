@@ -13,8 +13,8 @@ filenames_dark_grass BYTE "../res/grass_dark.bmp", 0
 filenames_dark DWORD offset filenames_dark_carrot, offset filenames_dark_corn, offset filenames_dark_grass
 filenames DWORD offset filenames_regular, offset filenames_dark
 
-tile_bitmaps_tile_type DWORD N_TILE_TYPES DUP(?)
-tile_bitmaps DWORD 2 DUP(tile_bitmaps_tile_type)
+bitmaps_tile_type DWORD N_TILE_TYPES DUP(?)
+bitmaps DWORD 2 DUP(bitmaps_tile_type)
 LOAD_PRINT BYTE "LoadImage failed", 0ah, 0dh, 0
 stry BYTE "%s", 0ah, 0dh, 0
 

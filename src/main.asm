@@ -17,9 +17,10 @@ hInstance   DWORD ?
 emptyStr    byte    0
 
 ; button.inc required data
+N_BUTTONS equ 100
 __button_count DWORD 0
-__buttons DWORD N_BUTTONS DUP(0)
 __id_count DWORD 0
+__buttons DWORD N_BUTTONS DUP(?)
 
 ; Define the Application's Window class structure.
 MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
@@ -58,13 +59,13 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             Print   OFFSET intStr, point.x
             Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
-            INVOKE  CreateButton, hWnd, 100, 100, 100, 100, 0
+            ;INVOKE  CreateButton, hWnd, 100, 100, 100, 100, 0
             INVOKE load_tiles
 
             ;play welcome.wav as the game starts
             INVOKE  play_sound, 0, 0, 0
 
-            INVOKE  ShowButton, eax, 0
+            
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage,0
         .ELSE
