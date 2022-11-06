@@ -38,6 +38,7 @@ include button.inc
 include animation.inc
 include tile.inc
 include random.inc
+include utils.inc
 include sound.inc
 
 WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
