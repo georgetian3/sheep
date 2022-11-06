@@ -3,6 +3,7 @@
 option casemap :none  ; case sensitive
 
 include includes.inc
+include macros.inc
 
 ;#############################################################
 .DATA
@@ -58,8 +59,10 @@ slot DWORD SLOT_SIZE DUP(0)
 ;#############################################################
 .CODE
 
+String here, "HERE", 10, 13
+String decStr, "%d", 10, 13
 
-include macros.inc
+
 include tile.inc
 include button.inc
 COMMENT `
@@ -78,10 +81,11 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
     ;LOCAL point:POINT
         String wm_create, "WM_CREATE", 10, 13
         String wm_command, "WM_COMMAND", 10, 13
-        String ttt, "ttt", 10, 13
         mov ebx, uMsg
 
-        .IF ebx == WM_COMMAND
+        .IF ebx == WM_DRAWITEM
+            INVOKE  draw_button, hWnd, wParam, lParam
+        .ELSEIF ebx == WM_COMMAND
             Print   OFFSET wm_command
 
             ; lParam: hWnd of button
@@ -100,7 +104,6 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             INVOKE  load_tiles
             
             INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-            Print   OFFSET ttt
             ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage, 0
