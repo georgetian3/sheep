@@ -74,8 +74,7 @@ void move_button(struct Button* btn, int x, int y, double time) {
     btn->dxpf = 1.0 * (x - btn->start_pos.x) / btn->frames;
     btn->dypf = 1.0 * (y - btn->start_pos.y) / btn->frames;
 
-    int res = SetTimer(btn->hWnd, 0, MSPF, (TIMERPROC)__move_button);
-    printf("here\n");
+    int res = SetTimer(btn->hWnd, 0, MSPF, (TIMERPROC)__move_button);    
     if (res == 0) {
         printf("SetTimer failed\n");
         exit(1);

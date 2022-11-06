@@ -32,17 +32,23 @@ void update() {
         if (b && b->moving) {
             continue;
         }
+        int flag = TRUE;
         for (int j = 0; j < N_TILES; j++) {
             a = get_button_index(j);
             if (a && a->moving) {
                 continue;
             }
-            printf("%d %d ",b->in_slot,overlap(a,b));
+            printf("%d %d\n",b->in_slot,overlap(a,b));
             if (b->in_slot || overlap(a, b)) {
-                set_active(b, FALSE);
-                b->gray = TRUE;
-                //set_state(b, STATE_DISABLED);
+                flag = FALSE;
             }
+        }
+        if(flag==FALSE){
+            set_active(b, FALSE);
+            b->gray = TRUE;
+        }else{
+            set_active(b, TRUE);
+            b->gray = FALSE;
         }
     }
 }
@@ -76,7 +82,8 @@ void update_slot(struct Button* btn) {
         match_slot(insert_index);
         printf("finished match slot\n");
     }
-    printf("finished update slot\n");
+    printf("finished update slot btn slot is %d\n",btn->in_slot);
+
 }
 
 

@@ -48,10 +48,12 @@ BOOL overlap(struct Button* a, struct Button* b) {
     if (a->k <= b->k) {
         return FALSE;
     }
+    if(a->in_slot){
+        return FALSE;
+    }
     POINT pt_a, pt_b;
     win_pos(a->hWnd, &pt_a);
     win_pos(b->hWnd, &pt_b);
-    printf("%d %d",pt_b.x,pt_a.x);
     if (pt_b.x >= pt_a.x + TILE_WIDTH ||
         pt_b.x <= pt_a.x - TILE_WIDTH ||
         pt_b.y >= pt_a.y + TILE_HEIGHT ||
@@ -87,6 +89,7 @@ void insert_slot(struct Button* btn, int index) {
     }
     slot[index] = btn;
     btn->in_slot = TRUE;
+    printf("btn inslot %d",btn->in_slot);
     slot_count++;
     move_button(btn, slot_x(index), SLOT_Y, 0.5);
 }
