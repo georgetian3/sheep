@@ -19,7 +19,7 @@ play_sound PROC uses eax ebx ecx edx esi edi sound:DWORD, bloop:DWORD, interrupt
     or ebx, SND_ASYNC
     or ebx, SND_FILENAME
     or ebx, SND_NOSTOP
-    INVOKE PlaySoundA, dword ptr sound_files[eax], 0, 20019h
+    INVOKE PlaySoundA, dword ptr sound_files[eax], 0, ebx
     F1:
         ret
 play_sound ENDP

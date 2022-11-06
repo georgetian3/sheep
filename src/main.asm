@@ -33,7 +33,7 @@ MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,Window
 
 include button.inc
 include animation.inc
-; include tile.inc
+include tile.inc
 include random.inc
 include sound.inc
 
@@ -57,8 +57,11 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
             INVOKE  CreateButton, hWnd, 100, 100, 100, 100, 0
-            ;INVOKE load_tiles
+            INVOKE load_tiles
+
+            ;play welcome.wav as the game starts
             INVOKE  play_sound, 0, 0, 0
+
             INVOKE  ShowButton, eax, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage,0
