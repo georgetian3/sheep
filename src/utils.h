@@ -31,6 +31,7 @@
 
 
 #define SLOT_X              100
+#define SLOT_X_OFFSET       20
 #define SLOT_Y              809
 #define SLOT_SIZE           7
 #define MATCH_COUNT         3
@@ -78,18 +79,21 @@ void shuffle(int arr[], int n) {
 }
 
 int slot_x(int slot_index) {
-    return SLOT_X + slot_index * TILE_WIDTH;
+    return SLOT_X + slot_index * (TILE_WIDTH + SLOT_X_OFFSET);
 }
 
 void insert_slot(struct Button* btn, int index) {
     // moves tile at and to the right of index one slot to the right
     // moves btn to the newly freed slot
+    printf("insert slot\n");
     for (int i = slot_count - 1; i >= index; i--) {
-        move_button(slot[i], slot_x(i), SLOT_Y, 1);
+        move_button(slot[i], slot_x(i + 1), SLOT_Y, 0.5);
+        slot[i + 1] = slot[i];
     }
+    slot[index] = btn;
     btn->in_slot = TRUE;
     slot_count++;
-    move_button(btn, slot_x(index), SLOT_Y, 1);
+    move_button(btn, slot_x(index), SLOT_Y, 0.5);
 }
 
 void match_slot(int index) {
@@ -104,4 +108,12 @@ void match_slot(int index) {
     slot_count -= MATCH_COUNT;
 }
 
+
+void lose() {
+    printf("Lose\n");
+
+
+
+
+}
 #endif

@@ -4,17 +4,19 @@
 
 #include "button.h"
 
-#define FPS 60
+#define FPS 120
 #define MSPF 1000.0 / FPS
 
 
 void move_callback(struct Button* btn) {
-    if (0) {
+    if (btn->in_slot) {
+        
     }
 }
 
 
 void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+    //printf("__Move button\n");
     struct Button* btn = get_button(hWnd);
     if (btn == 0) {
         printf("Move button not found\n");
@@ -38,18 +40,23 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     if (btn->frame > btn->frames) {
         btn->moving = FALSE;
         KillTimer(hWnd, idEvent);
-        move_callback(btn);
+        if (btn->callback) {
+            btn->callback();
+        }
     }
-    
+    InvalidateRect(btn->hWnd, 0, 0);
 }
 
 void move_button(struct Button* btn, int x, int y, double time) {
     printf("Move button\n");
-    if (FALSE && time == 0) {
+    if (time == 0) {
         BOOL res = SetWindowPos(btn->hWnd, NULL, x, y, 0, 0, SWP_NOSIZE);
         if (res == FALSE) {
             printf("move_button failed\n");
             exit(1);
+        }
+        if (btn->callback) {
+            btn->callback();
         }
         return;
     }
@@ -59,9 +66,8 @@ void move_button(struct Button* btn, int x, int y, double time) {
         exit(1);
     }
 
-    btn->moving = TRUE;
-
     win_pos(btn->hWnd, &btn->start_pos);
+    btn->moving = TRUE;
     btn->frame = 1;
     btn->start_time = GetTickCount();
     btn->frames = time * FPS;
@@ -69,6 +75,7 @@ void move_button(struct Button* btn, int x, int y, double time) {
     btn->dypf = 1.0 * (y - btn->start_pos.y) / btn->frames;
 
     int res = SetTimer(btn->hWnd, 0, MSPF, (TIMERPROC)__move_button);
+    printf("here\n");
     if (res == 0) {
         printf("SetTimer failed\n");
         exit(1);
