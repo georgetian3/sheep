@@ -26,7 +26,6 @@ void Paint(HWND hWnd);
 
 
 void update() {
-    printf("Update");
     struct Button *a, *b;
     for (int i = 0; i < N_TILES; i++) {
         b = get_button_index(i);
@@ -84,21 +83,8 @@ void update_slot(struct Button* btn) {
 
 // 初始化游戏场景函数
 void InitStage(HWND hWnd, int stageID,LPARAM lParam) {
-    int item[NUM] = {0};
-    for (int i = 0; i < NUM;) {
-        for (int j = 0; j < NUM_CORN*3; j++, i++) {
-            item[i] = 0;
-        }
-        for (int j = 0; j < NUM_GRASS*3; j++, i++) {
-            item[i] = 1;
-        }
-        for (int j = 0; j < NUM_CARROT*3; j++, i++) {
-            item[i] = 2;
-        }
-    }
-    shuffle(item, NUM);
     //memset(map, -1, sizeof(map));
-    build_map(hWnd, "map1.txt", item);
+    build_map(hWnd, "map1.txt");
     update();
 }
         
@@ -177,7 +163,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             //初始化主计时器
             //SetTimer(hWnd, TIMER_GAMETIMER, TIMER_GAMETIMER_ELAPSE, NULL);
             load_bitmaps();
-            create_button(hWnd, STATE_ENABLED, TYPE_GRASS, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT);
             break;
         }
         case WM_PAINT: {

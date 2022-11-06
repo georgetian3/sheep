@@ -24,10 +24,6 @@
 #define MAP_WIDTH            8
 #define MAP_LENGTH            8
 #define MAP_HEIGHT            2
-#define NUM_GRASS            1
-#define NUM_CARROT            2
-#define NUM_CORN            3
-#define NUM                    18
 
 
 #define SLOT_X              100
@@ -50,7 +46,6 @@ struct Stage {
 BOOL overlap(struct Button* a, struct Button* b) {
     /* returns TRUE if a overlaps b, FALSE otherwise */
     if (a->k <= b->k) {
-        printf("here false");
         return FALSE;
     }
     POINT pt_a, pt_b;
@@ -111,9 +106,5 @@ void match_slot(int index) {
 
 void lose() {
     printf("Lose\n");
-
-
-
-
 }
 #endif
