@@ -20,20 +20,22 @@
 
 void update() {
     struct Button *a, *b;
-    for (int i = 0; i < N_TILES; i++) {
+    for (int i = 0; i < N_BUTTONS; i++) {
         b = get_button_index(i);
-        if (b && b->moving) {
+        if (!b || !is_tile(b) || b->moving) {
             continue;
         }
-        for (int j = 0; j < N_TILES; j++) {
+        for (int j = 0; j < N_BUTTONS; j++) {
             a = get_button_index(j);
-            if (a && a->moving) {
+            if (a == b || !a || !is_tile(b) || a->moving) {
                 continue;
             }
-            if (b->in_slot || overlap(a, b)) {
+            if (b->in_slot) {
+                set_active(b, FALSE);
+                b->gray = FALSE;
+            } else if (overlap(a, b)) {
                 set_active(b, FALSE);
                 b->gray = TRUE;
-                //set_state(b, STATE_DISABLED);
             }
         }
     }
@@ -66,10 +68,6 @@ void update_slot(struct Button* btn) {
     printf("begin insert_slot\n");
     insert_slot(btn, insert_index);
     printf("finished insert_slot\n");
-    if (count == MATCH_COUNT) {
-        match_slot(insert_index);
-        printf("finished match slot\n");
-    }
     printf("finished update slot\n");
 }
 
@@ -82,7 +80,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         }
         
         update_slot(btn);
-        //update();
+        update();
         if (slot_count >= SLOT_SIZE) {
             lose();
         }
@@ -110,12 +108,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
             printf("WM_CREATE\n");
             bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
-            printf("Done InitBackGround\n");
-            //初始化开始场景
-            //InitStage(hWnd, STAGE_STARTMENU,lParam);
-            printf("Done InitStage\n");
-            //初始化主计时器
-            //SetTimer(hWnd, TIMER_GAMETIMER, TIMER_GAMETIMER_ELAPSE, NULL);
             load_bitmaps();
 
             for (int i = 0; i < 3; i++) {

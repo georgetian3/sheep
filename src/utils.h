@@ -36,6 +36,8 @@
 #define SLOT_SIZE           7
 #define MATCH_COUNT         3
 
+#define SLOT_MOVE_TIME      0.5
+
 int slot_count = 0;
 struct Button* slot[SLOT_SIZE] = {0};
 
@@ -52,9 +54,13 @@ BOOL overlap(struct Button* a, struct Button* b) {
     if (a->k <= b->k) {
         return FALSE;
     }
+    if (a->in_slot) {
+        return FALSE;
+    }
     POINT pt_a, pt_b;
     win_pos(a->hWnd, &pt_a);
     win_pos(b->hWnd, &pt_b);
+
 
     if (pt_b.x >= pt_a.x + TILE_WIDTH ||
         pt_b.x <= pt_a.x - TILE_WIDTH ||
@@ -82,30 +88,46 @@ int slot_x(int slot_index) {
     return SLOT_X + slot_index * (TILE_WIDTH + SLOT_X_OFFSET);
 }
 
+void match_slot() {
+    // deletes any matched tiles and shifts the remaining tiles left
+    printf("match slot\n");
+    int count = 0;
+    int prev_type = -1;
+    for (int i = 0; i < slot_count; i++) {
+        if (slot[i]->type == prev_type) {
+            count++;
+            if (count >= MATCH_COUNT) {
+                for (int j = 0; j < count; j++) {
+                    delete_button_struct(slot[i - j]);
+                }
+                for (int j = i + 1; j < slot_count; j++) {
+                    move_button(slot[j], slot_x(j - count), SLOT_Y, SLOT_MOVE_TIME);
+                    slot[j - count] = slot[j];
+                }
+                slot_count -= count;
+                return;
+            }
+        } else {
+            count = 1;
+            prev_type = slot[i]->type;
+        }
+    }
+    update();
+}
+
 void insert_slot(struct Button* btn, int index) {
     // moves tile at and to the right of index one slot to the right
     // moves btn to the newly freed slot
     printf("insert slot\n");
     for (int i = slot_count - 1; i >= index; i--) {
-        move_button(slot[i], slot_x(i + 1), SLOT_Y, 0.5);
+        move_button(slot[i], slot_x(i + 1), SLOT_Y, SLOT_MOVE_TIME);
         slot[i + 1] = slot[i];
     }
     slot[index] = btn;
     btn->in_slot = TRUE;
+    btn->callback = match_slot;
     slot_count++;
-    move_button(btn, slot_x(index), SLOT_Y, 0.5);
-}
-
-void match_slot(int index) {
-    // index: index of the last matched tile in `slot`
-    // deletes the matched tile and shifts the remaining tiles left
-    for (int i = 0; i < MATCH_COUNT; i++) {
-        delete_button_struct(slot[index - i]);
-    }
-    for (int i = index + 1; i < slot_count; i++) {
-        move_button(slot[i], slot_x(i - MATCH_COUNT), SLOT_Y, 1);
-    }
-    slot_count -= MATCH_COUNT;
+    move_button(btn, slot_x(index), SLOT_Y, SLOT_MOVE_TIME);
 }
 
 
