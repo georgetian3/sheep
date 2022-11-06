@@ -107,7 +107,7 @@ void match_slot() {
             prev_type = slot[i]->type;
         }
     }
-    update();
+    //update();
 }
 
 void insert_slot(struct Button* btn, int index) {
