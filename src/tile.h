@@ -1,7 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-#define N_TILE_TYPES 5
+#define N_TILE_TYPES 16
 #define N_TILES 18
 #define N_BUTTON_TYPES 4
 
@@ -26,7 +26,9 @@
 
 
 const char* tile_names[N_TILE_TYPES] = {
-    "carrot", "corn", "grass", "tree", "fork",
+    "carrot", "corn", "grass", "tree", "fork","bell",
+    "brush","bucket","cabbage","fire","firewood","gloves",
+    "milk","pliers","rice","rope"
 };
 
 const char* dir = "../res/";

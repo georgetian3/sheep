@@ -119,7 +119,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             printf("WM_CREATE\n");
             bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
             load_bitmaps();
-            build_map(hWnd,"map1.txt");
+            build_map(hWnd,"map2.txt");
             update();
             break;
         }
