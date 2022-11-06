@@ -154,7 +154,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
     ret
 match_slot ENDP
 
-insert_slot PROC uses eax ebx ecx edx esi edi btn:DWORD, index:DWORD
+insert_slot PROC USES eax ebx ecx edx esi edi btn:DWORD, index:DWORD
     String insertprint, "Insert Slot", 0ah, 0dh
     Print insertprint
     mov ecx. slot_count

@@ -40,6 +40,7 @@ include tile.inc
 include random.inc
 include utils.inc
 include sound.inc
+include sheep.inc
 
 WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
