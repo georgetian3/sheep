@@ -186,8 +186,7 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
         lBitmap = start_bmp;
     } else if (btn==end_game){
         lBitmap = end_bmp;
-    } 
-    else{
+    } else{
         lBitmap = bitmaps[!btn->gray][btn->type];
     }
     DrawStateW(
@@ -195,12 +194,7 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
         (LPARAM)(end_bmp),
          0, 0, 0, 0, 0, DST_BITMAP
     );
-    }else{
-        DrawStateW(
-        dis->hDC, 0, 0,
-        (LPARAM)(bitmaps[!btn->gray][btn->type]),
-         0, 0, 0, 0, 0, DST_BITMAP
-    );
+
 }
 
 
