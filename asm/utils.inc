@@ -18,7 +18,7 @@ SLOT_Y equ 809
 SLOT_SIZE equ 7
 MATCH_COUNT equ 3
 
-SLOT_MOVE_TIME equ 0.5
+;SLOT_MOVE_TIME equ 0.5
 
 slot_count DWORD 0
 slot DWORD SLOT_SIZE DUP(0)
@@ -133,10 +133,8 @@ match_slot PROC uses eax ebx ecx edx esi edi
                     mov ebx, edx
                     sub ebx, count
                     INVOKE slot_x, ebx
-                    push eax
-                    mov  eax, 0.2
-                    INVOKE move_button, slot[edx], eax, SLOT_Y, eax; SLOT_MOVE_TIME
-                    pop eax
+
+                    INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
                     mov esi, slot[edx]
                     mov slot[ebx], esi
                 .ENDW
@@ -157,15 +155,16 @@ match_slot PROC uses eax ebx ecx edx esi edi
     ret
 match_slot ENDP
 
-insert_slot PROC USES eax ebx ecx edx esi edi btn:DWORD, index:DWORD
+insert_slot PROC USES eax ebx ecx edx esi edi btn_:DWORD, index:DWORD
     String insertprint, "Insert Slot", 0ah, 0dh
     Print insertprint
     mov ecx, slot_count
     dec ecx
+    COMMENT !
     .WHILE (ecx >= index)
         
         dec ecx
-    .ENDW
+    .ENDW !
 insert_slot ENDP
 
 lose PROC
