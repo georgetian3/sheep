@@ -31,11 +31,19 @@ struct Stage* currentStage = NULL; //当前场景状态
 void update() {
     struct Button *a, *b;
     for (int i = 0; i < N_TILES; i++) {
+        b = get_button_index(i);
+        if (b->moving) {
+            continue;
+        }
         for (int j = 0; j < N_TILES; j++) {
             a = get_button_index(j);
-            b = get_button_index(i);
+            if (a->moving) {
+                continue;
+            }
             if (a && b && (b->in_slot || overlap(a, b))) {
-                set_state(b, STATE_DISABLED);
+                set_active(b, FALSE);
+                b->gray = TRUE;
+                //set_state(b, STATE_DISABLED);
             }
         }
     }
@@ -188,7 +196,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_COMMAND: {
             printf("WM_COMMAND\n");
             struct Button* btn = get_button((HWND)lParam);
-            if (btn && btn->state == STATE_ENABLED) {
+            if (btn && btn->active) {
                 handle_button_click(hWnd, btn);
             }
             break;

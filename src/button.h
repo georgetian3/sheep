@@ -17,13 +17,14 @@
 struct Button {
     HWND hWnd;
 
-    int state;
+    BOOL active;
     BOOL moving;
+    BOOL gray;
+    BOOL in_slot;
 
     int type;
     int id;
     int k; // vertical axis
-    BOOL in_slot;
     // properties used for button animation
     POINT start_pos;
     int start_time;
@@ -123,7 +124,8 @@ struct Button* create_button(
     }
 
     new_btn->k = k;
-    new_btn->state = state;
+    new_btn->active = TRUE;
+    new_btn->gray = FALSE;
     new_btn->moving = FALSE;
     new_btn->in_slot = FALSE;
     new_btn->type = type;
@@ -167,22 +169,19 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
         printf("Draw button not found\n");
         exit(1);
     } else {
-        printf("Drawing button ptr %d hwnd %d state %u type %d\n", btn, btn->hWnd, btn->state, btn->type);
+        //printf("Drawing button ptr %d hwnd %d state %u type %d\n", btn, btn->hWnd, btn->state, btn->type);
     }
     DrawStateW(
         dis->hDC, 0, 0,
-        (LPARAM)(bitmaps[btn->state != STATE_DISABLED][btn->type]),
+        (LPARAM)(bitmaps[!btn->gray][btn->type]),
          0, 0, 0, 0, 0, DST_BITMAP
     );
 }
 
-void set_state(struct Button* btn, int state) {
-    if (state < 0 || state >= N_STATES) {
-        printf("Bad state\n");
-        exit(1);
-    }
-    EnableWindow(btn->hWnd, state == STATE_ENABLED && !btn->moving);
-    btn->state = state;
+
+void set_active(struct Button* btn, BOOL active) {
+    btn->active = active;
+    EnableWindow(btn->hWnd, active);
 }
 
 BOOL is_tile(struct Button* btn) {
