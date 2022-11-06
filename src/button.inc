@@ -8,10 +8,12 @@ N_STATES equ 4
 
 Button STRUCT
     hWnd DWORD ?
+
     active BYTE ?
     moving BYTE ?
     gray BYTE ?
     in_slot BYTE ?
+    callback DWORD ?
     type_ DWORD ?
     id DWORD ?
     k DWORD ?
@@ -113,7 +115,7 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
     local new_btn:DWORD, index:DWORD
     String empty_struct, "No Empty Button Struct???", 0ah, 0dh
     String window_failed, "CreateWindow failed", 0ah, 0dh
-    String btn, "BUTTON"
+    String btn_msg, "BUTTON"
     String btnErr, "CreateButton failed", 10, 13
 
     .if(__button_count >= N_BUTTONS)
