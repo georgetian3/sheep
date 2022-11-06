@@ -129,6 +129,7 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 ret
         .ENDIF
 
+
         INVOKE  __search_struct, 0
         mov     index, eax
         .IF (index == -1)
@@ -171,8 +172,10 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     (Button PTR [new_btn]).k, eax
         mov     eax, type_
         mov     (Button PTR [new_btn]).type_, eax
+        mov     eax, 0
+        ret
+        mov     (Button PTR [new_btn]).gray, eax
         mov     (Button PTR [new_btn]).active, 1
-        mov     (Button PTR [new_btn]).gray, 0
         mov     (Button PTR [new_btn]).moving, 0
         mov     (Button PTR [new_btn]).in_slot, 0
         ;lea eax, new_btn

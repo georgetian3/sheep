@@ -99,7 +99,7 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             Print   OFFSET wm_create
             INVOKE  load_tiles
             
-            ;INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+            INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
             Print   OFFSET ttt
             ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
