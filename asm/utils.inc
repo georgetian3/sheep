@@ -131,16 +131,29 @@ match_slot PROC uses eax ebx ecx edx esi edi
     ret
 match_slot ENDP
 
-insert_slot PROC USES eax ebx ecx edx esi edi btn_:DWORD, index:DWORD
+
+insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
     String insertprint, "Insert Slot", 0ah, 0dh
     Print insertprint
     mov ecx, slot_count
     dec ecx
     COMMENT !
     .WHILE (ecx >= index)
-        
+        mov ebx, ecx
+        inc ebx
+        INVOKE slot_x, ebx
+        INVOKE move_button, slot[ecx], eax, SLOT_Y, SLOT_MOVE_TIME
+        mov esi, slot[ecx]
+        mov slot[ebx], esi
         dec ecx
-    .ENDW !
+    .ENDW
+    mov eax, btn_insert
+    mov slot[index], eax
+    mov (Button PTR [btn_insert]).in_slot, 1
+    mov (Button PTR [btn_insert]).callback, match_slot
+    inc slot_count
+    INVOKE slot_x, index
+    INVOKE move_button, btn_insert, eax, SLOT_Y, SLOT_MOVE_TIME
     ret
 insert_slot ENDP
 
