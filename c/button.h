@@ -99,7 +99,7 @@ struct Button* get_button(HWND hWnd) {
 }
 
 int __id_count = 0;
-int get_free_id() {
+int get_free_id(HWND parent) {
     while (id_to_hwnd(parent, __id_count)) {
         __id_count++;
     }
