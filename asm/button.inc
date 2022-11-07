@@ -282,6 +282,7 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         Print   OFFSET disp
         Print   OFFSET hexStr, eax
         Print   OFFSET newline
+
         INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
 
         .IF eax == 0
@@ -290,7 +291,8 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ELSE
                 Print   OFFSET here
         .ENDIF
-        Print   OFFSET done
+
+
     ret
 draw_button ENDP
 

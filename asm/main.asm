@@ -106,8 +106,9 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         .ELSEIF ebx == WM_CREATE
             Print   OFFSET wm_create
             Print   OFFSET wm_command
-            ;INVOKE  load_bitmaps
+            INVOKE  load_bitmaps
             Print   OFFSET here
+            INVOKE  ExitProcess, 0
             INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
             Print   OFFSET wm_command
             ;INVOKE  play_sound, 0, 0, 0
