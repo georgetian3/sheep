@@ -23,15 +23,14 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
     mov eax, (Button PTR [edi]).dxpf
     mul (Button PTR [edi]).frame
     add eax, ebx
-    mov edx, eax
+    mov ecx, eax
 
-    mov esi, (Button PTR [edi]).start_pos
     mov ebx, (POINT PTR [esi]).y
     mov eax, (Button PTR [edi]).dypf
     mul (Button PTR [edi]).frame
     add eax, ebx
-    mov ecx, eax
-    INVOKE SetWindowPos, hWnd, 0, edx, ecx, 0, 0, SWP_NOSIZE
+    mov edx, eax
+    INVOKE SetWindowPos, hWnd, 0, ecx, edx, 0, 0, SWP_NOSIZE|SWP_NOZORDER
     .IF eax == 0
         CheckError movefailed
     .ENDIF
@@ -55,9 +54,10 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     String startmove, "Move button", 0ah, 0dh
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
+    Print OFFSET startmove
     .IF time == 0
         mov ebx, hWnd
-        INVOKE SetWindowPos, (Button PTR [ebx]).hWnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER
+        INVOKE SetWindowPos, (Button PTR [ebx]).hWnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE|SWP_NOZORDER
         .IF eax == 0
             Print OFFSET movebtnfailed
         .ENDIF
