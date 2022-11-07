@@ -242,13 +242,13 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
                 Print   OFFSET error
         .ENDIF
 
-        mov     edi, btn_draw
+        mov     esi, btn_draw
 
-        .IF btn_draw == start_game
+        .IF esi == start_game
                 mov     eax, start_game
-        .ELSEIF btn_draw == end_game
+        .ELSEIF esi == end_game
                 mov     eax, end_game
-        .ELSEIF btn_draw == undo_btn
+        .ELSEIF esi == undo_btn
                 mov     eax, undo_bmp
         .ELSE
                 mov     ebx, (Button PTR [edi]).gray
