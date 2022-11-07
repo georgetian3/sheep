@@ -1,10 +1,3 @@
-
-Stage Struct
-    id DWORD ?
-    timeCountDown DWORD ?
-    bg DWORD ?
-Stage ENDS
-
 overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     local pt_a:DWORD, pt_b:DWORD
     mov ebx, (Button PTR [a]).k
