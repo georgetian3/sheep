@@ -53,8 +53,7 @@ void load_bitmaps() {
     char filename[MAX_FILENAME_LEN];
     for (int i = 0; i < 2; i++) {
         for (int j = 0; j < N_BUTTON_TYPES; j++) {
-            memset(filename, 0, MAX_FILENAME_LEN);
-            strcat(filename, dir);
+            strcpy(filename, dir);
             strcat(filename, bitmap_names[j]);
             if (i == 0) {
                 strcat(filename, dark);
@@ -68,15 +67,5 @@ void load_bitmaps() {
         }
     }
 }
-
-
-int i_to_x(int i) {
-    return i;
-}
-
-int j_to_y(int j) {
-    return j;
-}
-
 
 #endif
