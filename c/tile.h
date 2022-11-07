@@ -42,7 +42,7 @@ const char* dark = "_dark";
 
 #define MAX_FILENAME_LEN 255
 
-HBITMAP bitmaps[2][N_TILE_TYPES]; // bitmaps[0] contains the dark versions, and bitmaps[1] the light
+HBITMAP bitmaps[2][N_BUTTON_TYPES]; // bitmaps[0] contains the dark versions, and bitmaps[1] the light
 
 HBITMAP load_bitmap(const char* filename) {
     return LoadImage(NULL, filename, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
@@ -60,9 +60,7 @@ void load_bitmaps() {
                 strcat(filename, dark);
             }
             strcat(filename, ext);
-            printf("%s\n", filename);
             bitmaps[i][j] = load_bitmap(filename);
-            printf("load j %d %x\n", j, bitmaps[i][j]);
             if (bitmaps[i] == NULL) {
                 printf("LoadImage failed: %d", i);
                 exit(1);
