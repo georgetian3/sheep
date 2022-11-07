@@ -277,7 +277,8 @@ set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:BYTE
 set_active ENDP
 
 is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
-    mov eax, (Button PTR [btn_istile]).type_
+    mov edi, btn_istile
+    mov eax, (Button PTR [edi]).type_
     mov ebx, 0
     cmp eax, ebx
     jge S1
