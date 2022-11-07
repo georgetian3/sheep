@@ -244,18 +244,12 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
 
         mov     esi, btn_draw
 
-        .IF esi == start_game
-                mov     eax, start_game
-        .ELSEIF esi == end_game
-                mov     eax, end_game
-        .ELSEIF esi == undo_btn
-                mov     eax, undo_bmp
-        .ELSE
-                mov     ebx, (Button PTR [edi]).gray
-                not     ebx
-                mov     esi, dword ptr bitmaps[ebx]
-                mov     edx, (Button PTR [edi]).type_
-        .ENDIF
+
+        mov     ebx, (Button PTR [edi]).gray
+        not     ebx
+        mov     esi, dword ptr bitmaps[ebx]
+        mov     edx, (Button PTR [edi]).type_
+
         
         mov     lBitmap, eax
 
