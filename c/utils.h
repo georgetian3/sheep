@@ -47,7 +47,7 @@ void paint(HWND hWnd) {
     HDC hdc_window = BeginPaint(hWnd, &ps);
     HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
     HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
-    HBITMAP    blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
+    HBITMAP blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
     SelectObject(hdc_memBuffer, blankBmp);
     SelectObject(hdc_loadBmp, bmp_src);
     BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);

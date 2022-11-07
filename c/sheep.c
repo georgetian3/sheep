@@ -169,9 +169,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             break;
         }
         case WM_PAINT: {
-            //printf("WM_PAINT\n");
             paint(hWnd);
-            
             break;
         }
         case WM_DESTROY: {
