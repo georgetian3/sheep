@@ -278,7 +278,12 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
 
 
         mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
-        INVOKE  DrawStateW, eax, 0, 0, dis, 0, 0, 0, 0, 0, DST_BITMAP
+        INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
+
+        .IF eax == 0
+                Print   OFFSET error
+        .ENDIF
+
     ret
 draw_button ENDP
 
