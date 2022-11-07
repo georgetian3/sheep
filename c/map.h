@@ -20,10 +20,10 @@ int build_map(HWND hwnd, const char name[]) {
         fscanf(fp,"%d",&tiles_num[i]);
     }
     int *item = (int*)malloc(sizeof(int)*total);
-    memset(item,-1,sizeof(item));
     for (int i = 0; i < total;) {
         for(int type=0;type<N_TILE_TYPES;type++){
             for(int j=0;j<tiles_num[type]*3;j++,i++){
+                printf("type %d\n", type);
                 item[i]=type;
             }
         }

@@ -62,6 +62,7 @@ void load_bitmaps() {
             strcat(filename, ext);
             printf("%s\n", filename);
             bitmaps[i][j] = load_bitmap(filename);
+            printf("load j %d %x\n", j, bitmaps[i][j]);
             if (bitmaps[i] == NULL) {
                 printf("LoadImage failed: %d", i);
                 exit(1);
