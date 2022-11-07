@@ -77,7 +77,7 @@ int win(HWND hWnd){
 
 
 
-HBITMAP bmp_src;
+
 
 
 
@@ -167,7 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_CREATE: {
 
             printf("WM_CREATE\n");
-            bmp_src = load_bitmap("../res/bg.bmp");
+            bmp_bg = load_bitmap("../res/bg.bmp");
             load_bitmaps();
             start_game=create_button(hWnd,TYPE_START,320,320,0,200,80);
             break;
