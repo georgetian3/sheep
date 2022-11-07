@@ -284,14 +284,12 @@ is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
     jge S1
     mov edx, 0
     S1:
-    mov edx, 1
     mov ebx, N_TILE_TYPES
     cmp eax, ebx
     jl S2
-    mov ecx, 0
+    mov edx, 0
     S2:
-    mov ecx, 1
-    and edx, ecx
+    mov edx, 1
     mov eax, edx
     ret
 is_tile ENDP
