@@ -31,7 +31,7 @@ const char* tile_names[N_TILE_TYPES] = {
     "milk","pliers","rice","rope"
 };
 
-const char* dir = "../../res/";
+const char* dir = "../res/";
 const char* ext = ".bmp";
 const char* dark = "_dark";
 
@@ -65,9 +65,9 @@ void load_bitmaps() {
             }
         }
     }
-    start_bmp=load_bitmap("../../res/start.bmp",200,80);
-    end_bmp = load_bitmap("../../res/end.bmp",200,56);
-    undo_bmp = load_bitmap("../../res/undo_bmp.bmp",64,64);
+    start_bmp=load_bitmap("../res/start.bmp",200,80);
+    end_bmp = load_bitmap("../res/end.bmp",200,56);
+    undo_bmp = load_bitmap("../res/undo_bmp.bmp",64,64);
 }
 
 

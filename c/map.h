@@ -10,7 +10,7 @@ int build_map(HWND hwnd, const char name[]) {
 	int i = 0, j = 0, k = 0;
 	FILE* fp = NULL;
 	char filename[MAX_FILENAME_LEN]={0};
-	strcat(filename, "../../res/");
+	strcat(filename, "../res/");
 	strcat(filename, name);
 	fp = fopen(filename, "r");
     int total = 0 ; 
@@ -38,7 +38,7 @@ int build_map(HWND hwnd, const char name[]) {
         printf("i=%d j=%d k=%d, flag=%d num=%d\n", i, j, k, flag,total);
 		if (flag) {
             printf("%d\n",item[total]);
-			create_button(hwnd, STATE_ENABLED,item[total++], TILE_WIDTH / 2 + i * TILE_WIDTH / 2, TILE_HEIGHT / 2 + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
+			create_button(hwnd,item[total++], TILE_WIDTH / 2 + i * TILE_WIDTH / 2, TILE_HEIGHT / 2 + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
 		}
 		i++;
 		if (i == map_width) {

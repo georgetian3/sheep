@@ -70,7 +70,7 @@ int win(HWND hWnd){
         stage++;
         return total;
     }else{
-        start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,-1,200,80);
+        start_game=create_button(hWnd,-1,320,320,-1,200,80);
     }
 }
 
@@ -125,7 +125,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         delete_button_struct(start_game);
         start_game = 0;
         printf("freed!\n");
-        undo_btn=create_button(parent,STATE_ENABLED,-1,500,800,-1,64,64);
+        undo_btn=create_button(parent,-1,500,800,-1,64,64);
         total=build_map(parent,"map2.txt");
         update();
     }
@@ -166,9 +166,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_CREATE: {
 
             printf("WM_CREATE\n");
-            bmp_src = load_bitmap("../../res/bg.bmp", 0, 0);
+            bmp_src = load_bitmap("../res/bg.bmp", 0, 0);
             load_bitmaps();
-            start_game=create_button(hWnd,STATE_ENABLED,-1,320,320,0,200,80);
+            start_game=create_button(hWnd,-1,320,320,0,200,80);
             break;
         }
         case WM_PAINT: {
