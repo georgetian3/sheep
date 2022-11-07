@@ -81,10 +81,14 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
     ;LOCAL point:POINT
         String wm_create, "WM_CREATE", 10, 13
         String wm_command, "WM_COMMAND", 10, 13
+        String wm_drawitem, "WM_DRAWITEM", 10, 13
+        String done, "DONE", 10, 13
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
+            Print   OFFSET wm_drawitem
             INVOKE  draw_button, hWnd, wParam, lParam
+            Print   OFFSET done
         .ELSEIF ebx == WM_COMMAND
             Print   OFFSET wm_command
 
@@ -102,8 +106,9 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         .ELSEIF ebx == WM_CREATE
             Print   OFFSET wm_create
             INVOKE  load_tiles
-            
+            Print   OFFSET wm_command
             INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+            Print   OFFSET wm_command
             ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage, 0

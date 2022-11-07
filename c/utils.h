@@ -37,6 +37,8 @@
 int slot_count = 0;
 int stage = 1;
 int total=0;
+
+int index = -1;
 struct Button* slot[SLOT_SIZE] = {0};
 
 struct Stage {
@@ -94,16 +96,10 @@ void match_slot() {
         if (slot[i]->type == prev_type) {
             count++;
             if (count >= MATCH_COUNT) {
-                for (int j = 0; j < count; j++) {
-                    delete_button_struct(slot[i - j]);
-                }
-                for (int j = i + 1; j < slot_count; j++) {
-                    move_button(slot[j], slot_x(j - count), SLOT_Y, SLOT_MOVE_TIME);
-                    slot[j - count] = slot[j];
-                }
                 slot_count -= count;
                 last_button = 0;
-                return;
+                index = i;
+                return ;
             }
         } else {
             count = 1;
@@ -111,8 +107,18 @@ void match_slot() {
         }
     } 
    //update();
+   index = -1;
 }
-
+void move_slot_buttons(){
+    if(index == -1) return;
+    for (int i = 0; i < 3; i++) {
+        delete_button_struct(slot[index - i]);
+    }
+    for (int i = index + 1; i < slot_count; i++) {
+        move_button(slot[i], slot_x(i - 3), SLOT_Y, SLOT_MOVE_TIME);
+        slot[i - 3] = slot[i];
+    }
+}
 void insert_slot(struct Button* btn, int index) {
     // moves tile at and to the right of index one slot to the right
     // moves btn to the newly freed slot
@@ -123,7 +129,9 @@ void insert_slot(struct Button* btn, int index) {
     }
     slot[index] = btn;
     btn->in_slot = TRUE;
-    btn->callback = match_slot;
+    match_slot();
+    btn->callback = move_slot_buttons;
+    
     move_button(btn, slot_x(index), SLOT_Y, SLOT_MOVE_TIME);
     slot_count++;
 

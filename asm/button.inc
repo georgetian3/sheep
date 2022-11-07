@@ -33,6 +33,7 @@ last_index DWORD -1
 last_button DWORD 0
 
 
+
 __search_struct PROC uses ebx ecx edx esi edi btn:DWORD
     mov ecx, 0
     .WHILE (ecx < N_BUTTONS)
@@ -123,6 +124,17 @@ get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
 get_button ENDP
 
 
+get_free_id PROC uses eax ebx ecx edx esi edi parent:DWORD
+        INVOKE  id_to_hwnd, parent, __id_count
+        .WHILE eax != 0
+                inc     __id_count
+                INVOKE  id_to_hwnd, parent, __id_count
+        .ENDW
+        mov     eax, __id_count
+    ret
+get_free_id ENDP
+
+
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
     local new_btn:DWORD, index:DWORD
         String empty_struct, "No Empty Button Struct???", 0ah, 0dh
@@ -148,12 +160,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mul     index
         mov     index, eax
 
-        
-        INVOKE  id_to_hwnd, parent, __id_count
-        .WHILE eax
-                inc     __id_count
-                INVOKE  id_to_hwnd, parent, __id_count
-        .ENDW
 
         INVOKE  crt_malloc, SIZEOF Button
         .IF eax == 0
@@ -162,11 +168,13 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     new_btn, eax
         mov     edi, eax
         mov     [edi], eax
+
+
+        INVOKE  get_free_id, parent
         INVOKE  CreateWindowEx,0,
                 ADDR btn, 0,
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
-                x,y,wd,ht,parent,__id_count,
-                0, 0
+                x,y,wd,ht,parent,eax,0, 0
 
         mov     edi, new_btn
 
@@ -228,6 +236,10 @@ delete_button_hwnd PROC uses eax ebx ecx edx esi edi hWnd:DWORD
     INVOKE __delete_button, index
     ret
 delete_button_hwnd ENDP
+
+
+
+
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         local btn_draw:DWORD, lBitmap:DWORD
