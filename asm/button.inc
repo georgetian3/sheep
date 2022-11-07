@@ -245,33 +245,40 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         local btn_draw:DWORD, lBitmap:DWORD
         String error, "Draw button not found", 0ah, 0dh
         String msg_draw, "Drawing button ptr %d hwnd %d state %u type %d", 0ah, 0dh
-        INVOKE id_to_hwnd, parent, id
-        INVOKE get_button, eax
 
-        mov btn_draw, eax
-        Print   OFFSET decStr, btn_draw
+        ; struct Button* btn = get_button(id_to_hwnd(parent, id));
+        INVOKE  id_to_hwnd, parent, id
+        INVOKE  get_button, eax
+        mov     btn_draw, eax
+
+
+        ;if (btn == 0) {
+        ;    printf("Draw button not found\n");
+        ;}
         .IF eax == 0
                 Print   OFFSET error
         .ENDIF
 
         mov     ecx, btn_draw
-
+        ; ptr = bitmaps  
         mov     esi, bitmaps
         mov     ebx, (Button PTR [ecx]).gray
+        ;if (!btn->gray) {
+        ;   ptr += sizeof(void*);
+        ;}
         .IF ebx >= 1
                 add     esi, SIZEOF DWORD
         .ENDIF
+        ; ptr = *ptr // now points to the subarray holding HBITMAPS
         mov     esi, [esi]
-        Print   OFFSET here
         mov     ebx, (Button PTR [ecx]).type_
         mov     eax, SIZEOF DWORD
         mul     ebx
         add     esi, eax            ; esi should now point to the right HBITMAP
 
 
-        mov     esi, dis
         mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
-        INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
+        INVOKE  DrawStateW, eax, 0, 0, dis, 0, 0, 0, 0, 0, DST_BITMAP
     ret
 draw_button ENDP
 
