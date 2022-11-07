@@ -99,24 +99,26 @@ int slot_x(int slot_index) {
     return SLOT_X + slot_index * (TILE_WIDTH + SLOT_X_OFFSET);
 }
 
+
 void match_slot() {
     // deletes any matched tiles and shifts the remaining tiles left
     printf("match slot\n");
     int count = 0;
     int prev_type = -1;
-    printf("slot_count matchslot  %d \n",slot_count);
-
-    for (int i = 0; i < slot_count +1 ; i++) {
-        printf("i = %d count = %d\n",i,count);
+    for (int i = 0; i < slot_count; i++) {
         if (slot[i]->type == prev_type) {
             count++;
-            printf("if i = %d count = %d\n",i,count);
             if (count >= MATCH_COUNT) {
+                for (int j = 0; j < count; j++) {
+                    delete_button_struct(slot[i - j]);
+                }
+                for (int j = i + 1; j < slot_count; j++) {
+                    move_button(slot[j], slot_x(j - count), SLOT_Y, SLOT_MOVE_TIME);
+                    slot[j - count] = slot[j];
+                }
                 slot_count -= count;
                 last_button = 0;
-                index_insert = i;
-                printf("index insert %d count %d\n",index_insert,count);
-                return ;
+                return;
             }
         } else {
             count = 1;
@@ -124,20 +126,8 @@ void match_slot() {
         }
     } 
    //update();
-   index_insert = -1;
 }
-void move_slot_buttons(){
-    if(index_insert == -1) return;
-    printf("index insert %d\n",index_insert);
-    for (int i = 0; i < 3; i++) {
-        delete_button_struct(slot[index_insert - i]);
-    }
-    for (int i = index_insert + 1; i < slot_count+3; i++) {
-        move_button(slot[i], slot_x(i - 3), SLOT_Y, SLOT_MOVE_TIME);
-        slot[i - 3] = slot[i];
-    }
-    index_insert = -1;
-}
+
 void insert_slot(struct Button* btn, int index) {
     // moves tile at and to the right of index one slot to the right
     // moves btn to the newly freed slot
@@ -147,10 +137,15 @@ void insert_slot(struct Button* btn, int index) {
     }
     slot[index] = btn;
     btn->in_slot = TRUE;
-    match_slot();
-    btn->callback = move_slot_buttons;
+    btn->callback = match_slot;
     slot_count++;
-    move_button(btn, slot_x(index), SLOT_Y, SLOT_MOVE_TIME);
+    total--;
+    if(total==0){
+        move_button(btn,slot_x(index),SLOT_Y,0);
+    }else{
+        move_button(btn, slot_x(index), SLOT_Y, SLOT_MOVE_TIME);
+    }
+    
 
 }
 

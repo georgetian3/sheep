@@ -14,8 +14,10 @@ int build_map(HWND hwnd, const char name[]) {
 	strcat(filename, name);
 	fp = fopen(filename, "r");
     int total = 0 ; 
+    int offset_x = 0,offset_y = 0;
     int tiles_num[N_TILE_TYPES]={0};
     fscanf(fp,"%d",&total);
+    fscanf(fp,"%d %d",&offset_x,&offset_y);
     for (int i=0;i<N_TILE_TYPES;i++){
         fscanf(fp,"%d",&tiles_num[i]);
     }
@@ -37,7 +39,7 @@ int build_map(HWND hwnd, const char name[]) {
         //printf("i=%d j=%d k=%d, flag=%d num=%d\n", i, j, k, flag,total);
 		if (flag) {
             //printf("%d\n",item[total]);
-			create_button(hwnd,item[total++], TILE_WIDTH / 2 + i * TILE_WIDTH / 2, TILE_HEIGHT / 2 + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
+			create_button(hwnd,item[total++], offset_x + i * TILE_WIDTH / 2, offset_y + j * TILE_HEIGHT/ 2, k, TILE_WIDTH, TILE_HEIGHT);
 		}
 		i++;
 		if (i == map_width) {
