@@ -133,7 +133,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         if(last_button){
             last_button->callback=update;
             last_button->in_slot=FALSE;
-            move_button(last_button,last_x,last_y,0.5);
+            move_button(last_button,last_x,last_y,0.2);
             total++;
             last_button=0;
             for(int i=last_index+1;i<slot_count;i++){
