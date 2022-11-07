@@ -41,11 +41,23 @@ int total=0;
 int index = -1;
 struct Button* slot[SLOT_SIZE] = {0};
 
-struct Stage {
-    int id;
-    int timeCountDown;
-    HBITMAP bg;
-};
+
+void paint(HWND hWnd) {
+    PAINTSTRUCT ps;
+    HDC hdc_window = BeginPaint(hWnd, &ps);
+    HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
+    HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
+    HBITMAP    blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SelectObject(hdc_memBuffer, blankBmp);
+    SelectObject(hdc_loadBmp, bmp_src);
+    BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);
+    BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
+    DeleteObject(blankBmp);
+    DeleteDC(hdc_memBuffer);
+    DeleteDC(hdc_loadBmp);
+    EndPaint(hWnd, &ps);
+}
+
 
 
 

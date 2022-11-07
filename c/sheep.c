@@ -81,7 +81,6 @@ HBITMAP bmp_src;
 
 
 void update_slot(struct Button* btn) {
-    //printf("Update slot\n");
     int insert_index; // index of to insert btn
     int count = 1; // number of tiles of the same type
 
@@ -96,8 +95,6 @@ void update_slot(struct Button* btn) {
     
     insert_slot(btn, insert_index);
     last_index = insert_index;
-    //printf("finished insert_slot\n");
-    //printf("finished update slot\n");
 }
 
 
@@ -173,19 +170,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_PAINT: {
             //printf("WM_PAINT\n");
-            PAINTSTRUCT ps;
-            HDC hdc_window = BeginPaint(hWnd, &ps);
-            HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
-            HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
-            HBITMAP    blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-            SelectObject(hdc_memBuffer, blankBmp);
-            SelectObject(hdc_loadBmp, bmp_src);
-            BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);
-            BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
-            DeleteObject(blankBmp);
-            DeleteDC(hdc_memBuffer);
-            DeleteDC(hdc_loadBmp);
-            EndPaint(hWnd, &ps);
+            paint(hWnd);
+            
             break;
         }
         case WM_DESTROY: {
