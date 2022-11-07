@@ -1,38 +1,41 @@
 FPS equ 120
 MSPF equ 8
 
-__move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:QWORD, dwTime:DWORD
+__move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:DWORD, dwTime:DWORD
     local btn_mov:DWORD
-    String notfound, "Move Button not found", 0ah, 0dh
-    String wrongstat, "Button not supposed to be moving", 0ah, 0dh
-    String movefailed, "__move_button failed", 0ah, 0dh
+    String move_button_not_found, "Move Button not found", 0ah, 0dh
+    String wrong_stat, "Button not supposed to be moving", 0ah, 0dh
+    String __move_failed, "__move_button failed", 0ah, 0dh
     INVOKE get_button, hWnd
     mov btn_mov, eax
     .IF btn_mov == 0
-            Print OFFSET notfound
+            Print OFFSET move_button_not_found
     .ENDIF
-    mov     edi, btn_mov
-    mov     ebx, (Button PTR [edi]).moving
+    mov     edx, btn_mov
+    mov     ebx, (Button PTR [edx]).moving
     not     ebx
     .IF ebx
-            Print   OFFSET wrongstat
+            Print   OFFSET wrong_stat
     .ENDIF
-
-    mov     esi, (Button PTR [edi]).start_pos
-    mov     ebx, (POINT PTR [esi]).x
-    mov eax, (Button PTR [edi]).dxpf
-    mul (Button PTR [edi]).frame
-    add eax, ebx
+    
+    mov edi, btn_mov
+    mov esi, (Button PTR [edi]).start_pos.x
+    mov eax, (Button PTR [edi]).dxpf    ;real8
+    
+    mul (Button PTR [edi]).frame    ;real8 mul
+    add eax, esi
     mov ecx, eax
 
-    mov ebx, (POINT PTR [esi]).y
-    mov eax, (Button PTR [edi]).dypf
-    mul (Button PTR [edi]).frame
+    mov ebx, (Button PTR [edi]).start_pos.y
+    mov eax, (Button PTR [edi]).dypf    ;real8
+    mul (Button PTR [edi]).frame    ;real8 mul
     add eax, ebx
     mov edx, eax
-    INVOKE SetWindowPos, hWnd, 0, ecx, edx, 0, 0, SWP_NOSIZE|SWP_NOZORDER
+    mov ebx, SWP_NOSIZE
+    or ebx, SWP_NOZORDER
+    INVOKE SetWindowPos, hWnd, 0, ecx, edx, 0, 0, ebx
     .IF eax == 0
-        CheckError movefailed
+        Print OFFSET __move_failed
     .ENDIF
     inc (Button PTR [edi]).frame
     mov eax, (Button PTR [edi]).frame
@@ -42,7 +45,7 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
         INVOKE KillTimer, hWnd, idEvent
         mov ecx, (Button PTR [edi]).callback
         .IF ecx
-            INVOKE update
+            ;INVOKE update
         .ENDIF
     .ENDIF
     mov ebx, (Button PTR [edi]).hWnd
@@ -55,21 +58,26 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
     Print OFFSET startmove
-    .IF time == 0
+    .IF time == 0 ;real8 problem
         mov ebx, hWnd
-        INVOKE SetWindowPos, (Button PTR [ebx]).hWnd, HWND_TOP, x, y, 0, 0, SWP_NOSIZE|SWP_NOZORDER
+        mov ecx, SWP_NOSIZE
+        or ecx, SWP_NOZORDER
+        pushad
+        INVOKE SetWindowPos, (Button PTR [ebx]).hWnd, HWND_TOP, x, y, 0, 0, ecx
         .IF eax == 0
             Print OFFSET movebtnfailed
         .ENDIF
-        .IF (Button PTR [ebx]).callback
-            INVOKE update
+        popad
+        mov edx, (Button PTR [ebx]).callback
+        .IF edx
+            ;INVOKE update
         .ENDIF
         ret
     .ENDIF
 
     mov edi, hWnd
     mov ebx, (Button PTR [edi]).hWnd
-    mov ecx, addr (Button PTR [edi]).start_pos
+    mov ecx, hWnd[64]
     INVOKE win_pos, ebx, ecx
     mov (Button PTR [edi]).moving, 1
     mov (Button PTR [edi]).frame, 1
@@ -77,21 +85,20 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     INVOKE GetTickCount
     mov (Button PTR [edi]).start_time, eax
     mov eax, FPS
-    mul time
+    mul time    ;real8 problem
     mov (Button PTR [edi]).frames, eax
     
-    mov esi, (Button PTR [edi]).start_pos
-    mov ebx, (POINT PTR [esi]).x
+    mov esi, (Button PTR [edi]).start_pos.x
     mov eax, x
-    sub eax, ebx
+    sub eax, esi
     div (Button PTR [edi]).frames
-    mov (Button PTR [edi]).dxpf, eax
+    mov (Button PTR [edi]).dxpf, eax    ;real8 problem
 
-    mov ebx, (POINT PTR [esi]).y
+    mov ebx, (Button PTR [edi]).start_pos.y
     mov eax, y
     sub eax, ebx
     div (Button PTR [edi]).frames
-    mov (Button PTR [edi]).dypf, eax
+    mov (Button PTR [edi]).dypf, eax    ;real8 problem
 
     INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
     .IF eax == 0

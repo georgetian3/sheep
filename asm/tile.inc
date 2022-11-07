@@ -88,14 +88,16 @@ load_bitmaps PROC uses eax ebx ecx edx esi edi
                 INVOKE crt_strcat, filename, addr dark
                 popad
             .ENDIF
+            pushad
             INVOKE crt_strcat, filename, addr ext
-            ;Print filename for checking
+            popad
+            Print filename
             ;aboves are fine
-            mov eax, 4
-            mul ecx
-            mov edi, dword ptr bitmaps[eax]
-            mov edx, dword ptr edi[ebx]
-            INVOKE load_bitmap, filename
+            ; mov eax, 4
+            ; mul ecx
+            ; mov edi, dword ptr bitmaps[eax]
+            ; mov edx, dword ptr edi[ebx]
+            ; INVOKE load_bitmap, filename
             
     
             

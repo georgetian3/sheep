@@ -66,9 +66,11 @@ String  newline, 10, 13
 
 include tile.inc
 include button.inc
+;include animation.inc
+;include utils.inc
+;include map.inc
 COMMENT `
-include animation.inc
-include utils.inc
+
 include random.inc
 include sound.inc
 include sheep.inc
@@ -110,6 +112,7 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             INVOKE  create_button, hWnd, 1, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
             Print   OFFSET wm_command
             INVOKE  load_bitmaps
+            Print   OFFSET wm_create
             ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage, 0
