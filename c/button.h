@@ -182,12 +182,6 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
     if (btn == 0) {
         printf("Draw button not found\n");
         exit(1);
-    } else if (btn == start_game){
-        lBitmap = start_bmp;
-    } else if (btn==end_game){
-        lBitmap = end_bmp;
-    } else if (btn == undo_btn){
-        lBitmap = undo_bmp;
     } else{
         lBitmap = bitmaps[!btn->gray][btn->type];
     }

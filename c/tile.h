@@ -41,10 +41,7 @@ const char* dark = "_dark";
 
 #define MAX_FILENAME_LEN 255
 
-HBITMAP bitmaps[2][N_TILE_TYPES];
-HBITMAP start_bmp;
-HBITMAP end_bmp;
-HBITMAP undo_bmp;
+HBITMAP bitmaps[2][N_TILE_TYPES]; // bitmaps[0] contains the dark versions, and bitmaps[1] the light
 
 HBITMAP load_bitmap(const char* filename) {
     return LoadImage(NULL, filename, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
