@@ -52,11 +52,10 @@ bitmap_names DWORD OFFSET carrot, OFFSET corn, OFFSET grass, OFFSET tree, OFFSET
              DWORD OFFSET brush, OFFSET bucket, OFFSET cabbage, OFFSET fire, OFFSET hay, OFFSET gloves
              DWORD OFFSET milk, OFFSET pliers, OFFSET rice, OFFSET rope, OFFSET start, OFFSET undo
 
+bitmaps_tile_type DWORD N_TILE_TYPES DUP(?)
 
 
-bitmaps_tile_type   DWORD N_TILE_TYPES DUP(?)
-bitmaps             DWORD 2 DUP(bitmaps_tile_type)
-bitmap_filename     BYTE MAX_FILENAME_LEN DUP(?)
+bitmaps DWORD 2 DUP(bitmaps_tile_type)
 
 
 load_bitmap PROC uses ebx ecx edx esi edi filename:DWORD
@@ -64,50 +63,76 @@ load_bitmap PROC uses ebx ecx edx esi edi filename:DWORD
     ret
 load_bitmap ENDP
 
+
+strcpy PROC uses eax ebx ecx edx esi edi dst:DWORD, src:DWORD
+        mov     esi, src
+        mov     edi, dst
+        mov     al, [esi]
+        .WHILE al != 0
+                mov     al, [esi]
+                mov     [edi], al
+                inc     esi
+                inc     edi
+        .ENDW
+        mov     [edi], al
+    ret
+strcpy ENDP
+
+strcat PROC uses eax ebx ecx edx esi edi dst:DWORD, src:DWORD
+        mov     esi, src
+        mov     edi, dst
+        mov     al, [edi]
+        .WHILE  al != 0
+                inc     edi
+                mov     al, [edi]
+        .ENDW
+        INVOKE  strcpy, edi, esi
+    ret
+strcat ENDP
+
 load_bitmaps PROC uses eax ebx ecx edx esi edi
+        local filename:DWORD
 
         String loadfailed, "LoadImage failed", 0ah, 0dh
         String test1, "%d", 0ah, 0dh
         String loadbitmaps, "load_bitmaps", 10, 13
-
         Print   OFFSET loadbitmaps
         
-        mov     ecx, 0
+        INVOKE  crt_malloc, MAX_FILENAME_LEN
+        .IF eax == 0
+            Print OFFSET loadfailed
+        .ENDIF
+
+        mov filename, eax
+        mov ecx, 0
         .WHILE ecx < 2
-                mov     edx, 0
+                mov edx, 0
                 .WHILE edx < N_BUTTON_TYPES
-                        pushad
-                        INVOKE  crt_strcpy, OFFSET bitmap_filename, OFFSET dir
-                        popad
-                        Print   OFFSET here
-                        mov eax, 4
-                        mul esi
-                        mov ebx, eax
-                        pushad
-                        INVOKE crt_strcat, bitmap_filename, bitmap_names[ebx]
-                        popad
+                        INVOKE  strcpy, ADDR filename, ADDR dir
+
+                        lea     eax, [OFFSET bitmap_names + edx * 4]
+
+                        INVOKE  strcat, ADDR filename, [eax]
+
+
                         .IF ecx == 0
-                            pushad
-                            INVOKE crt_strcat, bitmap_filename, addr dark
-                            popad
+                                INVOKE  strcat, ADDR filename, ADDR dark
                         .ENDIF
-                        pushad
-                        INVOKE crt_strcat, bitmap_filename, addr ext
-                        popad
-                        Print bitmap_filename
-                        ;aboves are fine
-                        COMMENT `
-                        mov eax, 4
-                        mul ecx
-                        mov edi, dword ptr bitmaps[eax]
-                        mov edx, dword ptr edi[ebx]
-                        INVOKE load_bitmap, bitmap_filename
-                        `
-                
-                        
-                        inc esi
+
+                        INVOKE  strcat, ADDR filename, ADDR ext
+
+
+                        INVOKE  load_bitmap, ADDR filename
+                        .IF eax == 0
+                                String  lbf, "LoadBitmap failed"
+                                Print   OFFSET lbf
+                                INVOKE  ExitProcess, 0
+                        .ENDIF
+                        inc     edx
                 .ENDW
                 inc ecx
         .ENDW
+        INVOKE  crt_free, ADDR filename
+        Print   OFFSET done
     ret
 load_bitmaps ENDP

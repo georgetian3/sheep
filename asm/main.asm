@@ -60,6 +60,7 @@ slot DWORD SLOT_SIZE DUP(0)
 .CODE
 
 String  here, "HERE", 10, 13
+String  done, "DONE", 10, 13
 String  hexStr, "%x"
 String  decStr, "%d"
 String  newline, 10, 13
@@ -83,13 +84,11 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         String wm_create, "WM_CREATE", 10, 13
         String wm_command, "WM_COMMAND", 10, 13
         String wm_drawitem, "WM_DRAWITEM", 10, 13
-        String done, "DONE", 10, 13
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
             Print   OFFSET wm_drawitem
             INVOKE  draw_button, hWnd, wParam, lParam
-            Print   OFFSET done
         .ELSEIF ebx == WM_COMMAND
             Print   OFFSET wm_command
 
@@ -107,8 +106,8 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         .ELSEIF ebx == WM_CREATE
             Print   OFFSET wm_create
             Print   OFFSET wm_command
-            INVOKE  load_bitmaps
-            INVOKE  ExitProcess, 0
+            ;INVOKE  load_bitmaps
+            Print   OFFSET here
             INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
             Print   OFFSET wm_command
             ;INVOKE  play_sound, 0, 0, 0

@@ -134,6 +134,10 @@ get_free_id ENDP
 
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
     local new_btn:DWORD, index:DWORD
+
+        String  createbutton, "create_button", 10, 13
+        Print   OFFSET createbutton
+
         String empty_struct, "No Empty Button Struct???", 0ah, 0dh
         String window_failed, "CreateWindow failed", 0ah, 0dh
         String btn, "BUTTON"
@@ -233,8 +237,8 @@ delete_button_hwnd ENDP
 
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
-
-
+        String  drawbutton, "draw_button", 10, 13
+        Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
         INVOKE  id_to_hwnd, parent, id
         INVOKE  get_button, eax
@@ -286,7 +290,7 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ELSE
                 Print   OFFSET here
         .ENDIF
-
+        Print   OFFSET done
     ret
 draw_button ENDP
 
