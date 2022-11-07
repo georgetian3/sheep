@@ -114,7 +114,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         update_slot(btn);
         update();
         total--;
-        if (slot_count > SLOT_SIZE) {
+        if (slot_count >= SLOT_SIZE) {
             lose(parent);
         }
         if(total==0){
