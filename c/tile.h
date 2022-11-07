@@ -69,14 +69,4 @@ void load_bitmaps() {
     }
 }
 
-
-int i_to_x(int i) {
-    return i;
-}
-
-int j_to_y(int j) {
-    return j;
-}
-
-
 #endif
