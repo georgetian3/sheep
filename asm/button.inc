@@ -104,9 +104,6 @@ get_button_index PROC uses ebx ecx edx esi edi index:DWORD
     .IF (ebx >= N_BUTTONS)
         mov eax, -1
     .ENDIF
-    .IF (eax)
-        CheckError addr err
-    .ENDIF
     mov eax, 4
     mul index
     mov eax, __buttons[edx]
@@ -218,9 +215,6 @@ delete_button_struct PROC uses eax ebx ecx edx esi edi btn_del:DWORD
     String del_err, "Delete Struct not found", 0ah, 0dh
     INVOKE __search_struct, btn_del
     mov index, eax
-    .IF (index == -1)
-        CheckError addr del_err
-    .ENDIF
     INVOKE __delete_button, index
     ret
 delete_button_struct ENDP
@@ -230,9 +224,6 @@ delete_button_hwnd PROC uses eax ebx ecx edx esi edi hWnd:DWORD
     String del_hwnd_err, "Delete hwnd not found", 0ah, 0dh
     INVOKE __search_hwnd, hWnd
     mov index, eax
-    .IF (index == -1)
-        CheckError addr del_hwnd_err
-    .ENDIF
     INVOKE __delete_button, index
     ret
 delete_button_hwnd ENDP
@@ -243,7 +234,6 @@ delete_button_hwnd ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         local btn_draw:DWORD, lBitmap:DWORD
-        String error, "Draw button not found", 0ah, 0dh
         String msg_draw, "Drawing button ptr %d hwnd %d state %u type %d", 0ah, 0dh
 
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
@@ -256,8 +246,11 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         ;    printf("Draw button not found\n");
         ;}
         .IF eax == 0
-                Print   OFFSET error
+                String  notfound, "Draw button not found", 10, 13
+                Print   OFFSET notfound
         .ENDIF
+
+
 
         mov     ecx, btn_draw
         ; ptr = bitmaps  
@@ -278,21 +271,27 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
 
 
         mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
+
+        Print   OFFSET hexStr, eax
+        Print   newline
+
         INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
 
         .IF eax == 0
-                Print   OFFSET error
+                String  drawstatee, "Draw state 0", 10, 13
+                Print   OFFSET drawstatee
+        .ELSE
+                Print   OFFSET here
         .ENDIF
 
     ret
 draw_button ENDP
 
-set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:BYTE
-    mov eax, 0
-    mov al, active
-    mov btn_active, eax
-    mov ebx, (Button PTR [btn_active]).hWnd
-    INVOKE  EnableWindow, ebx, active
+set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:DWORD
+        mov     edi, btn_active
+        mov     esi, active
+        mov     (Button PTR [edi]).active, esi
+        INVOKE  EnableWindow, (Button PTR [edi]).hWnd, active
     ret
 set_active ENDP
 

@@ -9,17 +9,17 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
     INVOKE get_button, hWnd
     mov btn_mov, eax
     .IF btn_mov == 0
-        Print OFFSET notfound
+            Print OFFSET notfound
     .ENDIF
-    mov edi, btn_mov
-    mov ebx, (Button PTR [edi]).moving
-    not ebx
+    mov     edi, btn_mov
+    mov     ebx, (Button PTR [edi]).moving
+    not     ebx
     .IF ebx
-        Print OFFSET wrongstat
+            Print   OFFSET wrongstat
     .ENDIF
 
-    mov esi, (Button PTR [edi]).start_pos
-    mov ebx, (POINT PTR [esi]).x
+    mov     esi, (Button PTR [edi]).start_pos
+    mov     ebx, (POINT PTR [esi]).x
     mov eax, (Button PTR [edi]).dxpf
     mul (Button PTR [edi]).frame
     add eax, ebx

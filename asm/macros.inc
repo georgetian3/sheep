@@ -11,9 +11,3 @@ Print MACRO strPtrs:VARARG
     popad
 ENDM
 
-CheckError MACRO errmsg:VARARG
-    .IF eax == 0
-        Print errmsg
-        INVOKE ExitProcess, 1
-    .ENDIF
-ENDM
