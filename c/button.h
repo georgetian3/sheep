@@ -182,7 +182,7 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
         exit(1);
     }
 
-    printf("%d\n", btn->type);
+    printf("%d\n", bitmaps[!btn->gray][btn->type]);
 
     DrawStateW(
         dis->hDC, 0, 0,
