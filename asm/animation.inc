@@ -43,7 +43,7 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
         INVOKE KillTimer, hWnd, idEvent
         mov ecx, (Button PTR [edi]).callback
         .IF ecx
-            ;INVOKE (Button PTR [edi]).callback
+            INVOKE update
         .ENDIF
     .ENDIF
     mov ebx, (Button PTR [edi]).hWnd
@@ -62,7 +62,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
             Print OFFSET movebtnfailed
         .ENDIF
         .IF (Button PTR [ebx]).callback
-            ; call update
+            INVOKE update
         .ENDIF
         ret
     .ENDIF
@@ -93,7 +93,9 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     div (Button PTR [edi]).frames
     mov (Button PTR [edi]).dypf, eax
 
-    ;INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, 
-
+    INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
+    .IF eax == 0
+        Print OFFSET timerfailed
+    .ENDIF
     ret
 move_button ENDP
