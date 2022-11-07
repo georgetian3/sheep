@@ -46,52 +46,62 @@ undo BYTE "undo", 0
 bitmap_names DWORD OFFSET carrot, OFFSET corn, OFFSET grass, OFFSET tree, OFFSET fork, OFFSET bell 
              DWORD OFFSET brush, OFFSET bucket, OFFSET cabbage, OFFSET fire, OFFSET hay, OFFSET gloves
              DWORD OFFSET milk, OFFSET pliers, OFFSET rice, OFFSET rope, OFFSET start, OFFSET undo
-dir BYTE "../res/"
-ext BYTE ".bmp"
-dark BYTE "_dark"
+dir BYTE "../res/", 0
+ext BYTE ".bmp", 0
+dark BYTE "_dark", 0
 
 
 bitmaps_tile_type DWORD N_TILE_TYPES DUP(?)
 bitmaps DWORD 2 DUP(bitmaps_tile_type)
 
-; load_tiles PROC USES eax ebx ecx edx esi edi
-;     mov ecx, 0
-;     .WHILE (ecx < 2)
-;         mov ebx, 0
-;         .WHILE (ebx < N_TILE_TYPES)
-;             push ebx
-;             push ecx
-;             mov eax, 4
-;             mul ebx
-;             mov ebx, eax
-;             mov eax, 4
-;             mul ecx
-;             mov ecx, eax
-;             mov esi, dword ptr filenames[ecx]
-;             mov edx, [esi]
-;             INVOKE LoadImageA, 0, edx, IMAGE_BITMAP, 64, 64, LR_LOADFROMFILE
-;             .IF (eax == 0)
-;                 pushad
-;                 INVOKE crt_printf, offset LOAD_PRINT
-;                 popad
-;                 jmp F1
-;             .ENDIF
-;             pop ecx
-;             pop ebx
-;             inc ebx
-;         .ENDW
-;         inc ecx
-;     .ENDW
-;     F1:
-;         ret
-; load_tiles ENDP
 
-load_bitmap PROC uses ebx ecx edx esi edi filename:DWORD, wd:DWORD, ht:DWORD
-    INVOKE LoadImageA, 0, filename, IMAGE_BITMAP, wd, ht, LR_LOADFROMFILE
+load_bitmap PROC uses ebx ecx edx esi edi filename:DWORD
+    INVOKE LoadImageA, 0, filename, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE
     ret
 load_bitmap ENDP
 
 load_bitmaps PROC uses eax ebx ecx edx esi edi
+    local filename:DWORD
     String loadfailed, "LoadImage failed", 0ah, 0dh
+    String test1, "%d", 0ah, 0dh
+    
+    INVOKE crt_malloc, MAX_FILENAME_LEN
+    .IF eax == 0
+        Print OFFSET loadfailed
+    .ENDIF
+    mov filename, eax
+    mov ecx, 0
+    .WHILE ecx < 2
+        mov esi, 0
+        .WHILE esi < N_BUTTON_TYPES
+            pushad
+            INVOKE crt_strcpy, filename, addr dir
+            popad
+            mov eax, 4
+            mul esi
+            mov ebx, eax
+            pushad
+            INVOKE crt_strcat, filename, bitmap_names[ebx]
+            popad
+            .IF ecx == 0
+                pushad
+                INVOKE crt_strcat, filename, addr dark
+                popad
+            .ENDIF
+            INVOKE crt_strcat, filename, addr ext
+            ;Print filename for checking
+            ;aboves are fine
+            mov eax, 4
+            mul ecx
+            mov edi, dword ptr bitmaps[eax]
+            mov edx, dword ptr edi[ebx]
+            INVOKE load_bitmap, filename
+            
+    
+            
+            inc esi
+        .ENDW
+        inc ecx
+    .ENDW
     ret
 load_bitmaps ENDP
