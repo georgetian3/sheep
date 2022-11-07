@@ -177,17 +177,16 @@ void draw_button(HWND parent, int id, DRAWITEMSTRUCT* dis) {
     //printf("Draw button\n");
     struct Button* btn = get_button(id_to_hwnd(parent, id));
 
-    LPARAM lBitmap;
-
     if (btn == 0) {
         printf("Draw button not found\n");
         exit(1);
-    } else{
-        lBitmap = bitmaps[!btn->gray][btn->type];
     }
+
+    printf("%d\n", btn->type);
+
     DrawStateW(
         dis->hDC, 0, 0,
-        (LPARAM)(lBitmap),
+        (LPARAM)(bitmaps[!btn->gray][btn->type]),
          0, 0, 0, 0, 0, DST_BITMAP
     );
 }

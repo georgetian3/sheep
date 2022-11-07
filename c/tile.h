@@ -3,7 +3,6 @@
 
 #define N_TILE_TYPES 16
 #define N_TILES 18
-#define N_BUTTON_TYPES 4
 
 #define TILE_WIDTH 64
 #define TILE_HEIGHT 64
@@ -26,13 +25,15 @@
 #define TYPE_PLIERS     13
 #define TYPE_RICE       14
 #define TYPE_ROPE       15
+#define N_TILE_TYPES    16
 #define TYPE_START      16
-#define TYPE_SETTINGS   17
+#define TYPE_UNDO       17
+#define N_BUTTON_TYPES  18
 
 const char* bitmap_names[N_BUTTON_TYPES] = {
     "carrot", "corn", "grass", "tree", "fork", "bell",
     "brush", "bucket", "cabbage", "fire", "hay", "gloves",
-    "milk", "pliers", "rice", "rope", "start", "settings",
+    "milk", "pliers", "rice", "rope", "start", "undo",
 };
 
 const char* dir = "../res/";
@@ -59,6 +60,7 @@ void load_bitmaps() {
                 strcat(filename, dark);
             }
             strcat(filename, ext);
+            printf("%s\n", filename);
             bitmaps[i][j] = load_bitmap(filename);
             if (bitmaps[i] == NULL) {
                 printf("LoadImage failed: %d", i);
