@@ -35,6 +35,7 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
         KillTimer(hWnd, idEvent);
         if (btn->callback) {
             btn->callback();
+            printf("call back end\n");
         }
     }
     InvalidateRect(btn->hWnd, 0, 0);
@@ -49,6 +50,7 @@ void move_button(struct Button* btn, int x, int y, double time) {
             exit(1);
         }
         if (btn->callback) {
+            printf("timer 0 callback");
             btn->callback();
         }
         return;
