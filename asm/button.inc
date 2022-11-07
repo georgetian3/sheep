@@ -254,28 +254,24 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
                 Print   OFFSET error
         .ENDIF
 
-        mov     esi, btn_draw
+        mov     ecx, btn_draw
 
-
-        mov     ebx, (Button PTR [edi]).gray
-        not     ebx
-        mov     esi, dword ptr bitmaps[ebx]
-        mov     edx, (Button PTR [edi]).type_
-
-        
-        mov     lBitmap, eax
-
-        
+        mov     esi, bitmaps
+        mov     ebx, (Button PTR [ecx]).gray
+        .IF ebx >= 1
+                add     esi, SIZEOF DWORD
+        .ENDIF
+        mov     esi, [esi]
         Print   OFFSET here
-        mov eax, 0
-        .WHILE (edx >= 0)
-            add eax, 4
-            dec edx
-        .ENDW
-        mov ecx, [esi + eax]
-        mov edi, dis
-        mov eax, (DRAWITEMSTRUCT PTR [edi]).hdc
-        INVOKE DrawStateW, eax, 0, 0, ecx, 0, 0, 0, 0, 0, DST_BITMAP
+        mov     ebx, (Button PTR [ecx]).type_
+        mov     eax, SIZEOF DWORD
+        mul     ebx
+        add     esi, eax            ; esi should now point to the right HBITMAP
+
+
+        mov     esi, dis
+        mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
+        INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
     ret
 draw_button ENDP
 
