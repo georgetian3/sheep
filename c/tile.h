@@ -28,12 +28,13 @@
 #define N_TILE_TYPES    16
 #define TYPE_START      16
 #define TYPE_UNDO       17
-#define N_BUTTON_TYPES  18
+#define TYPE_END        18
+#define N_BUTTON_TYPES  19
 
 const char* bitmap_names[N_BUTTON_TYPES] = {
     "carrot", "corn", "grass", "tree", "fork", "bell",
     "brush", "bucket", "cabbage", "fire", "hay", "gloves",
-    "milk", "pliers", "rice", "rope", "start", "undo",
+    "milk", "pliers", "rice", "rope", "start", "undo","end"
 };
 
 const char* dir = "../res/";

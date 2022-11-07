@@ -66,12 +66,18 @@ void lose(HWND hWnd) {
 }
 int win(HWND hWnd){
     if(stage==1){
-        int total=build_map(hWnd,"map3.txt");
+        destroy_all_button();
+        slot_count = 0;
+        int total=build_map(hWnd,"map1.txt");
         update();
         stage++;
         return total;
     }else{
+        destroy_all_button();
         start_game=create_button(hWnd,TYPE_START,320,320,-1,200,80);
+        end_game = create_button(hWnd,TYPE_END,320,400,-1,200,56);
+        undo_btn=create_button(hWnd,TYPE_UNDO,500,730,-1,64,64);
+
     }
 }
 
@@ -119,10 +125,9 @@ void handle_button_click(HWND parent, struct Button* btn) {
         }
     }
     else if(btn==start_game){
-        delete_button_struct(start_game);
-        start_game = 0;
-        printf("freed!\n");
-        undo_btn=create_button(parent,TYPE_UNDO,500,800,-1,64,64);
+        destroy_all_button();
+        undo_btn=create_button(parent,TYPE_UNDO,500,730,-1,64,64);
+
         total=build_map(parent,"map1.txt");
         update();
     }
@@ -140,6 +145,8 @@ void handle_button_click(HWND parent, struct Button* btn) {
             }
             slot_count--;
         }
+    }else if(btn==end_game){
+        exit(0);
     }
 
     printf("slot_count  %d \n",slot_count);
@@ -168,7 +175,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
             printf("WM_CREATE\n");
             bmp_bg = load_bitmap("../res/bg.bmp");
             load_bitmaps();
-            start_game=create_button(hWnd,TYPE_START,320,320,0,200,80);
+            start_game=create_button(hWnd,TYPE_START,300,320,0,200,80);
+            end_game = create_button(hWnd,TYPE_END,300,400,-1,200,56);
             break;
         }
         case WM_PAINT: {

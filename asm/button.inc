@@ -134,6 +134,10 @@ get_free_id ENDP
 
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
     local new_btn:DWORD, index:DWORD
+
+        String  createbutton, "create_button", 10, 13
+        Print   OFFSET createbutton
+
         String empty_struct, "No Empty Button Struct???", 0ah, 0dh
         String window_failed, "CreateWindow failed", 0ah, 0dh
         String btn, "BUTTON"
@@ -233,47 +237,51 @@ delete_button_hwnd ENDP
 
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
-        local btn_draw:DWORD, lBitmap:DWORD
-        String msg_draw, "Drawing button ptr %d hwnd %d state %u type %d", 0ah, 0dh
-
+        String  drawbutton, "draw_button", 10, 13
+        Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
         INVOKE  id_to_hwnd, parent, id
         INVOKE  get_button, eax
-        mov     btn_draw, eax
+        mov     edx, eax        ; edx will hold btn for the rest of this proc
 
-
-        ;if (btn == 0) {
-        ;    printf("Draw button not found\n");
-        ;}
-        .IF eax == 0
+        .IF edx == 0    ; if (btn == 0) 
                 String  notfound, "Draw button not found", 10, 13
                 Print   OFFSET notfound
         .ENDIF
 
+        String  bm, "bitmap", 10, 13
+        Print   OFFSET here
 
+        ; HBITMAP** ptr = bitmaps
+        mov     esi, OFFSET bitmaps
+        Print   OFFSET hexStr, esi
+        Print   OFFSET newline
+        
 
-        mov     ecx, btn_draw
-        ; ptr = bitmaps  
-        mov     esi, bitmaps
-        mov     ebx, (Button PTR [ecx]).gray
-        ;if (!btn->gray) {
-        ;   ptr += sizeof(void*);
-        ;}
-        .IF ebx >= 1
-                add     esi, SIZEOF DWORD
+        mov     eax, (Button PTR [edx]).gray
+        .IF !eax    ; if (!btn->gray)
+                add     esi, SIZEOF DWORD   ; ptr += 4
         .ENDIF
+
         ; ptr = *ptr // now points to the subarray holding HBITMAPS
         mov     esi, [esi]
+
+        ; ptr += btn->type * 4
         mov     ebx, (Button PTR [ecx]).type_
         mov     eax, SIZEOF DWORD
         mul     ebx
-        add     esi, eax            ; esi should now point to the right HBITMAP
+        add     esi, eax
+        ; esi should now point to the right HBITMAP
+        Print   OFFSET bm
+        Print   OFFSET hexStr, esi
+        Print   OFFSET newline
 
-
+        mov     ecx, dis
         mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
-
+        String  disp, "Drawitemstructptr", 10, 13
+        Print   OFFSET disp
         Print   OFFSET hexStr, eax
-        Print   newline
+        Print   OFFSET newline
 
         INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
 
@@ -283,6 +291,7 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ELSE
                 Print   OFFSET here
         .ENDIF
+
 
     ret
 draw_button ENDP

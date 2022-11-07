@@ -149,7 +149,17 @@ void insert_slot(struct Button* btn, int index) {
 
 }
 
-
+void destroy_all_button(){
+    for(int i=0;i<N_BUTTONS;i++){
+        if(__buttons[i]){
+            delete_button_struct(__buttons[i]);
+            printf("%d\n",i);
+        }
+    }
+    start_game = 0;
+    end_game = 0;
+    undo_btn = 0;
+}
 
 
 #endif
