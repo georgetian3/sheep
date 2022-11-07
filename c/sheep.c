@@ -21,6 +21,7 @@
 
 void update() {
     struct Button *a, *b;
+    printf("begin update \n");
     for (int i = 0; i < N_BUTTONS; i++) {
         b = get_button_index(i);
         if (!b || !is_tile(b) || b->moving) {
@@ -54,9 +55,9 @@ void update() {
          btn = get_button_index(i);
          if(btn){
              InvalidateRect(btn->hWnd,0,0);
-            printf("%d",i);
-       }
+         }
      }
+     printf("end update \n");
 }
 
 
@@ -65,7 +66,7 @@ void lose(HWND hWnd) {
 }
 int win(HWND hWnd){
     if(stage==1){
-        int total=build_map(hWnd,"map2.txt");
+        int total=build_map(hWnd,"map3.txt");
         update();
         stage++;
         return total;
@@ -76,12 +77,11 @@ int win(HWND hWnd){
 
 
 
-HBITMAP bmp_src;
+
 
 
 
 void update_slot(struct Button* btn) {
-    //printf("Update slot\n");
     int insert_index; // index of to insert btn
     int count = 1; // number of tiles of the same type
 
@@ -96,8 +96,6 @@ void update_slot(struct Button* btn) {
     
     insert_slot(btn, insert_index);
     last_index = insert_index;
-    //printf("finished insert_slot\n");
-    //printf("finished update slot\n");
 }
 
 
@@ -113,8 +111,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         last_button = btn;
         update_slot(btn);
         update();
-        total--;
-        if (slot_count >= SLOT_SIZE) {
+        if (slot_count > SLOT_SIZE) {
             lose(parent);
         }
         if(total==0){
@@ -126,7 +123,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         start_game = 0;
         printf("freed!\n");
         undo_btn=create_button(parent,TYPE_UNDO,500,800,-1,64,64);
-        total=build_map(parent,"map2.txt");
+        total=build_map(parent,"map1.txt");
         update();
     }
     else if(btn==undo_btn){
@@ -137,12 +134,15 @@ void handle_button_click(HWND parent, struct Button* btn) {
             total++;
             last_button=0;
             for(int i=last_index+1;i<slot_count;i++){
+                slot[i]->callback = 0;
                 move_button(slot[i], slot_x(i - 1), SLOT_Y, SLOT_MOVE_TIME);
                 slot[i-1] = slot[i];
             }
             slot_count--;
         }
     }
+
+    printf("slot_count  %d \n",slot_count);
     //InvalidateRect(btn->hWnd, 0, 0);
 }
 
@@ -166,26 +166,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_CREATE: {
 
             printf("WM_CREATE\n");
-            bmp_src = load_bitmap("../res/bg.bmp");
+            bmp_bg = load_bitmap("../res/bg.bmp");
             load_bitmaps();
             start_game=create_button(hWnd,TYPE_START,320,320,0,200,80);
             break;
         }
         case WM_PAINT: {
-            //printf("WM_PAINT\n");
-            PAINTSTRUCT ps;
-            HDC hdc_window = BeginPaint(hWnd, &ps);
-            HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
-            HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
-            HBITMAP    blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-            SelectObject(hdc_memBuffer, blankBmp);
-            SelectObject(hdc_loadBmp, bmp_src);
-            BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);
-            BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
-            DeleteObject(blankBmp);
-            DeleteDC(hdc_memBuffer);
-            DeleteDC(hdc_loadBmp);
-            EndPaint(hWnd, &ps);
+            paint(hWnd);
             break;
         }
         case WM_DESTROY: {

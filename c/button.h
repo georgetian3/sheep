@@ -99,7 +99,7 @@ struct Button* get_button(HWND hWnd) {
 }
 
 int __id_count = 0;
-int get_free_id() {
+int get_free_id(HWND parent) {
     while (id_to_hwnd(parent, __id_count)) {
         __id_count++;
     }
@@ -128,7 +128,7 @@ struct Button* create_button(
     
 
     struct Button* new_btn = (struct Button*)malloc(sizeof(struct Button));
-    new_btn->hWnd = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | BS_OWNERDRAW , x, y, wd, ht, parent, (HMENU)get_free_id(), NULL, NULL);
+    new_btn->hWnd = (HWND)CreateWindowEx(0, "button", NULL, WS_VISIBLE | WS_CHILD | BS_BITMAP | BS_OWNERDRAW , x, y, wd, ht, parent, (HMENU)get_free_id(parent), NULL, NULL);
 
     if (new_btn->hWnd == NULL) {
         printf("CreateWindow failed\n");

@@ -133,11 +133,10 @@ match_slot ENDP
 
 
 insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
-        String insertprint, "Insert Slot", 0ah, 0dh
-        Print insertprint
+        String  insertprint, "Insert Slot", 0ah, 0dh
+        Print   OFFSET insertprint
         mov ecx, slot_count
         dec ecx
-        COMMENT !
         .WHILE (ecx >= index)
             mov ebx, ecx
             inc ebx
@@ -161,3 +160,24 @@ lose PROC
     String loseprint, "LOSE", 0ah, 0dh
     Print loseprint
 lose ENDP
+
+
+bmp_bg  DWORD ?
+
+COMMENT `
+void paint(HWND hWnd) {
+    PAINTSTRUCT ps;
+    HDC hdc_window = BeginPaint(hWnd, &ps);
+    HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
+    HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
+    HBITMAP blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
+    SelectObject(hdc_memBuffer, blankBmp);
+    SelectObject(hdc_loadBmp, bmp_bg);
+    BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);
+    BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
+    DeleteObject(blankBmp);
+    DeleteDC(hdc_memBuffer);
+    DeleteDC(hdc_loadBmp);
+    EndPaint(hWnd, &ps);
+}
+`

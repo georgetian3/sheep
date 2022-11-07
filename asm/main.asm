@@ -3,11 +3,11 @@
 option casemap :none  ; case sensitive
 
 include includes.inc
-include macros.inc
 
 ;#############################################################
 .DATA
 
+include macros.inc
 WindowName  byte "Sheep", 0
 msg         MSGStruct <>
 winRect     RECT <>
@@ -59,16 +59,17 @@ slot DWORD SLOT_SIZE DUP(0)
 ;#############################################################
 .CODE
 
-String here, "HERE", 10, 13
-String decStr, "%d", 10, 13
-
+String  here, "HERE", 10, 13
+String  hexStr, "%x"
+String  decStr, "%d"
+String  newline, 10, 13
 
 include tile.inc
 include button.inc
 COMMENT `
 include animation.inc
-include random.inc
 include utils.inc
+include random.inc
 include sound.inc
 include sheep.inc
 `
