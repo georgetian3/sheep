@@ -21,6 +21,7 @@
 
 void update() {
     struct Button *a, *b;
+    printf("begin update \n");
     for (int i = 0; i < N_BUTTONS; i++) {
         b = get_button_index(i);
         if (!b || !is_tile(b) || b->moving) {
@@ -54,9 +55,9 @@ void update() {
          btn = get_button_index(i);
          if(btn){
              InvalidateRect(btn->hWnd,0,0);
-            printf("%d",i);
-       }
+         }
      }
+     printf("end update \n");
 }
 
 
@@ -96,8 +97,8 @@ void update_slot(struct Button* btn) {
     
     insert_slot(btn, insert_index);
     last_index = insert_index;
-    //printf("finished insert_slot\n");
-    //printf("finished update slot\n");
+    printf("finished insert_slot\n");
+    printf("finished update slot\n");
 }
 
 
@@ -137,12 +138,15 @@ void handle_button_click(HWND parent, struct Button* btn) {
             total++;
             last_button=0;
             for(int i=last_index+1;i<slot_count;i++){
+                slot[i]->callback = 0;
                 move_button(slot[i], slot_x(i - 1), SLOT_Y, SLOT_MOVE_TIME);
                 slot[i-1] = slot[i];
             }
             slot_count--;
         }
     }
+
+    printf("slot_count  %d \n",slot_count);
     //InvalidateRect(btn->hWnd, 0, 0);
 }
 
