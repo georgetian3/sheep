@@ -32,13 +32,9 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
                 mov     edx, 0
                 .WHILE edx < N_BUTTON_TYPES
                 
-                        pushad
-                        INVOKE  crt_strcpy, filename, ADDR dir
-                        popad
+                        Protect INVOKE crt_strcpy, filename, ADDR dir
 
-                        pushad
-                        INVOKE  crt_strcat, filename, bitmap_names[edx * SIZEOF DWORD]
-                        popad
+                        Protect INVOKE crt_strcat, filename, bitmap_names[edx * SIZEOF DWORD]
 
                         .IF ecx == 0
                                 pushad
@@ -59,7 +55,6 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
 
                         Print   OFFSET hexStr, eax
                         Print   OFFSET newline
-
 
                         mov     esi, eax
 

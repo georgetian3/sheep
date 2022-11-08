@@ -10,3 +10,9 @@ Print MACRO strPtrs:VARARG
     invoke crt_printf, strPtrs
     popad
 ENDM
+
+Protect MACRO cmd:VARARG
+    pushad
+    cmd
+    popad
+ENDM
