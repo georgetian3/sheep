@@ -173,9 +173,10 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
         mov (Button PTR [eax]).in_slot, 1
         mov (Button PTR [eax]).callback, 2
         inc slot_count
+        Print offset hexStr,index
         INVOKE slot_x, index
-        ret
         INVOKE move_button, btn_insert, eax, SLOT_Y, SLOT_MOVE_TIME
+
     ret
 insert_slot ENDP
 

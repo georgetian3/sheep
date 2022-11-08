@@ -80,7 +80,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 ;Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
                 INVOKE  load_bitmaps
-                INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+                INVOKE  create_button, hWgit nd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
                 INVOKE  PostQuitMessage, 0
