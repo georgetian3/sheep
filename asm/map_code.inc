@@ -1,7 +1,3 @@
-MAX_SIZE = 64
-res_dir BYTE "../res/"
-read_mode BYTE "r"
-
 build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     local i:DWORD, j:DWORD, k:DWORD, fp:DWORD, map_filename:DWORD, total_:DWORD, offset_x:DWORD, offset_y:DWORD, 
         tiles_num:DWORD, item:DWORD, flag:DWORD, map_width:DWORD, map_length:DWORD, map_height:DWORD

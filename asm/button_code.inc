@@ -1,18 +1,18 @@
 __search_struct PROC uses ebx ecx edx esi edi btn:DWORD
-    mov ecx, 0
-    .WHILE (ecx < N_BUTTONS)
-        mov edx, 4
-        mul ecx
-        mov eax, btn
-        .IF (__buttons[edx] == eax)
-            mov eax, edx    ;if want to have exact loca, then mov eax, edx
-            jmp F1
-        .ENDIF
-        inc ecx
-    .ENDW
-    mov eax, -1
-    F1:
-        ret
+        mov ecx, 0
+        .WHILE (ecx < N_BUTTONS)
+                mov edx, 4
+                mul ecx
+                mov eax, btn
+                .IF __buttons[edx] == eax
+                        mov eax, edx    ;if want to have exact loca, then mov eax, edx
+                        jmp F1
+                .ENDIF
+                inc ecx
+        .ENDW
+        mov eax, -1
+        F1:
+                ret
 __search_struct ENDP
 
 __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
@@ -41,16 +41,16 @@ __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
 __search_hwnd ENDP
 
 win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
-    local rect:DWORD
-    INVOKE GetWindowRect, hWnd, rect
-    INVOKE GetParent, hWnd
-    mov ebx, eax
-    INVOKE MapWindowPoints, HWND_DESKTOP, ebx, rect, 2
-    mov ecx, (RECT PTR [rect]).left
-    mov (POINT PTR [point]).x, ecx
-    mov ecx, (RECT PTR [rect]).top
-    mov (POINT PTR [point]).y, ecx
-    ret
+        LOCAL rect:DWORD
+        INVOKE  GetWindowRect, hWnd, rect
+        INVOKE  GetParent, hWnd
+        mov     ebx, eax
+        INVOKE  MapWindowPoints, HWND_DESKTOP, ebx, rect, 2
+        mov     ecx, (RECT PTR [rect]).left
+        mov     (POINT PTR [point]).x, ecx
+        mov     ecx, (RECT PTR [rect]).top
+        mov     (POINT PTR [point]).y, ecx
+        ret
 win_pos ENDP
 
 id_to_hwnd PROC uses ebx ecx edx esi edi parent:DWORD, id:DWORD
@@ -59,31 +59,30 @@ id_to_hwnd PROC uses ebx ecx edx esi edi parent:DWORD, id:DWORD
 id_to_hwnd ENDP
 
 get_button_index PROC uses ebx ecx edx esi edi index:DWORD
-    String err, "get_button bad index", 0ah, 0dh
-    .IF (index < 0)
-        mov eax, -1
+        String err, "get_button bad index", 0ah, 0dh
+        .IF     index < 0
+                mov eax, -1
+                ret
+        .ENDIF
+        mov     ebx, index
+        .IF ebx >= N_BUTTONS
+                mov eax, -1
+        .ENDIF
+        mov     eax, 4
+        mul     index
+        mov     eax, __buttons[edx]
         ret
-    .ENDIF
-    mov ebx, index
-    .IF (ebx >= N_BUTTONS)
-        mov eax, -1
-    .ENDIF
-    mov eax, 4
-    mul index
-    mov eax, __buttons[edx]
-    ret
 get_button_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
-        INVOKE __search_hwnd, hWnd
+        INVOKE  __search_hwnd, hWnd
         .IF eax == -1
-            mov eax, 0
-            ret
+                mov eax, 0
+                ret
         .ENDIF
-        mov eax, __buttons[eax]
-    ret
+        mov     eax, __buttons[eax]
+        ret
 get_button ENDP
-
 
 get_free_id PROC uses eax ebx ecx edx esi edi parent:DWORD
         INVOKE  id_to_hwnd, parent, __id_count
@@ -94,7 +93,6 @@ get_free_id PROC uses eax ebx ecx edx esi edi parent:DWORD
         mov     eax, __id_count
     ret
 get_free_id ENDP
-
 
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
     local new_btn:DWORD, index:DWORD
@@ -120,7 +118,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 Print   empty_struct
         .ENDIF
 
-
         mov     eax, 4
         mul     index
         mov     index, eax
@@ -133,7 +130,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     new_btn, eax
         mov     edi, eax
         mov     [edi], eax
-
 
         INVOKE  get_free_id, parent
         INVOKE  CreateWindowEx,0,
@@ -177,7 +173,6 @@ __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
     ret
 __delete_button ENDP
 
-
 delete_button_struct PROC uses eax ebx ecx edx esi edi btn_del:DWORD
     local index:DWORD
     String del_err, "Delete Struct not found", 0ah, 0dh
@@ -196,13 +191,9 @@ delete_button_hwnd PROC uses eax ebx ecx edx esi edi hWnd:DWORD
     ret
 delete_button_hwnd ENDP
 
-
-
-
-
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  drawbutton, "draw_button", 10, 13
-        Print   OFFSET drawbutton
+        ;Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
         INVOKE  id_to_hwnd, parent, id
 
@@ -222,24 +213,26 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  bm, "bitmap", 10, 13
 
         mov     ebx, (Button PTR [esi]).gray
-        and     ebx, 1
+        .IF ebx == 0
+                mov     ebx, 1
+        .ELSE
+                mov     ebx, 0
+        .ENDIF
+
         mov     ecx, (Button PTR [esi]).type_
 
 
-        String  ot, "gray %d type %d addr %x", 10, 13
-        Print   OFFSET hexStr, ADDR bitmaps
-        Print   OFFSET newline
         INVOKE  AA2, ADDR bitmaps, ebx, ecx
         mov     eax, [eax]
-
 
         mov     edi, dis
         mov     esi, (DRAWITEMSTRUCT PTR [edi]).hdc
 
         INVOKE  DrawStateW, esi, 0, 0, eax, 0, 0, 0, 0, 0, DST_BITMAP
         .IF eax == 0
-                String  drawstatee, "Draw state 0", 10, 13
-                Print   OFFSET drawstatee
+                String  drawstate, "Draw state 0", 10, 13
+                Print   OFFSET drawstate
+                INVOKE  ExitProcess, 0
         .ENDIF
 
 
