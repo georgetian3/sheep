@@ -1,7 +1,3 @@
-FPS equ 120
-MSPF equ 8
-epsilon REAL8 1.0E-12
-
 __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:DWORD, dwTime:DWORD
     local btn_mov:DWORD, temp_x_result:DWORD, temp_y_result:DWORD
     String move_button_not_found, "Move Button not found", 0ah, 0dh
