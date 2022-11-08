@@ -12,6 +12,7 @@ N_STATES = 4
 
 
 Button STRUCT
+    start_pos POINT <>
     hWnd DWORD ?
     active DWORD ?
     moving DWORD ?
@@ -26,7 +27,6 @@ Button STRUCT
     dypf REAL8 ?
     frame DWORD ?
     frames DWORD ?
-    start_pos POINT <>
 Button ENDS
 
 start_game DWORD ?
