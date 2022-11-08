@@ -68,8 +68,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .IF eax != 0
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
-                                INVOKE  handle_button_click, hWnd, esi
-                                INVOKE  move_button, eax, 100, 100, test_time
+                                ;INVOKE  handle_button_click, hWnd, esi
+                                ;INVOKE  move_button, esi, 100, 100, test_time
                         .ENDIF
                 .ENDIF                
 

@@ -36,3 +36,5 @@ last_x DWORD 0
 last_y DWORD 0
 last_index DWORD -1
 last_button DWORD 0
+
+btnStr BYTE "button", 0
