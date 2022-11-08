@@ -72,9 +72,7 @@ update PROC USES eax ebx ecx edx esi edi
         push ecx
         INVOKE get_button_at_index, ecx
         Print offset newline
-        Print offset newline
         Print offset decStr , eax
-        Print offset newline
         Print offset newline
         Print offset newline
         ret

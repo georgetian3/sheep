@@ -170,9 +170,7 @@ destroy_all_button ENDP
 
 paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
     local ps:PAINTSTRUCT, hdc_window:HDC, hdc_memBuffer:HDC, hdc_loadBmp:HDC, blankBmp:DWORD
-    String paint_start, "paint start", 0ah, 0dh
     String paint_failed, "Paint() error", 0ah, 0dh
-    Print OFFSET paint_start
     mov ebx, hWnd
     INVOKE BeginPaint, ebx, addr ps
     .IF eax == 0
