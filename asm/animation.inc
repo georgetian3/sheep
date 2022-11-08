@@ -13,11 +13,11 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
     .IF btn_mov == 0
             Print OFFSET move_button_not_found
     .ENDIF
-    mov     edx, btn_mov
-    mov     ebx, (Button PTR [edx]).moving
-    not     ebx
+    mov edx, btn_mov
+    mov ebx, (Button PTR [edx]).moving
+    not ebx
     .IF ebx
-            Print   OFFSET wrong_stat
+        Print   OFFSET wrong_stat
     .ENDIF
     
     mov edi, btn_mov

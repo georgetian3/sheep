@@ -9,6 +9,7 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     String file_open_failed, "file open failed", 0ah, 0dh
     String one_int, "%d"
     String two_int, "%d %d"
+    String three_int, "%d %d %d"
     mov fp, 0
     INVOKE crt_malloc, MAX_FILENAME_LEN
     .IF eax == 0
@@ -47,11 +48,18 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     .WHILE ecx < total
         mov esi, 0
         .WHILE esi < N_TILE_TYPES
-            mov edi, 0
+            mov eax, 4
+            mul esi
+            mov ebx, eax
             mov eax, 3
-            mul tiles_num[esi]
-            .WHILE edi < eax
-                mov item[ecx], esi
+            mul tiles_num[ebx]
+            mov edx, eax
+            mov edi, 0
+            .WHILE edi < edx
+                mov eax, 4
+                mul ecx
+                mov ebx, eax
+                mov item[ebx], esi
                 inc edi
                 inc ecx
             .ENDW
@@ -60,6 +68,26 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     .ENDW
 
     INVOKE shuffle, item, total
+
+    INVOKE crt_fscanf, fp, addr three_int, addr map_width, addr map_length, addr map_height
+    mov total, 0
+    INVOKE crt_fscanf, fp, addr one_int, addr flag
+    mov ebx, eax
+    .WHILE ebx != -1
+        .IF flag
+            ; what is i
+        .ENDIF
+        inc i
+        mov edx, i
+        .IF edx == map_width
+            mov i, 0ah
+            inc j
+        .ENDIF
+        
+    .ENDW
+    INVOKE crt_fclose, fp
+
+    ; ask what total used
     INVOKE crt_free, item
     ret
 build_map ENDP
