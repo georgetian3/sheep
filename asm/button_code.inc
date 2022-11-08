@@ -214,12 +214,10 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ENDIF
 
         String  bm, "bitmap", 10, 13
-        Print   OFFSET here
 
         ; HBITMAP** ptr = bitmaps
         mov     esi, OFFSET bitmaps
-        Print   OFFSET hexStr, esi
-        Print   OFFSET newline
+
         
 
         mov     eax, (Button PTR [edx]).gray
@@ -236,16 +234,11 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         mul     ebx
         add     esi, eax
         ; esi should now point to the right HBITMAP
-        Print   OFFSET bm
-        Print   OFFSET hexStr, esi
-        Print   OFFSET newline
+
 
         mov     ecx, dis
         mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
-        String  disp, "Drawitemstructptr", 10, 13
-        Print   OFFSET disp
-        Print   OFFSET hexStr, eax
-        Print   OFFSET newline
+
 
         INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
 

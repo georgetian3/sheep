@@ -24,45 +24,42 @@ String  newline, 10, 13
 include code.inc
 
 
+String wm_create, "WM_CREATE", 10, 13
+String wm_command, "WM_COMMAND", 10, 13
+String wm_drawitem, "WM_DRAWITEM", 10, 13
+String clicked, "Button clicked", 10, 13
+
 
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
-    ;LOCAL point:POINT
-        String wm_create, "WM_CREATE", 10, 13
-        String wm_command, "WM_COMMAND", 10, 13
-        String wm_drawitem, "WM_DRAWITEM", 10, 13
+
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
-            Print   OFFSET wm_drawitem
-            INVOKE  draw_button, hWnd, wParam, lParam
+                ;Print   OFFSET wm_drawitem
+                INVOKE  draw_button, hWnd, wParam, lParam
         .ELSEIF ebx == WM_COMMAND
-            Print   OFFSET wm_command
+                ;Print   OFFSET wm_command
 
-            ; lParam: hWnd of button
-            ; LOWORD(wParam): id
-            ; HIWORD(wParam): event
-            
-            ;String  clicked, "Button clicked", 10, 13
-            ;Print   OFFSET clicked
-            ;INVOKE  WinPos, lParam, ADDR point
+                ; lParam: hWnd of button
+                ; LOWORD(wParam): id
+                ; HIWORD(wParam): event
+                
+                Print   OFFSET clicked
+                ;INVOKE  handle_button_click
+                ;INVOKE  WinPos, lParam, ADDR point
 
-            ;String  intStr, "%d", 10, 13
-            ;Print   OFFSET intStr, point.x
-            ;Print   OFFSET intStr, point.y
+                ;String  intStr, "%d", 10, 13
+                ;Print   OFFSET intStr, point.x
+                ;Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
-            Print   OFFSET wm_create
-            Print   OFFSET wm_command
-            ;INVOKE  load_bitmaps
-
-            Print   OFFSET here
-            INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-            Print   OFFSET wm_command
-            INVOKE  play_sound, 0, 0, 0
+                INVOKE  load_bitmaps
+                INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+                INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
-            INVOKE  PostQuitMessage, 0
+                INVOKE  PostQuitMessage, 0
         .ELSE
-            INVOKE  DefWindowProc, hWnd, uMsg, wParam, lParam
+                INVOKE  DefWindowProc, hWnd, uMsg, wParam, lParam
         .ENDIF
     ret
 WndProc ENDP
@@ -72,15 +69,11 @@ WndProc ENDP
 
 
 WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWORD
-        LOCAL wc:WNDCLASS
-        LOCAL msg:MSGStruct
-        LOCAL winRect:RECT
-        LOCAL hMainWnd:DWORD
+        LOCAL wc:WNDCLASS, msg:MSGStruct, winRect:RECT, hMainWnd:DWORD
 
         finit
 
         String  WindowName, "Sheep"
-        INVOKE  GetModuleHandle, NULL
         mov     eax, hInst
         mov     wc.hInstance, eax
         INVOKE  LoadCursor, NULL, IDC_ARROW
@@ -88,33 +81,32 @@ WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWOR
         mov     wc.lpszClassName, OFFSET WindowName
         mov     wc.lpfnWndProc, OFFSET WndProc
 
-
-        INVOKE RegisterClass, ADDR wc
+        INVOKE  RegisterClass, ADDR wc
         .IF eax == 0
-            jmp Exit_Program
+                jmp Exit
         .ENDIF
         
-        INVOKE CreateWindowEx, 0, ADDR WindowName, ADDR WindowName,
-            WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, hInst, 0
-        mov hMainWnd,eax
-
+        INVOKE  CreateWindowEx, 0, ADDR WindowName, ADDR WindowName,
+                WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
+                0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, hInst, 0
+        mov     hMainWnd,eax
         .IF eax == 0
-                jmp  Exit_Program
+                jmp Exit
         .ENDIF
 
-        INVOKE ShowWindow, hMainWnd, SW_SHOW
-        INVOKE UpdateWindow, hMainWnd
+        INVOKE  ShowWindow, hMainWnd, SW_SHOW
+        INVOKE  UpdateWindow, hMainWnd
 
-    Message_Loop:
-        INVOKE GetMessage, ADDR msg, NULL,NULL,NULL
+    MsgLoop:
+        INVOKE  GetMessage, ADDR msg, 0, 0, 0
         .IF eax == 0
-        jmp Exit_Program
+                jmp Exit
         .ENDIF
+        INVOKE  DispatchMessage, ADDR msg
+        jmp     MsgLoop
 
-        INVOKE DispatchMessage, ADDR msg
-        jmp Message_Loop
+    Exit:
+        INVOKE  ExitProcess, eax
 
-    Exit_Program:
-        INVOKE ExitProcess,0
 WinMain ENDP
 END WinMain

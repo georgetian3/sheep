@@ -54,6 +54,6 @@ bitmap_names DWORD OFFSET carrot, OFFSET corn, OFFSET grass, OFFSET tree, OFFSET
              DWORD OFFSET milk, OFFSET pliers, OFFSET rice, OFFSET rope, OFFSET start, OFFSET undo
 
 
-bitmaps_dark DWORD N_TILE_TYPES DUP(?)
-bitmaps_light DWORD N_TILE_TYPES DUP(?)
+bitmaps_dark DWORD N_TILE_TYPES DUP(0)
+bitmaps_light DWORD N_TILE_TYPES DUP(0)
 bitmaps DWORD OFFSET bitmaps_dark, OFFSET bitmaps_light
