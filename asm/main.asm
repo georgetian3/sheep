@@ -14,6 +14,22 @@ include data.inc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .CODE
 
+
+AA1 PROC USES ebx p:DWORD, i:DWORD
+    COMMENT !
+        p: pointer to 1D array
+        i: array index
+        returns in eax the pointer
+        to the corresponding element
+    !
+
+        mov     eax, p
+        mov     ebx, i
+        lea     eax, [eax + ebx * SIZEOF DWORD]
+        ret
+AA1 ENDP
+
+
 AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
     COMMENT !
         p: pointer to 2D array
@@ -29,8 +45,10 @@ AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
         mov     eax, [eax]
         lea     eax, [eax + ecx * SIZEOF DWORD]
 
-    ret
+        ret
 AA2 ENDP
+
+
 
 String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13

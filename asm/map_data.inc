@@ -1,3 +1,3 @@
 MAX_SIZE = 64
-res_dir BYTE "../res/"
-read_mode BYTE "r"
+res_dir BYTE "../res/", 0
+read_mode BYTE "r", 0
