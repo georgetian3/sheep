@@ -75,18 +75,38 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     mov ebx, eax
     .WHILE ebx != -1
         .IF flag
-            ; what is i
+            mov ecx, 2
+            mov eax, TILE_WIDTH
+            div ecx
+            mul i
+            add eax, offset_x
+            mov esi, eax
+
+            mov ecx, 2
+            mov eax, TILE_HEIGHT
+            div ecx
+            mul j
+            add eax, offset_y
+            mov ecx, eax
+
+            mov edi, total_
+            mov edx, item[edi]
+            inc total_
+            INVOKE create_button, hwnd, edx, esi, ecx, k, TILE_WIDTH, TILE_HEIGHT
         .ENDIF
         inc i
         mov edx, i
         .IF edx == map_width
-            mov i, 0ah
+            mov i, 0
             inc j
         .ENDIF
-        
+        mov edx, j
+        .IF edx == map_length
+            mov j, 0
+            inc k
+        .ENDIF
     .ENDW
     INVOKE crt_fclose, fp
-
     INVOKE crt_free, item
     mov eax, total_
     ret
