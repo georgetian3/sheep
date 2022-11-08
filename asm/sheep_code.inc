@@ -90,9 +90,9 @@ win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
         ret
     .ELSE
         INVOKE destroy_all_button
-        INVOKE create_button , hWnd , TYPE_START ,320,320,-1,200,80
+        INVOKE create_button , hWnd , TYPE_START ,320,320,-1,0, 0
         mov start_game , eax
-        INVOKE create_button , hWnd , TYPE_END ,320,400,-1,200,56
+        INVOKE create_button , hWnd , TYPE_END ,320,400,-1,0, 0
         mov end_game ,eax
     .ENDIF
     return
