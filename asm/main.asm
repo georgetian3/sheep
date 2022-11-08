@@ -47,6 +47,7 @@ String wm_command, "WM_COMMAND", 10, 13
 String wm_drawitem, "WM_DRAWITEM", 10, 13
 String clicked, "Button clicked", 10, 13
 
+test_time   REAL8 0.2
 
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
@@ -54,11 +55,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
-                ;Print   OFFSET wm_drawitem
                 INVOKE  draw_button, hWnd, wParam, lParam
         .ELSEIF ebx == WM_COMMAND
-                ;Print   OFFSET wm_command
-
                 ; lParam: hWnd of button
                 ; LOWORD(wParam): id
                 ; HIWORD(wParam): event
@@ -71,13 +69,10 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
                                 INVOKE  handle_button_click, hWnd, esi
+                                INVOKE  move_button, eax, 100, 100, test_time
                         .ENDIF
                 .ENDIF                
-                ;INVOKE  WinPos, lParam, ADDR point
 
-                ;String  intStr, "%d", 10, 13
-                ;Print   OFFSET intStr, point.x
-                ;Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
                 INVOKE  load_bitmaps
                 INVOKE  create_button, hWgit nd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
