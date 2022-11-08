@@ -61,6 +61,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     String startmove, "Move button", 0ah, 0dh
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
+    String printfloat, "%f", 0ah, 0dh ;for testing floats
     FINIT
     Print OFFSET startmove
     fld epsilon
@@ -98,6 +99,8 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     fild temp_FPS
     fmul time
     fist temp_frames_result
+
+    ;Print OFFSET printfloat, temp_frames_result
     mov eax, temp_frames_result
     mov (Button PTR [edi]).frames, eax
     
@@ -109,7 +112,8 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     fild (Button PTR [edi]).frames
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dxpf
-
+    ;Print OFFSET printfloat, (Button PTR [edi]).dxpf
+    
     mov ebx, (Button PTR [edi]).start_pos.y
     mov eax, y
     sub eax, ebx
@@ -118,6 +122,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     fild (Button PTR [edi]).frames
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dypf
+    ;Print OFFSET printfloat, (Button PTR [edi]).dypf
 
     INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
     .IF eax == 0
