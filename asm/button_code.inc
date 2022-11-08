@@ -58,6 +58,7 @@ get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         INVOKE  __search_hwnd, hWnd
+        Print OFFSET hexStr,eax
         .IF eax == -1
                 mov eax, 0
                 ret

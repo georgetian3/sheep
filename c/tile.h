@@ -34,7 +34,7 @@
 const char* bitmap_names[N_BUTTON_TYPES] = {
     "carrot", "corn", "grass", "tree", "fork", "bell",
     "brush", "bucket", "cabbage", "fire", "hay", "gloves",
-    "milk", "pliers", "rice", "rope", "start", "undo","end"
+    "milk", "pliers", "rice", "rope", "start", "undo","endg"
 };
 
 const char* dir = "../res/";

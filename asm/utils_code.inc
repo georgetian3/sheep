@@ -98,84 +98,44 @@ slot_x PROC uses ebx ecx edx esi edi slot_index:DWORD
     ret
 slot_x ENDP
 
-match_slot PROC uses eax ebx ecx edx esi edi
-    local count:DWORD, prev_type:DWORD
-    String matching, "match slot", 0ah, 0dh
-    Print matching
-    mov count, 0
-    mov prev_type, -1
-    mov ecx, 0
-    .WHILE (ecx < slot_count)
-        mov esi, slot[ecx]
-        mov edi, (Button PTR [esi]).type_
-        .IF( edi == prev_type)
-            inc count
-            .IF (count >= MATCH_COUNT)
-                mov edx, 0
-                .WHILE(edx < count)
-                    mov     ebx, ecx
-                    sub     ebx, edx
-                    INVOKE  delete_button, (Button PTR slot[ebx]).hWnd
-                .ENDW
-                mov     ebx, ecx
-                inc     ebx
-                mov     edx, ebx
-                .WHILE edx < slot_count
-                        mov     ebx, edx
-                        sub     ebx, count
-                        INVOKE  slot_x, ebx
-
-                        ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
-                        mov     esi, slot[edx]
-                        mov     slot[ebx], esi
-                .ENDW
-                mov esi, count
-                sub slot_count, esi
-                jmp F1
-            .ENDIF
-        .ELSE
-            mov count, 1
-            mov ebx, slot[ecx]
-            mov eax, (Button PTR [ebx]).type_
-            mov prev_type, eax
-        .ENDIF
-        inc ecx
-    .ENDW
-    ;update()?
-    F1:
-    ret
-match_slot ENDP
 
 
 insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
         String  insertprint, "Insert Slot", 0ah, 0dh
+        String  inWhile, "inWile", 0ah, 0dh
         Print   OFFSET insertprint
         mov ecx, slot_count
         dec ecx
         .IF ecx == 0FFFFFFFFh
             jmp L1
         .ENDIF
-        Print Offset hexStr,index
-
         .WHILE (ecx >= index)
             mov ebx, ecx
             inc ebx
             INVOKE slot_x, ebx
-            Print Offset hexStr,ecx
+            Print OFFSET inWhile
             INVOKE move_button, slot[ecx], eax, SLOT_Y, SLOT_MOVE_TIME
             mov esi, slot[ecx]
             mov slot[ebx], esi
             dec ecx
         .ENDW
         L1:
-        mov eax, btn_insert
-        mov slot[index], eax
-        mov (Button PTR [eax]).in_slot, 1
-        mov (Button PTR [eax]).callback, 2
+        Print Offset hexStr ,index
+        Print offset newline
+        mov eax , 4
+        mov ecx ,index
+        mul ecx
+        mov esi, btn_insert
+        mov slot[eax], esi
+        mov (Button PTR [esi]).in_slot, 1
+        mov (Button PTR [esi]).callback, 2
         inc slot_count
+
         INVOKE slot_x, index
-        ret
+        Print offset newline
+        Print offset hexStr ,eax
         INVOKE move_button, btn_insert, eax, SLOT_Y, SLOT_MOVE_TIME
+        
     ret
 insert_slot ENDP
 
