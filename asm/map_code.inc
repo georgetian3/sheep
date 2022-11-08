@@ -1,15 +1,14 @@
-coordinate PROC USES ebx ecx edx esi edi x:DWORD, y:DWORD, z:DWORD
-        mov     eax, z
-        mov     ecx, 2
-        div     ecx
-        mov     ebx, y
-        mul     y
+
+coordinate PROC uses ebx ecx edx esi edi x:DWORD, y:DWORD, z:DWORD
+        mov     eax, y
+        mov     ebx, z
+        mul     ebx
         add     eax, x
         ret
 coordinate ENDP
 
 build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
-    local i:DWORD, j:DWORD, k:DWORD, fp:DWORD, map_filename:DWORD, total_:DWORD, offset_x:DWORD, offset_y:DWORD, type_count:DWORD,
+    local i:DWORD, j:DWORD, k:DWORD, x:DWORD, y:DWORD, fp:DWORD, map_filename:DWORD, total_:DWORD, offset_x:DWORD, offset_y:DWORD, type_count:DWORD,
         tile_type_count:DWORD, item:DWORD, flag:DWORD, map_width:DWORD, map_length:DWORD, map_height:DWORD
 
     ;String malloc_f, "malloc failed", 0ah, 0dh
@@ -36,11 +35,12 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR offset_y
 
 
-    INVOKE crt_malloc, N_BUTTONS
+    AINVOKE crt_malloc, N_BUTTONS * SIZEOF DWORD
     .IF eax == 0
             Print OFFSET malloc_f
             INVOKE  ExitProcess, 1
     .ENDIF
+    mov     item, eax
 
     mov     total_, 0
     mov     ecx, 0
@@ -49,34 +49,58 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
             mov     eax, type_count
             mov     ebx, MATCH_COUNT
             mul     ebx
+            mov     edx, eax
             ;Print   OFFSET decStr, eax
             ;Print   OFFSET newline
-            mov     edx, 0
-            .WHILE edx < eax
-                    INVOKE  AA1, ADDR item, total_
+            mov     ebx, 0
+            .WHILE ebx < edx
+                    INVOKE  AA1, item, total_
                     mov     [eax], ecx
+                    
+                    inc     ebx
                     inc     total_
-                    inc     edx
             .ENDW
             inc ecx
     .ENDW
 
+    
+    mov     ecx, 0
+    .WHILE ecx < 18
+            AINVOKE AA1, item, ecx
+            mov     eax, [eax]
+            Print   OFFSET decStr, eax
+            Print   OFFSET newline
+            inc     ecx
+    .ENDW
 
-    INVOKE  shuffle, ADDR item, total_
+    INVOKE  shuffle, item, total_
+    Print   OFFSET here
+
+
+    mov     ecx, 0
+    .WHILE ecx < 18
+            AINVOKE AA1, item, ecx
+            mov     eax, [eax]
+            Print   OFFSET decStr, eax
+            Print   OFFSET newline
+            inc     ecx
+    .ENDW
+
 
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR map_width
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR map_length
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR map_height
 
+    Print   OFFSET here
+
+    mov     total_, 0
 
     mov     edx, 0
-
-    mov     a, 0
-    .WHILE i < map_height
-            mov     ebx, 0
-            .WHILE ebx < map_width
-                    mov     ecx, 0
-                    .WHILE ecx < map_length
+    .WHILE edx < map_height
+            mov     ecx, 0
+            .WHILE ecx < map_width
+                    mov     ebx, 0
+                    .WHILE ebx < map_length
                             PINVOKE crt_fscanf, fp, ADDR one_int, ADDR flag
                             .IF flag == 0
                                     jmp     continue
@@ -84,26 +108,41 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
 
                             pushad
 
-                            INVOKE  coordinate, offset_y, ebx, TILE_HEIGHT
-                            mov     ebx, eax
-                            INVOKE  coordinate, offset_x, ecx, TILE_WIDTH
+                            AINVOKE coordinate, offset_x, ebx, TILE_HWIDTH
+                            mov     x, eax
+                            AINVOKE coordinate, offset_y, ecx, TILE_HHEIGHT
+                            mov     y, eax
 
+                            AINVOKE AA1, item, total_
 
-                            INVOKE  create_button, hWnd, item[edx],
-                                    ecx, ebx, eax, TILE_WIDTH, TILE_HEIGHT
-                            inc     total_
+                            mov     eax, [eax]
+ 
+                            String  typ, "type %d", 10, 13
+                            Print   OFFSET typ, eax
+
+                            PINVOKE create_button, hWnd, eax, x, y, edx, TILE_WIDTH, TILE_HEIGHT
                             popad
 
-
-
+                            inc     total_
                         continue:
-                            inc     ecx
+                            inc     ebx
                     .ENDW
-                    inc     ebx
+                    inc     ecx
             .ENDW
-            inc     eax
+            inc     edx
     .ENDW
 
+    mov     ecx, 0
+    .WHILE ecx < 18
+            AINVOKE AA1, OFFSET __buttons, ecx
+            mov     eax, (Button PTR [eax]).type_
+            Print   OFFSET decStr, eax
+            Print   OFFSET newline
+            inc     ecx
+    .ENDW
+
+    String  donef, "done here", 10, 13
+    Print   OFFSET donef
     
     mov     eax, edx
     ret

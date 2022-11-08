@@ -15,7 +15,7 @@ include data.inc
 .CODE
 
 
-AA1 PROC USES ebx p:DWORD, i:DWORD
+AA1 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD
     COMMENT !
         p: pointer to 1D array
         i: array index
@@ -26,11 +26,13 @@ AA1 PROC USES ebx p:DWORD, i:DWORD
         mov     eax, p
         mov     ebx, i
         lea     eax, [eax + ebx * SIZEOF DWORD]
+        String  tt, "p %d i %d res %d", 10, 13
+        ;Print   OFFSET tt, p, i, eax
         ret
 AA1 ENDP
 
 
-AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
+AA2 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD, j:DWORD
     COMMENT !
         p: pointer to 2D array
         i, j: array indexes
@@ -74,7 +76,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
-                INVOKE  draw_button, hWnd, wParam, lParam
+                Print   OFFSET wm_drawitem
+                PINVOKE draw_button, hWnd, wParam, lParam
         .ELSEIF ebx == WM_COMMAND
                 ; lParam: hWnd of button
                 ; LOWORD(wParam): id
@@ -98,26 +101,9 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 INVOKE load_bitmap, ecx
                 mov bmp_bg, eax
                 INVOKE  load_bitmaps
-                INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-
-                ;INVOKE  ExitProcess, 1
+                INVOKE  build_map, hWnd, OFFSET MAP1
+                Print   OFFSET here
+                PINVOKE print_buttons
                 ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_PAINT
                 INVOKE paint, hWnd
@@ -137,6 +123,9 @@ WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWOR
         LOCAL wc:WNDCLASS, msg:MSGStruct, winRect:RECT, hMainWnd:DWORD
 
         finit
+
+        INVOKE  crt_time, 0
+        INVOKE  crt_srand, eax
 
         String  WindowName, "Sheep"
         mov     eax, hInst

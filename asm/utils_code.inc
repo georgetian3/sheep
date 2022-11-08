@@ -80,18 +80,26 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
 overlap ENDP
 
 shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
+
         mov     esi, arr
         mov     ecx, n
         dec     ecx
-        ret
         .WHILE ecx > 0
-                INVOKE crt_rand
+                push    ecx
+                AINVOKE crt_rand
+                pop     ecx
+                mov     edx, 0
                 div     n
-                mov     eax, [esi + ecx]
-                mov     ebx, [esi + edx]
-                mov     [esi + ecx], ebx
-                mov     [esi + edx], eax
-                dec ecx
+                AINVOKE AA1, arr, ecx
+                mov     esi, eax
+                AINVOKE AA1, arr, edx
+                mov     edi, eax
+
+                mov     eax, [esi]
+                mov     ebx, [edi]
+                mov     [esi], ebx
+                mov     [edi], eax
+                dec     ecx
         .ENDW
         ret
 shuffle ENDP
