@@ -76,7 +76,6 @@ int win(HWND hWnd){
         destroy_all_button();
         start_game=create_button(hWnd,TYPE_START,320,320,-1,200,80);
         end_game = create_button(hWnd,TYPE_END,320,400,-1,200,56);
-        undo_btn=create_button(hWnd,TYPE_UNDO,500,730,-1,64,64);
 
     }
 }
@@ -127,7 +126,6 @@ void handle_button_click(HWND parent, struct Button* btn) {
     else if(btn==start_game){
         destroy_all_button();
         undo_btn=create_button(parent,TYPE_UNDO,500,730,-1,64,64);
-
         total=build_map(parent,"map1.txt");
         update();
     }
