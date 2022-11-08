@@ -59,12 +59,16 @@ get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         INVOKE  __search_hwnd, hWnd
-        ;Print OFFSET hexStr,eax
+        Print   OFFSET hexStr,eax
+        Print   OFFSET newline
         .IF eax == -1
                 mov eax, 0
                 ret
         .ENDIF
         AINVOKE AA1, OFFSET __buttons, eax
+        mov     eax, [eax]
+        Print   OFFSET hexStr,eax
+        Print   OFFSET newline
         ret
 get_button ENDP
 
@@ -158,8 +162,8 @@ print_buttons PROC USES eax ebx ecx edi
                 .IF eax == 0
                         jmp     continue
                 .ENDIF
-                String  binfo, "Button: i %d hWnd %d type %d", 10, 13
-                Print   OFFSET binfo, ecx, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_
+                String  binfo, "Button: i %d ptr %x hWnd %d type %d", 10, 13
+                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_
             continue:
                 inc     ecx
         .ENDW 
@@ -207,6 +211,11 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
                 Print   OFFSET notfound
         .ENDIF
         mov     esi, eax        ; esi will hold btn for the rest of this proc
+        String  btnptr, "button ptr: %x", 10, 13
+        Print   OFFSET btnptr, esi
+
+        String  binfo1, "Button1: hWnd %d type %d", 10, 13
+        Print   OFFSET binfo1, (Button PTR [esi]).hWnd, (Button PTR [esi]).type_
 
         mov     ebx, (Button PTR [esi]).gray
         .IF ebx == 0
@@ -216,16 +225,17 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ENDIF
         mov     ecx, (Button PTR [esi]).type_
 
+        String  gtb, "gray %d type %d", 10, 13
+        Print   OFFSET gtb, ebx, ecx
+
         AINVOKE AA2, ADDR bitmaps, ebx, ecx
 
         String  gbm, "got bitmap: %x", 10, 13
         Print   OFFSET gbm, eax
 
 
-        ret
+        ;ret
         mov     eax, [eax]
-        ret
-
 
         mov     edi, dis
         mov     esi, (DRAWITEMSTRUCT PTR [edi]).hdc
