@@ -70,19 +70,19 @@ update PROC USES eax ebx ecx edx esi edi
     mov ecx, 0
     .WHILE ecx < N_BUTTONS
         push ecx
-        ; INVOKE get_button_at_index, ecx
-        ; Print offset newline
-        ; Print offset newline
-        ; Print offset decStr , eax
-        ; Print offset newline
-        ; Print offset newline
-        ; Print offset newline
-        ret
+        INVOKE get_button_at_index, ecx
+        Print offset newline
+        Print offset newline
+        Print offset decStr , eax
+        Print offset newline
+        Print offset newline
+        Print offset newline
         .IF eax == -1
             jmp S1
         .ENDIF
         mov b, eax
         INVOKE is_tile, b
+        ret
         not eax
         .IF eax
             jmp S1
@@ -93,7 +93,6 @@ update PROC USES eax ebx ecx edx esi edi
             jmp S1
         .ENDIF
         mov flag, 1
-
         mov esi, 0
         .WHILE esi < N_BUTTONS
             push esi

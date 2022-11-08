@@ -115,6 +115,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
                 ;INVOKE  ExitProcess, 1
                 ;INVOKE  play_sound, 0, 0, 0
+        .ELSEIF ebx == WM_PAINT
+                INVOKE paint, hWnd
         .ELSEIF ebx == WM_CLOSE
                 INVOKE  PostQuitMessage, 0
         .ELSE
