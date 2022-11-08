@@ -49,8 +49,8 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
             mov     eax, type_count
             mov     ebx, MATCH_COUNT
             mul     ebx
-            Print   OFFSET decStr, eax
-            Print   OFFSET newline
+            ;Print   OFFSET decStr, eax
+            ;Print   OFFSET newline
             mov     edx, 0
             .WHILE edx < eax
                     INVOKE  AA1, ADDR item, total_

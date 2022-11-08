@@ -59,7 +59,7 @@ get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         INVOKE  __search_hwnd, hWnd
-        Print OFFSET hexStr,eax
+        ;Print OFFSET hexStr,eax
         .IF eax == -1
                 mov eax, 0
                 ret
@@ -125,7 +125,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     (Button PTR [esi]).active, 1
         mov     (Button PTR [esi]).in_slot, 0
 
-
         ; search for empty btn
         mov     edi, 0
         mov     eax, N_BUTTONS
@@ -142,7 +141,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         add     edi, OFFSET __buttons
         mov     [edi], esi
 
-    
         ret
 create_button ENDP
 

@@ -11,7 +11,7 @@ win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
     .IF eax == 1
         INVOKE destroy_all_button
         mov slot_count , 0
-        INVOKE build_map ,hWnd, OFFSET MAP1
+        ;INVOKE build_map ,hWnd, OFFSET MAP1
         mov eax , total
         INVOKE update
         inc stage
@@ -29,9 +29,9 @@ win ENDP
 
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local insert_index:DWORD,count:DWORD
-    Print offset newline
-    Print offset newline
-    Print offset hexStr ,btn1
+    ; Print offset newline
+    ; Print offset newline
+    ; Print offset hexStr ,btn1
     mov count ,1
     mov ecx, 0
     .WHILE ecx < slot_count
@@ -102,7 +102,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         INVOKE destroy_all_button
         INVOKE create_button , parent , TYPE_UNDO,500,730,-1,TILE_WIDTH,TILE_HEIGHT
         mov undo_btn , eax 
-        INVOKE build_map,parent ,MAP2
+        ;INVOKE build_map,parent ,MAP2
         mov total , eax
         INVOKE update 
     .ELSEIF ebx == edx
