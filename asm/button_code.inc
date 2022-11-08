@@ -41,14 +41,14 @@ __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
 __search_hwnd ENDP
 
 win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
-        LOCAL rect:DWORD
-        INVOKE  GetWindowRect, hWnd, rect
+        LOCAL rect:RECT
+        INVOKE  GetWindowRect, hWnd,ADDR rect
         INVOKE  GetParent, hWnd
         mov     ebx, eax
-        INVOKE  MapWindowPoints, HWND_DESKTOP, ebx, rect, 2
-        mov     ecx, (RECT PTR [rect]).left
+        INVOKE  MapWindowPoints, HWND_DESKTOP, ebx,ADDR rect, 2
+        mov     ecx, rect.left
         mov     (POINT PTR [point]).x, ecx
-        mov     ecx, (RECT PTR [rect]).top
+        mov     ecx, rect.top
         mov     (POINT PTR [point]).y, ecx
         ret
 win_pos ENDP
@@ -250,7 +250,6 @@ set_active ENDP
 is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
     mov edi, btn_istile
     mov esi, (Button PTR [edi]).type_
-    ret
     .IF esi > 0
         jge S1
     .ENDIF

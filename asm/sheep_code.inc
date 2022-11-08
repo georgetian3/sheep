@@ -140,12 +140,15 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         .IF edx == edi
             inc count
         .ELSEIF count > 1
+            Print OFFSET MAP1
             jmp S1
         .ENDIF
         pop ecx
         inc ecx
     .ENDW
+    mov insert_index,ecx
     S1:
+        Print OFFSET decStr , insert_index
         INVOKE insert_slot ,btn1,insert_index
         mov eax , insert_index
         mov  last_index , eax 
@@ -167,7 +170,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn1:DWORD
         .ENDIF
         mov esi , btn1
         mov ebx , (Button PTR [esi]).hWnd
-        mov ecx , btn1[0]
+        mov ecx , btn1
         INVOKE win_pos , ebx , ecx
         mov esi , btn1
         mov ebx , (Button PTR [esi]).start_pos.x
@@ -176,7 +179,9 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn1:DWORD
         mov last_y , ecx
         mov last_button , esi
         INVOKE update_slot , btn1
+        ret
         INVOKE update
+
         mov eax, slot_count
         mov ebx , SLOT_SIZE
         .IF  eax > ebx
