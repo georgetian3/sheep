@@ -19,7 +19,7 @@ __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
         mov     ebx, hWnd
         mov     eax, 0
         .WHILE eax < N_BUTTONS
-                mov     esi, __buttons[ecx * SIZEOF DWORD]
+                mov     esi, __buttons[eax * SIZEOF DWORD]
                 .IF esi != 0
                         mov     ecx, (Button PTR [esi]).hWnd
                         .IF ebx == ecx
@@ -93,7 +93,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
 
         String empty_struct, "No Empty Button Struct???", 0ah, 0dh
         String window_failed, "CreateWindow failed", 0ah, 0dh
-        String btn, "button"
         String malloc_failed, "malloc failed", 10, 13
         String btnErr, "CreateButton failed", 10, 13
 
@@ -126,10 +125,9 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         Print   OFFSET hexStr, eax
         Print   OFFSET newline
         INVOKE  CreateWindowEx,0,
-                ADDR btn, 0,
+                ADDR btnStr, 0,
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
                 x,y,wd,ht,parent,eax,0, 0
-        ret
 
         mov     edi, new_btn
 
