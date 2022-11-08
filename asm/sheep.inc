@@ -125,6 +125,51 @@ update_slot PROC USES eax ebx ecx edx esi edi btn:DWORD
     ret 
 update_slot ENDP
 
+handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn:DWORD
+    INVOKE istile , btn
+    mov ebx , btn
+    mov ecx , start_game
+    mov edx , end_game 
+    mov esi , undo_btn
+    .IF eax != 0
+        mov esi , btn
+        mov edi , (Button PTR [esi]).in_slot
+        .IF edi !=0
+            ret
+        .ENDIF
+        mov esi , btn
+        mov ebx , (Button PTR [esi]).hWnd
+        mov ecx , btn[64]
+        INVOKE win_pos , ebx , ecx
+        mov esi , btn
+        mov ebx , (Button PTR [esi]).start_pos.x
+        mov ecx , (Button PTR [esi]).start_pos.y
+        mov last_x , ebx
+        mov last_y , ecx
+        mov last_button , esi
+        INVOKE update_slot , btn
+        INVOKE update
+        mov eax, slot_count
+        mov ebx , SLOT_SIZE
+        .IF  eax > ebx
+            INVOKE lost , parent
+        .ENDIF
+        mov eax ,total
+        .IF eax == 0 
+            INVOKE win,parent
+            mov total , eax
+        .ENDIF
+    .ELSEIF ebx == ecx
+        INVOKE destroy_all_button
+        INVOKE create_button , hWnd , TYPE_UNDO ,500,730,-1,64,64
+        mov undo_btn , eax 
+        INVOKE build_map,parent ,map2
+        mov total , eax
+        INVOKE update 
+    .ELSEIF ebx == edx
+        mov eax , last_button
+        .IF eax != 0
+
 
 COMMENT `
     for (int i = 0; i < N_BUTTONS; i++) {
