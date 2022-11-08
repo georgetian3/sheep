@@ -3,53 +3,25 @@
 option casemap :none  ; case sensitive
 
 include includes.inc
+include macros.inc
 
 ;#############################################################
 .DATA
 
 include data.inc
 
-include macros.inc
-WindowName  byte "Sheep", 0
 msg         MSGStruct <>
 winRect     RECT <>
 hMainWnd    DWORD ?
-hInstance   DWORD ?
 
 emptyStr    byte    0
 
 
 
 ; Define the Application's Window class structure.
-MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
+;MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
 
 
-SLOT_MOVE_TIME REAL8 0.2
-
-WINDOW_WIDTH equ 768
-WINDOW_HEIGHT equ 1024
-STAGE_STARTMENU equ 0
-STAGE_1 equ 1
-UNIT_SIZE_X equ 80
-UNIT_SIZE_Y equ 73
-BUTTON_STARTGAME equ 1001
-BUTTON_STARTGAME_WIDTH equ 212
-BUTTON_STARTGAME_HEIGHT equ 76
-
-MAP_WIDTH equ 8
-MAP_LENGTH equ 8
-MAP_HEIGHT equ 2
-
-SLOT_X equ 100
-SLOT_X_OFFSET equ 20
-SLOT_Y equ 809
-SLOT_SIZE equ 7
-MATCH_COUNT equ 3
-
-;SLOT_MOVE_TIME equ 0.5
-
-slot_count DWORD 0
-slot DWORD SLOT_SIZE DUP(0)
 
 
 ;#############################################################
@@ -70,7 +42,7 @@ include code.inc
 
 
 
-WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
+WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
     ;LOCAL point:POINT
         String wm_create, "WM_CREATE", 10, 13
@@ -100,43 +72,39 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
             Print   OFFSET wm_command
             INVOKE  load_bitmaps
             Print   OFFSET here
-            INVOKE  ExitProcess, 0
             INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
             Print   OFFSET wm_command
-            ;INVOKE  play_sound, 0, 0, 0
+            INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
             INVOKE  PostQuitMessage, 0
         .ELSE
             INVOKE  DefWindowProc, hWnd, uMsg, wParam, lParam
         .ENDIF
     ret
-WinProc ENDP
+WndProc ENDP
 
+WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWORD
+        LOCAL wc:WNDCLASS
 
-
-
-
-
-
-WinMain PROC
         finit
-        INVOKE GetModuleHandle, NULL
-        mov hInstance, eax
-        mov MainWin.hInstance, eax
-        INVOKE LoadIcon, NULL, IDI_APPLICATION
-        mov MainWin.hIcon, eax
-        INVOKE LoadCursor, NULL, IDC_ARROW
-        mov MainWin.hCursor, eax
 
-        INVOKE RegisterClass, ADDR MainWin
+        String  WindowName, "Sheep"
+        INVOKE  GetModuleHandle, NULL
+        mov     eax, hInst
+        mov     wc.hInstance, eax
+        INVOKE  LoadCursor, NULL, IDC_ARROW
+        mov     wc.hCursor, eax
+        mov     wc.lpszClassName, OFFSET WindowName
+        mov     wc.lpfnWndProc, OFFSET WndProc
+
+
+        INVOKE RegisterClass, ADDR wc
         .IF eax == 0
             jmp Exit_Program
         .ENDIF
         
-        INVOKE CreateWindowEx, 0, ADDR WindowName,
-            ADDR WindowName,MAIN_WINDOW_STYLE,
-            CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,
-            CW_USEDEFAULT,NULL,NULL,hInstance,NULL
+        INVOKE CreateWindowEx, 0, ADDR WindowName, ADDR WindowName,
+            WS_OVERLAPPED or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, hInst, 0
         mov hMainWnd,eax
 
         .IF eax == 0

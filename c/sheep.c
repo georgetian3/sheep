@@ -197,13 +197,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 
-const char titleStr[] = "Sheep";
 int WINAPI WinMain(
         HINSTANCE hInst,
         HINSTANCE hPrevInst,
         LPSTR pCmdLine,
         int nCmdShow) {
     srand(time(NULL));
+    const char titleStr[] = "Sheep";
     MSG msg;    
     WNDCLASS wc = {0};
     wc.lpfnWndProc   = WndProc;
