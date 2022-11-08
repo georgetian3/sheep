@@ -18,6 +18,54 @@ load_bitmap PROC uses ebx ecx edx esi edi filename_:DWORD
     ret
 load_bitmap ENDP
 
+load_bitmaps PROC uses eax ebx ecx edx esi edi
+    local filename:DWORD
+    String loadfailed, "LoadImage failed", 0ah, 0dh
+    String test1, "%d", 0ah, 0dh
+    
+    INVOKE crt_malloc, MAX_FILENAME_LEN
+    .IF eax == 0
+        Print OFFSET loadfailed
+    .ENDIF
+    mov filename, eax
+    mov ecx, 0
+    .WHILE ecx < 2
+        mov esi, 0
+        .WHILE esi < N_BUTTON_TYPES
+            pushad
+            INVOKE crt_strcpy, filename, addr dir
+            popad
+            mov eax, 4
+            mul esi
+            mov ebx, eax
+            pushad
+            INVOKE crt_strcat, filename, bitmap_names[ebx]
+            popad
+            .IF ecx == 0
+                pushad
+                INVOKE crt_strcat, filename, addr dark
+                popad
+            .ENDIF
+            pushad
+            INVOKE crt_strcat, filename, addr ext
+            popad
+            Print filename
+            ;aboves are fine
+            ; mov eax, 4
+            ; mul ecx
+            ; mov edi, dword ptr bitmaps[eax]
+            ; mov edx, dword ptr edi[ebx]
+            ; INVOKE load_bitmap, filename
+            
+    
+        
+        inc esi
+        .ENDW
+    inc ecx
+    .ENDW
+    ret
+load_bitmaps ENDP
+        
 
 strcpy PROC uses eax ebx ecx edx esi edi dst:DWORD, src:DWORD
         String  scp, "strcpy", 10, 13
@@ -52,74 +100,74 @@ strcat ENDP
 
 
 
-load_bitmaps PROC uses eax ebx ecx edx esi edi
-        LOCAL filename:DWORD
+; load_bitmaps PROC uses eax ebx ecx edx esi edi
+;         LOCAL filename:DWORD
 
-        String loadfailed, "LoadImage failed", 0ah, 0dh
-        String test1, "%d", 0ah, 0dh
-        String loadbitmaps, "load_bitmaps", 10, 13
-        Print   OFFSET loadbitmaps
+;         String loadfailed, "LoadImage failed", 0ah, 0dh
+;         String test1, "%d", 0ah, 0dh
+;         String loadbitmaps, "load_bitmaps", 10, 13
+;         Print   OFFSET loadbitmaps
         
-        INVOKE  crt_malloc, MAX_FILENAME_LEN
-        .IF eax == 0
-            Print OFFSET loadfailed
-        .ENDIF
-        mov filename, eax
+;         INVOKE  crt_malloc, MAX_FILENAME_LEN
+;         .IF eax == 0
+;             Print OFFSET loadfailed
+;         .ENDIF
+;         mov filename, eax
 
 
 
 
-        mov     ecx, 0
+;         mov     ecx, 0
 
-        .WHILE  ecx < 100
-                mov     filename, 0
-                inc     filename
-                inc     ecx
-        .ENDW
-        mov     ecx, 0
-        .WHILE  ecx < 100
-                mov     al, BYTE PTR filename
-                inc     filename
-                inc     ecx
-        .ENDW
+;         .WHILE  ecx < 100
+;                 mov     filename, 0
+;                 inc     filename
+;                 inc     ecx
+;         .ENDW
+;         mov     ecx, 0
+;         .WHILE  ecx < 100
+;                 mov     al, BYTE PTR filename
+;                 inc     filename
+;                 inc     ecx
+;         .ENDW
 
-        mov     ecx, 0
-        .WHILE ecx < 2
-                mov     edx, 0
-                .WHILE edx < N_BUTTON_TYPES
+;         mov     ecx, 0
+;         .WHILE ecx < 2
+;                 mov     edx, 0
+;                 .WHILE edx < N_BUTTON_TYPES
 
-                        Print   OFFSET here
-                        INVOKE  strcpy, ADDR filename, ADDR dir
+;                         Print   OFFSET here
+;                         INVOKE  strcpy, ADDR filename, ADDR dir
 
-                        lea     eax, [OFFSET bitmap_names + edx * 4]
+;                         lea     eax, [OFFSET bitmap_names + edx * 4]
 
-                        INVOKE  strcat, ADDR filename, [eax]
-
-
-                        .IF ecx == 0
-                                INVOKE  strcat, filename, ADDR dark
-                        .ENDIF
-                        Print   OFFSET here
-
-                        INVOKE  strcat, filename, ADDR ext
-
-                        Print   filename
-                        Print   OFFSET newline
-                        INVOKE  load_bitmap, filename
-                        .IF eax == 0
-                                String  lbf, "LoadBitmap failed"
-                                Print   OFFSET lbf
-                                ;INVOKE  ExitProcess, 0
-                        .ENDIF
-                        COMMENT `
-                        `
-                        inc     edx
-                .ENDW
-                inc ecx
-        .ENDW
-        INVOKE  crt_free, ADDR filename 
-        Print   OFFSET done
+;                         INVOKE  strcat, ADDR filename, [eax]
 
 
-    ret
-load_bitmaps ENDP
+;                         .IF ecx == 0
+;                                 INVOKE  strcat, filename, ADDR dark
+;                         .ENDIF
+;                         Print   OFFSET here
+
+;                         INVOKE  strcat, filename, ADDR ext
+
+;                         Print   filename
+;                         Print   OFFSET newline
+;                         INVOKE  load_bitmap, filename
+;                         .IF eax == 0
+;                                 String  lbf, "LoadBitmap failed"
+;                                 Print   OFFSET lbf
+;                                 ;INVOKE  ExitProcess, 0
+;                         .ENDIF
+;                         COMMENT `
+;                         `
+;                         inc     edx
+;                 .ENDW
+;                 inc ecx
+;         .ENDW
+;         INVOKE  crt_free, ADDR filename 
+;         Print   OFFSET done
+
+
+;     ret
+; load_bitmaps ENDP
