@@ -205,37 +205,41 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
         INVOKE  id_to_hwnd, parent, id
+
+        .IF eax == 0
+                String  ith, "id_to_hwnd failed", 10, 13
+                Print   OFFSET ith
+        .ENDIF
+
         INVOKE  get_button, eax
         mov     esi, eax        ; esi will hold btn for the rest of this proc
 
-        .IF edx == 0    ; if (btn == 0) 
+        .IF eax == 0    ; if (btn == 0) 
                 String  notfound, "Draw button not found", 10, 13
                 Print   OFFSET notfound
         .ENDIF
 
         String  bm, "bitmap", 10, 13
 
-        
+        mov     ebx, (Button PTR [esi]).gray
+        and     ebx, 1
+        mov     ecx, (Button PTR [esi]).type_
 
-        mov     eax, (Button PTR [edx]).gray
-        and     eax, 1
 
-        mov     ebx, (Button PTR [edx]).type_
-
-        INVOKE  AA2, ADDR bitmaps, eax, ebx
-
+        String  ot, "gray %d type %d addr %x", 10, 13
+        Print   OFFSET hexStr, ADDR bitmaps
+        Print   OFFSET newline
+        INVOKE  AA2, ADDR bitmaps, ebx, ecx
         mov     eax, [eax]
+
 
         mov     edi, dis
         mov     esi, (DRAWITEMSTRUCT PTR [edi]).hdc
 
         INVOKE  DrawStateW, esi, 0, 0, eax, 0, 0, 0, 0, 0, DST_BITMAP
-
         .IF eax == 0
                 String  drawstatee, "Draw state 0", 10, 13
                 Print   OFFSET drawstatee
-        .ELSE
-                Print   OFFSET here
         .ENDIF
 
 
