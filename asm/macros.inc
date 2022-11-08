@@ -5,14 +5,12 @@ String MACRO Name, Text:VARARG
     __lbl__:
 ENDM
 
-Print MACRO strPtrs:VARARG
+PInvoke MACRO cmd_:VARARG
     pushad
-    invoke crt_printf, strPtrs
+    INVOKE  cmd_
     popad
 ENDM
 
-Protect MACRO cmd:VARARG
-    pushad
-    cmd
-    popad
+Print MACRO strPtrs:VARARG
+    PInvoke crt_printf, strPtrs
 ENDM

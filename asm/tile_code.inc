@@ -1,4 +1,11 @@
 AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
+    COMMENT !
+        p: pointer to 2D array
+        i, j: array indexes
+        returns in eax the pointer
+        to the corresponding element
+
+    !
         mov     eax, p
         mov     ebx, i
         mov     ecx, j
@@ -32,9 +39,9 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
                 mov     edx, 0
                 .WHILE edx < N_BUTTON_TYPES
                 
-                        Protect INVOKE crt_strcpy, filename, ADDR dir
+                        PInvoke crt_strcpy, filename, ADDR dir
 
-                        Protect INVOKE crt_strcat, filename, bitmap_names[edx * SIZEOF DWORD]
+                        PInvoke crt_strcat, filename, bitmap_names[edx * SIZEOF DWORD]
 
                         .IF ecx == 0
                                 pushad
@@ -42,13 +49,13 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
                                 popad
                         .ENDIF
 
-                        pushad
-                        INVOKE  crt_strcat, filename, ADDR ext
-                        popad
+                        
+                        PInvoke crt_strcat, filename, ADDR ext
 
                         Print   filename
                         Print   OFFSET newline
                         INVOKE  load_bitmap, filename
+
                         .IF eax == 0
                                 Print   ADDR loadfailed
                         .ENDIF
