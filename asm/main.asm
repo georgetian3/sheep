@@ -68,14 +68,14 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .IF eax != 0
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
-                                ;INVOKE  handle_button_click, hWnd, esi
+                                INVOKE  handle_button_click, hWnd, esi
                                 ;INVOKE  move_button, esi, 100, 100, test_time
                         .ENDIF
                 .ENDIF                
 
         .ELSEIF ebx == WM_CREATE
                 INVOKE  load_bitmaps
-                INVOKE  create_button, hWgit nd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
+                INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_CLOSE
                 INVOKE  PostQuitMessage, 0
