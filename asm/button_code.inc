@@ -16,26 +16,18 @@ __search_struct PROC uses ebx ecx edx esi edi btn:DWORD
 __search_struct ENDP
 
 __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
-        mov     ecx, 0
-        mov     eax, 4
-        mov     ebx, N_BUTTONS
-        mul     ebx
-        mov     ebx, eax
-        mov     edx, hWnd
-        .WHILE ecx < ebx
-                mov     eax, __buttons[ecx]
-                .IF eax == 0
-                    jmp     break
+        mov     ebx, hWnd
+        mov     eax, 0
+        .WHILE eax < N_BUTTONS
+                mov     esi, __buttons[ecx * SIZEOF DWORD]
+                .IF esi != 0
+                        mov     ecx, (Button PTR [esi]).hWnd
+                        .IF ebx == ecx
+                                ret
+                        .ENDIF
                 .ENDIF
-                mov     ebx, (Button PTR [eax]).hWnd
-                .IF ebx == edx
-                    mov     eax, ecx
-                    ret
-                .ENDIF
-            break:
-                add     ecx, 4
+                inc     eax
         .ENDW
-    not_found:
         mov     eax, -1
         ret
 __search_hwnd ENDP
@@ -53,26 +45,25 @@ win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
         ret
 win_pos ENDP
 
-id_to_hwnd PROC uses ebx ecx edx esi edi parent:DWORD, id:DWORD
-    INVOKE GetDlgItem, parent, id
-    ret
+id_to_hwnd PROC uses parent:DWORD, id:DWORD
+        INVOKE  GetDlgItem, parent, id
+        ret
 id_to_hwnd ENDP
 
-get_button_index PROC uses ebx ecx edx esi edi index:DWORD
+get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
         String err, "get_button bad index", 0ah, 0dh
         .IF     index < 0
-                mov eax, -1
-                ret
+                Print   OFFSET err
+                INVOKE  ExitProcess, 1
         .ENDIF
-        mov     ebx, index
-        .IF ebx >= N_BUTTONS
-                mov eax, -1
+        .IF index >= N_BUTTONS
+                Print   OFFSET err
+                INVOKE  ExitProcess, 1
         .ENDIF
-        mov     eax, 4
-        mul     index
-        mov     eax, __buttons[edx]
+        lea     eax, [index + eax * SIZEOF DWORD]
+        mov     eax, __buttons[eax]
         ret
-get_button_index ENDP
+get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         INVOKE  __search_hwnd, hWnd
@@ -91,7 +82,7 @@ get_free_id PROC uses eax ebx ecx edx esi edi parent:DWORD
                 INVOKE  id_to_hwnd, parent, __id_count
         .ENDW
         mov     eax, __id_count
-    ret
+        ret
 get_free_id ENDP
 
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
@@ -163,33 +154,28 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
 create_button ENDP
 
 __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
-    mov eax, 4
-    mul ind
-    mov ebx, (Button PTR [__buttons[eax]]).hWnd
-    INVOKE DestroyWindow, ebx
-    INVOKE crt_free, __buttons[eax]
-    mov __buttons[ind], 0
-    inc __button_count
-    ret
+        mov     eax, 4
+        mul     ind
+        mov     ebx, (Button PTR [__buttons[eax]]).hWnd
+        INVOKE  DestroyWindow, ebx
+        INVOKE  crt_free, __buttons[eax]
+        mov     __buttons[ind], 0
+        dec     __button_count
+        ret
 __delete_button ENDP
 
-delete_button_struct PROC uses eax ebx ecx edx esi edi btn_del:DWORD
-    local index:DWORD
-    String del_err, "Delete Struct not found", 0ah, 0dh
-    INVOKE __search_struct, btn_del
-    mov index, eax
-    INVOKE __delete_button, index
-    ret
-delete_button_struct ENDP
 
-delete_button_hwnd PROC uses eax ebx ecx edx esi edi hWnd:DWORD
-    local index:DWORD
-    String del_hwnd_err, "Delete hwnd not found", 0ah, 0dh
-    INVOKE __search_hwnd, hWnd
-    mov index, eax
-    INVOKE __delete_button, index
-    ret
-delete_button_hwnd ENDP
+delete_button PROC uses eax hWnd:DWORD
+        local index:DWORD
+        String del_hwnd_err, "Delete hwnd not found", 0ah, 0dh
+        INVOKE  __search_hwnd, hWnd
+        .IF eax == -1
+                Print   OFFSET del_hwnd_err
+                INVOKE  ExitProcess, 1
+        .ENDIF
+        INVOKE  __delete_button, eax
+        ret
+delete_button ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  drawbutton, "draw_button", 10, 13

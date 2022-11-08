@@ -47,6 +47,7 @@ String wm_command, "WM_COMMAND", 10, 13
 String wm_drawitem, "WM_DRAWITEM", 10, 13
 String clicked, "Button clicked", 10, 13
 
+test_time   REAL8 0.2
 
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
@@ -67,7 +68,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .IF eax != 0
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
-                                INVOKE  handle_button_click, hWnd, eax
+                                ;INVOKE  handle_button_click, hWnd, eax
+                                INVOKE  move_button, eax, 100, 100, test_time
                         .ENDIF
                 .ENDIF                
 

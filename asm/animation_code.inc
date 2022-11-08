@@ -58,7 +58,6 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
     String printfloat, "%f", 0ah, 0dh ;for testing floats
-    FINIT
     Print OFFSET startmove
     fld epsilon
     fldz
@@ -82,7 +81,10 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     ret
 
     skip:
-    mov edi, hWnd
+    ;mov edi, hWnd
+    INVOKE  get_button, hWnd
+    ret
+    mov     edi, eax
     mov ebx, (Button PTR [edi]).hWnd
     mov ecx, hWnd[64]
     INVOKE win_pos, ebx, ecx

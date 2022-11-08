@@ -113,21 +113,21 @@ match_slot PROC uses eax ebx ecx edx esi edi
             .IF (count >= MATCH_COUNT)
                 mov edx, 0
                 .WHILE(edx < count)
-                    mov ebx, ecx
-                    sub ebx, edx
-                    INVOKE delete_button_struct, slot[ebx]
+                    mov     ebx, ecx
+                    sub     ebx, edx
+                    INVOKE  delete_button, (Button PTR slot[ebx]).hWnd
                 .ENDW
-                mov ebx, ecx
-                inc ebx
-                mov edx, ebx
-                .WHILE(edx < slot_count)
-                    mov ebx, edx
-                    sub ebx, count
-                    INVOKE slot_x, ebx
+                mov     ebx, ecx
+                inc     ebx
+                mov     edx, ebx
+                .WHILE edx < slot_count
+                        mov     ebx, edx
+                        sub     ebx, count
+                        INVOKE  slot_x, ebx
 
-                    ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
-                    mov esi, slot[edx]
-                    mov slot[ebx], esi
+                        ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
+                        mov     esi, slot[edx]
+                        mov     slot[ebx], esi
                 .ENDW
                 mov esi, count
                 sub slot_count, esi
@@ -179,10 +179,8 @@ destroy_all_button PROC uses eax ebx ecx edx esi edi
         mul ecx
         mov ebx, __buttons[eax]
         .IF ebx
-            pushad
-            INVOKE delete_button_struct, ebx
-            popad
-            Print OFFSET destroy_print, ecx
+            INVOKE  delete_button, (Button PTR [ebx]).hWnd
+            Print   OFFSET destroy_print, ecx
         .ENDIF
         inc ecx
     .ENDW
