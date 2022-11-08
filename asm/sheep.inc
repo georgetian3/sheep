@@ -68,12 +68,62 @@ update PROC USES eax ebx ecx edx esi edi
             pop ecx
             inc ecx
     .ENDW
-
     ret
 update ENDP
 
 
+lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
+    invoke ExitProcess, 0
+lost ENDP
 
+win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
+    LOCAL total:DWORD
+    mov eax, stage
+    .IF eax == 1
+        INVOKE destroy_all_button
+        mov slot_count , 0
+        INVOKE build_map ,hWnd, OFFSET MAP1
+        mov eax , total
+        INVOKE update
+        inc stage
+        mov total , eax
+        ret
+    .ELSE
+        INVOKE destroy_all_button
+        INVOKE create_button , hWnd , TYPE_START ,320,320,-1,200,80
+        mov start_game , eax
+        INVOKE create_button , hWnd , TYPE_END ,320,400,-1,200,56
+        mov end_game ,eax
+    .ENDIF
+    return
+win ENDP
+
+update_slot PROC USES eax ebx ecx edx esi edi btn:DWORD
+    local insert_index:DWORD,count:DWORD
+    mov count ,1
+    mov ecx, 0
+    .WHILE ecx < slot_count
+        push ecx
+        mov eax,4
+        mul ecx
+        mov ebx,slot[eax]
+        mov edx , (Button PTR [ebx]).type_
+        mov esi , btn
+        mov edi , (Button PTR [esi]).type_
+        .IF edx == edi
+            inc count
+        .ELSEIF count > 1
+            jmp S1
+        .ENDIF
+        pop ecx
+        inc ecx
+    .ENDW
+    S1:
+        INVOKE insert_slot(btn,insert_index)
+        mov eax , insert_index
+        mov  last_index , eax 
+    ret 
+update_slot ENDP
 
 
 COMMENT `
