@@ -14,6 +14,22 @@ include data.inc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .CODE
 
+
+AA1 PROC USES ebx p:DWORD, i:DWORD
+    COMMENT !
+        p: pointer to 1D array
+        i: array index
+        returns in eax the pointer
+        to the corresponding element
+    !
+
+        mov     eax, p
+        mov     ebx, i
+        lea     eax, [eax + ebx * SIZEOF DWORD]
+        ret
+AA1 ENDP
+
+
 AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
     COMMENT !
         p: pointer to 2D array
@@ -29,8 +45,10 @@ AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
         mov     eax, [eax]
         lea     eax, [eax + ecx * SIZEOF DWORD]
 
-    ret
+        ret
 AA2 ENDP
+
+
 
 String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13
@@ -75,23 +93,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
         .ELSEIF ebx == WM_CREATE
                 INVOKE  load_bitmaps
-                INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                INVOKE  build_map, hWnd, OFFSET MAP1
 
 
                 ;INVOKE  ExitProcess, 1
