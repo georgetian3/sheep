@@ -45,7 +45,7 @@ win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
         ret
 win_pos ENDP
 
-id_to_hwnd PROC uses parent:DWORD, id:DWORD
+id_to_hwnd PROC USES ebx ecx edx esi edi parent:DWORD, id:DWORD
         INVOKE  GetDlgItem, parent, id
         ret
 id_to_hwnd ENDP
@@ -93,7 +93,7 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
 
         String empty_struct, "No Empty Button Struct???", 0ah, 0dh
         String window_failed, "CreateWindow failed", 0ah, 0dh
-        String btn, "BUTTON"
+        String btn, "button"
         String malloc_failed, "malloc failed", 10, 13
         String btnErr, "CreateButton failed", 10, 13
 
@@ -123,10 +123,13 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     [edi], eax
 
         INVOKE  get_free_id, parent
+        Print   OFFSET hexStr, eax
+        Print   OFFSET newline
         INVOKE  CreateWindowEx,0,
                 ADDR btn, 0,
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
                 x,y,wd,ht,parent,eax,0, 0
+        ret
 
         mov     edi, new_btn
 
