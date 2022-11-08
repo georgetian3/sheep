@@ -10,47 +10,54 @@ update PROC USES eax ebx ecx edx esi edi
         push ecx
         INVOKE get_button_index, ecx
         .IF eax == -1
-            pop ecx
             jmp S1
         .ENDIF
         mov b, eax
         INVOKE is_tile, b
         not eax
         .IF eax
-            pop ecx
             jmp S1
         .ENDIF
         mov ebx, b
         mov eax, (Button PTR [ebx]).moving
         .IF eax
-            pop ecx
             jmp S1
         .ENDIF
         mov flag, 1
 
         mov esi, 0
         .WHILE esi < N_BUTTONS
-            INVOKE get_button_index, ecx
+            push esi
+            INVOKE get_button_index, esi
             .IF eax == -1
-                pop esi
                 jmp S2
             .ENDIF
             mov a, eax
-            INVOKE is_tile, b ;here is also b
+            INVOKE is_tile, a   ;note!!
             not eax
             .IF eax
-                pop esi
                 jmp S2
             .ENDIF
             mov ebx, b
             mov eax, (Button PTR [ebx]).moving
             .IF eax
-                pop esi
                 jmp S2
             .ENDIF
             cmp a, b
             je S2
-            
+            INVOKE overlap, a, b
+            mov edx, eax
+            mov eax, (Button PTR [ebx]).in_slot  
+            .IF eax
+                INVOKE set_active, b, 0
+                mov (Button PTR [ebx]).gray, 0
+                mov flag, 0
+            .ELSEIF  edx
+                INVOKE set_active, b, 0
+                mov (Button PTR [ebx]).gray, 1
+                mov flag, 0
+            .ENDIF
+
 
             S2:
                 pop esi
