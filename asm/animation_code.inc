@@ -77,6 +77,7 @@ update PROC USES eax ebx ecx edx esi edi
         Print offset newline
         Print offset newline
         Print offset newline
+        ret
         .IF eax == -1
             jmp S1
         .ENDIF
