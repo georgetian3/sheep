@@ -54,11 +54,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
-                ;Print   OFFSET wm_drawitem
                 INVOKE  draw_button, hWnd, wParam, lParam
         .ELSEIF ebx == WM_COMMAND
-                ;Print   OFFSET wm_command
-
                 ; lParam: hWnd of button
                 ; LOWORD(wParam): id
                 ; HIWORD(wParam): event
@@ -73,11 +70,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                                 INVOKE  handle_button_click, hWnd, eax
                         .ENDIF
                 .ENDIF                
-                ;INVOKE  WinPos, lParam, ADDR point
 
-                ;String  intStr, "%d", 10, 13
-                ;Print   OFFSET intStr, point.x
-                ;Print   OFFSET intStr, point.y
         .ELSEIF ebx == WM_CREATE
                 INVOKE  load_bitmaps
                 INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
