@@ -28,6 +28,7 @@ AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
         lea     eax, [eax + ebx * SIZEOF DWORD]
         mov     eax, [eax]
         lea     eax, [eax + ecx * SIZEOF DWORD]
+
     ret
 AA2 ENDP
 
@@ -63,7 +64,15 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 ; HIWORD(wParam): event
                 
                 Print   OFFSET clicked
-                ;INVOKE  handle_button_click
+
+                INVOKE  get_button, lParam
+                mov     esi, eax
+                .IF eax != 0
+                        mov     eax, (Button PTR [esi].active)
+                        .IF eax != 0
+                                INVOKE  handle_button_click, hWnd, eax
+                        .ENDIF
+                .ENDIF                
                 ;INVOKE  WinPos, lParam, ADDR point
 
                 ;String  intStr, "%d", 10, 13

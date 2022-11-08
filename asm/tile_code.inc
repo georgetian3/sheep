@@ -29,12 +29,9 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
                         PINVOKE crt_strcat, filename, bitmap_names[edx * SIZEOF DWORD]
 
                         .IF ecx == 0
-                                pushad
-                                INVOKE  crt_strcat, filename, addr dark
-                                popad
+                                PINVOKE crt_strcat, filename, addr dark
                         .ENDIF
 
-                        
                         PINVOKE crt_strcat, filename, ADDR ext
 
                         INVOKE  load_bitmap, filename
@@ -48,7 +45,6 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
                         INVOKE  AA2, OFFSET bitmaps, ecx, edx
 
                         mov     [eax], esi
-                        mov     edi, [eax]
                         
                         inc     edx
                 .ENDW

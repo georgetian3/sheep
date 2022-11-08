@@ -16,18 +16,19 @@
 
 
 struct Button {
+    POINT start_pos;
     HWND hWnd;
 
     BOOL active;
     BOOL moving;
     BOOL gray;
     BOOL in_slot;
-    void (*callback)();
+    int callback;
     int type;
     int id;
     int k; // vertical axis
     // properties used for button animation
-    POINT start_pos;
+
     int start_time;
     double dxpf; // delta x per frame - amount of horizontal pixels to move per frame
     double dypf;

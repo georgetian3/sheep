@@ -11,4 +11,3 @@ Release
 *.o
 *.s
 c.bat
-build.bat

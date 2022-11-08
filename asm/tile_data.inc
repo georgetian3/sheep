@@ -1,8 +1,7 @@
 MAX_FILENAME_LEN = 255
 
 N_TILE_TYPES    = 16
-N_TILES         = 18
-N_BUTTON_TYPES  = 18
+N_BUTTON_TYPES  = 19
 TILE_WIDTH      = 64
 TILE_HEIGHT     = 64
 
@@ -22,8 +21,10 @@ TYPE_MILK       = 12
 TYPE_PLIERS     = 13
 TYPE_RICE       = 14
 TYPE_ROPE       = 15
+
 TYPE_START      = 16
 TYPE_UNDO       = 17
+TYPE_END        = 18
 
 
 carrot	BYTE "carrot", 0
@@ -51,9 +52,11 @@ dark	BYTE "_dark", 0
 
 bitmap_names DWORD OFFSET carrot, OFFSET corn, OFFSET grass, OFFSET tree, OFFSET fork, OFFSET bell 
              DWORD OFFSET brush, OFFSET bucket, OFFSET cabbage, OFFSET fire, OFFSET hay, OFFSET gloves
-             DWORD OFFSET milk, OFFSET pliers, OFFSET rice, OFFSET rope, OFFSET start, OFFSET undo
+             DWORD OFFSET milk, OFFSET pliers, OFFSET rice, OFFSET rope, OFFSET start, OFFSET undo, OFFSET endg
 
 
-bitmaps_dark DWORD N_TILE_TYPES DUP(0)
-bitmaps_light DWORD N_TILE_TYPES DUP(0)
+bitmaps_dark DWORD N_BUTTON_TYPES DUP(0)
+bitmaps_light DWORD N_BUTTON_TYPES DUP(0)
+
+
 bitmaps DWORD OFFSET bitmaps_dark, OFFSET bitmaps_light

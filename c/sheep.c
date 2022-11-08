@@ -69,6 +69,7 @@ int win(HWND hWnd){
         destroy_all_button();
         slot_count = 0;
         int total=build_map(hWnd,"map1.txt");
+        undo_btn=create_button(hWnd,TYPE_UNDO,500,730,-1,64,64);
         update();
         stage++;
         return total;
@@ -125,13 +126,15 @@ void handle_button_click(HWND parent, struct Button* btn) {
     }
     else if(btn==start_game){
         destroy_all_button();
-        undo_btn=create_button(parent,TYPE_UNDO,500,730,-1,64,64);
         total=build_map(parent,"map1.txt");
+        printf("undo %x",undo_btn);
+        undo_btn=create_button(parent,TYPE_UNDO,500,730,-1,64,64);
+
         update();
     }
     else if(btn==undo_btn){
         if(last_button){
-            last_button->callback=update;
+            last_button->callback=1;
             last_button->in_slot=FALSE;
             move_button(last_button,last_x,last_y,0.2);
             total++;

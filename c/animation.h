@@ -3,9 +3,10 @@
 #include <windows.h>
 
 #include "button.h"
-
+#include "utils.h"
 #define FPS 120
 #define MSPF 1000.0 / FPS
+void update();
 
 
 void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
@@ -33,9 +34,13 @@ void __move_button(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
     if (btn->frame > btn->frames) {
         btn->moving = FALSE;
         KillTimer(hWnd, idEvent);
-        if (btn->callback) {
-            btn->callback();
-            printf("call back end\n");
+        if (btn->callback!=0) {
+            if(btn -> callback == 1){
+                 update();
+            }
+            else if (btn->callback == 2){
+                match_slot();
+            }
         }
     }
     InvalidateRect(btn->hWnd, 0, 0);
@@ -49,9 +54,14 @@ void move_button(struct Button* btn, int x, int y, double time) {
             printf("move_button failed\n");
             exit(1);
         }
-        if (btn->callback) {
+        if (btn->callback!=0) {
             printf("timer 0 callback");
-            btn->callback();
+            if(btn -> callback == 1){
+                 update();
+            }
+            else if (btn->callback == 2){
+                match_slot();
+            }
         }
         return;
     }
