@@ -1,6 +1,73 @@
 
 update PROC USES eax ebx ecx edx esi edi
     LOCAL a:DWORD, b:DWORD
+    String update_begin, "begin update", 0ah, 0dh
+    String no_button, "no button found", 0ah, 0dh
+    String update_end, "update end", 0ah, 0dh
+    Print OFFSET update_begin
+    mov ecx, 0
+    .WHILE ecx < N_BUTTONS
+        push ecx
+        INVOKE get_button_index, ecx
+        .IF eax == -1
+            pop ecx
+            jmp S1
+        .ENDIF
+        mov b, eax
+        INVOKE is_tile, b
+        not eax
+        .IF eax
+            pop ecx
+            jmp S1
+        .ENDIF
+        mov ebx, b
+        mov eax, (Button PTR [ebx]).moving)
+        .IF eax
+            pop ecx
+            jmp S1
+        .ENDIF
+        mov flag, 1
+
+        mov esi, 0
+        .WHILE esi < N_BUTTONS
+            INVOKE get_button_index, ecx
+            .IF eax == -1
+                pop esi
+                jmp S2
+            .ENDIF
+            mov a, eax
+            INVOKE is_tile, b ;here is also b
+            not eax
+            .IF eax
+                pop esi
+                jmp S2
+            .ENDIF
+            mov ebx, b
+            mov eax, (Button PTR [ebx]).moving)
+            .IF eax
+                pop esi
+                jmp S2
+            .ENDIF
+            cmp a, b
+            je S2
+
+            
+            S2:
+                pop esi
+                inc esi 
+        .ENDW
+
+        mov eax, flag
+        .IF eax == 1
+            INVOKE set_active, b, 1
+            mov ebx, b
+            mov (Button PTR [ebx]).gray, 0
+        .ENDIF
+
+        S1:
+            pop ecx
+            inc ecx
+    .ENDW
 
     ret
 update ENDP
