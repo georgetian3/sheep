@@ -67,7 +67,7 @@ String  newline, 10, 13
 
 include tile.inc
 include button.inc
-;include animation.inc
+include animation.inc
 ;include utils.inc
 ;include map.inc
 COMMENT `
@@ -108,7 +108,7 @@ WinProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         .ELSEIF ebx == WM_CREATE
             Print   OFFSET wm_create
             Print   OFFSET wm_command
-            INVOKE  load_bitmaps
+            ;INVOKE  load_bitmaps
 
             Print   OFFSET here
             INVOKE  ExitProcess, 0
