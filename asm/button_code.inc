@@ -249,15 +249,17 @@ set_active ENDP
 
 is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
     mov edi, btn_istile
-    mov eax, (Button PTR [edi]).type_
-    mov ebx, 0
-    cmp eax, ebx
-    jge S1
+    mov esi, (Button PTR [edi]).type_
+    ret
+    .IF esi > 0
+        jge S1
+    .ENDIF
     mov edx, 0
     S1:
     mov ebx, N_TILE_TYPES
-    cmp eax, ebx
-    jl S2
+    .IF esi > ebx
+        jl S2
+    .ENDIF
     mov edx, 0
     S2:
     mov edx, 1

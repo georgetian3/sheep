@@ -101,6 +101,7 @@ update ENDP
 
 lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
     invoke ExitProcess, 0
+    ret
 lost ENDP
 
 win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
@@ -227,8 +228,10 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn1:DWORD
             dec slot_count
         .ENDIF
     .ELSEIF ebx == esi
+        Print OFFSET MAP1
         invoke ExitProcess, 0
     .ENDIF
+    ret
 handle_button_click ENDP
 COMMENT `
     for (int i = 0; i < N_BUTTONS; i++) {

@@ -70,7 +70,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .IF eax != 0
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
-                                INVOKE  handle_button_click, hWnd, eax
+                                INVOKE  handle_button_click, hWnd, esi
                         .ENDIF
                 .ENDIF                
                 ;INVOKE  WinPos, lParam, ADDR point
