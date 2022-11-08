@@ -52,9 +52,8 @@ get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
                 Print   OFFSET err
                 INVOKE  ExitProcess, 1
         .ENDIF
-        lea     eax, [index + eax * SIZEOF DWORD]
-        ret
-        mov     eax, __buttons[eax]
+        INVOKE  AA1, __buttons, index
+        mov     eax, [eax]
         ret
 get_button_at_index ENDP
 
