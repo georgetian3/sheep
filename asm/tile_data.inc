@@ -45,6 +45,7 @@ rice	BYTE "rice", 0
 rope	BYTE "rope", 0
 start	BYTE "start", 0
 undo	BYTE "undo", 0
+endg    BYTE "endg", 0
 
 dir	    BYTE "../res/", 0
 ext	    BYTE ".bmp", 0
