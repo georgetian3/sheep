@@ -189,10 +189,6 @@ paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
         Print OFFSET paint_failed
     .ENDIF
     mov blankBmp, eax
-    Print OFFSET newline
-    Print OFFSET charStr, bmp_bg
-    Print OFFSET newline
-    Print OFFSET newline
     INVOKE SelectObject, hdc_memBuffer, blankBmp
     INVOKE SelectObject, hdc_loadBmp, bmp_bg
     INVOKE BitBlt, hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY

@@ -94,8 +94,9 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .ENDIF                
 
         .ELSEIF ebx == WM_CREATE
-                mov bmp_bg, OFFSET main_bg
-                Print OFFSET charStr, OFFSET main_bg
+                mov ecx, OFFSET main_bg
+                INVOKE load_bitmap, ecx
+                mov bmp_bg, eax
                 INVOKE  load_bitmaps
                 INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
