@@ -56,6 +56,7 @@ String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13
 String  hexStr, "%x"
 String  decStr, "%d"
+String  charStr, "%s", 0ah, 0dh
 String  newline, 10, 13
 
 
@@ -96,11 +97,16 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .ENDIF                
 
         .ELSEIF ebx == WM_CREATE
+                mov ecx, OFFSET main_bg
+                INVOKE load_bitmap, ecx
+                mov bmp_bg, eax
                 INVOKE  load_bitmaps
                 INVOKE  build_map, hWnd, OFFSET MAP1
                 Print   OFFSET here
                 PINVOKE print_buttons
                 ;INVOKE  play_sound, 0, 0, 0
+        .ELSEIF ebx == WM_PAINT
+                INVOKE paint, hWnd
         .ELSEIF ebx == WM_CLOSE
                 INVOKE  PostQuitMessage, 0
         .ELSE
