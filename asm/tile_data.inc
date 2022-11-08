@@ -50,6 +50,7 @@ endg    BYTE "endg", 0
 dir	    BYTE "../res/", 0
 ext	    BYTE ".bmp", 0
 dark	BYTE "_dark", 0
+main_bg BYTE "../res/bg.bmp", 0
 
 bitmap_names DWORD OFFSET carrot, OFFSET corn, OFFSET grass, OFFSET tree, OFFSET fork, OFFSET bell 
              DWORD OFFSET brush, OFFSET bucket, OFFSET cabbage, OFFSET fire, OFFSET hay, OFFSET gloves

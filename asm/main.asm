@@ -54,6 +54,7 @@ String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13
 String  hexStr, "%x"
 String  decStr, "%d"
+String  charStr, "%s", 0ah, 0dh
 String  newline, 10, 13
 
 
@@ -93,6 +94,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .ENDIF                
 
         .ELSEIF ebx == WM_CREATE
+                mov bmp_bg, OFFSET main_bg
+                Print OFFSET charStr, OFFSET main_bg
                 INVOKE  load_bitmaps
                 INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
