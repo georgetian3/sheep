@@ -28,6 +28,7 @@ AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
         lea     eax, [eax + ebx * SIZEOF DWORD]
         mov     eax, [eax]
         lea     eax, [eax + ecx * SIZEOF DWORD]
+
     ret
 AA2 ENDP
 
