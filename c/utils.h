@@ -137,7 +137,7 @@ void insert_slot(struct Button* btn, int index) {
     }
     slot[index] = btn;
     btn->in_slot = TRUE;
-    btn->callback = match_slot;
+    btn->callback = 2;
     slot_count++;
     total--;
     if(total==0){
