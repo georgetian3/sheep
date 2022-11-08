@@ -64,27 +64,10 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
     .ENDW
 
     
-    mov     ecx, 0
-    .WHILE ecx < 18
-            AINVOKE AA1, item, ecx
-            mov     eax, [eax]
-            Print   OFFSET decStr, eax
-            Print   OFFSET newline
-            inc     ecx
-    .ENDW
+
 
     INVOKE  shuffle, item, total_
-    Print   OFFSET here
 
-
-    mov     ecx, 0
-    .WHILE ecx < 18
-            AINVOKE AA1, item, ecx
-            mov     eax, [eax]
-            Print   OFFSET decStr, eax
-            Print   OFFSET newline
-            inc     ecx
-    .ENDW
 
 
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR map_width
@@ -116,9 +99,6 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
                             AINVOKE AA1, item, total_
 
                             mov     eax, [eax]
- 
-                            String  typ, "type %d", 10, 13
-                            Print   OFFSET typ, eax
 
                             PINVOKE create_button, hWnd, eax, x, y, edx, TILE_WIDTH, TILE_HEIGHT
                             popad
@@ -132,17 +112,6 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
             inc     edx
     .ENDW
 
-    mov     ecx, 0
-    .WHILE ecx < 18
-            AINVOKE AA1, OFFSET __buttons, ecx
-            mov     eax, (Button PTR [eax]).type_
-            Print   OFFSET decStr, eax
-            Print   OFFSET newline
-            inc     ecx
-    .ENDW
-
-    String  donef, "done here", 10, 13
-    Print   OFFSET donef
     
     mov     eax, edx
     ret

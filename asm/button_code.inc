@@ -121,9 +121,9 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     eax, k
         mov     (Button PTR [esi]).k, eax
         mov     eax, type_
-        String cbt, "Create button type %d", 10, 13
-        Print   OFFSET cbt, type_
         mov     (Button PTR [esi]).type_, eax
+
+
         mov     (Button PTR [esi]).gray, 0
         mov     (Button PTR [esi]).moving, 0
         mov     (Button PTR [esi]).active, 1
@@ -154,8 +154,8 @@ print_buttons PROC USES eax ebx ecx edi
         mov     ecx, 0
         .WHILE ecx < N_BUTTONS
                 AINVOKE AA1, ADDR __buttons, ecx
-                mov     ebx, [eax]
-                .IF ebx == 0
+                mov     eax, [eax]
+                .IF eax == 0
                         jmp     continue
                 .ENDIF
                 String  binfo, "Button: i %d hWnd %d type %d", 10, 13
@@ -216,14 +216,13 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ENDIF
         mov     ecx, (Button PTR [esi]).type_
 
-        Print   OFFSET decStr, ecx
-        Print   OFFSET newline
         AINVOKE AA2, ADDR bitmaps, ebx, ecx
 
-        Print   OFFSET hexStr, bitmaps
-        Print   OFFSET newline
-        Print   OFFSET hexStr, eax
-        Print   OFFSET newline
+        String  gbm, "got bitmap: %x", 10, 13
+        Print   OFFSET gbm, eax
+
+
+        ret
         mov     eax, [eax]
         ret
 

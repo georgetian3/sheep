@@ -38,7 +38,11 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
 
                         .IF eax == 0
                                 Print   ADDR loadfailed
+                                INVOKE  ExitProcess, 1
                         .ENDIF
+
+                        String  bitm, "Bitmap, %x", 10, 13
+                        Print   OFFSET bitm, eax
 
                         mov     esi, eax
 

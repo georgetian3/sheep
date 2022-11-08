@@ -76,7 +76,6 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM
-                Print   OFFSET wm_drawitem
                 PINVOKE draw_button, hWnd, wParam, lParam
         .ELSEIF ebx == WM_COMMAND
                 ; lParam: hWnd of button
