@@ -5,6 +5,7 @@ include sound_code.inc
 
 
 COMMENT ~
+include map_code.inc
 include utils_code.inc
 
 include animation_code.inc

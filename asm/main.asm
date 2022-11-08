@@ -5,31 +5,14 @@ option casemap :none  ; case sensitive
 include includes.inc
 include macros.inc
 
-;#############################################################
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 .DATA
 
 include data.inc
 
-msg         MSGStruct <>
-winRect     RECT <>
-hMainWnd    DWORD ?
-
-emptyStr    byte    0
-
-
-
-; Define the Application's Window class structure.
-;MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
-
-
-
-
-;#############################################################
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .CODE
-
-
-
-
 
 String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13
@@ -84,8 +67,15 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
     ret
 WndProc ENDP
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWORD
         LOCAL wc:WNDCLASS
+        LOCAL msg:MSGStruct
+        LOCAL winRect:RECT
+        LOCAL hMainWnd:DWORD
 
         finit
 
@@ -109,7 +99,7 @@ WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWOR
         mov hMainWnd,eax
 
         .IF eax == 0
-        jmp  Exit_Program
+                jmp  Exit_Program
         .ENDIF
 
         INVOKE ShowWindow, hMainWnd, SW_SHOW
