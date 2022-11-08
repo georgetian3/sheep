@@ -52,19 +52,18 @@ get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
                 Print   OFFSET err
                 INVOKE  ExitProcess, 1
         .ENDIF
-        INVOKE  AA1, __buttons, index
+        INVOKE  AA1, OFFSET __buttons, index
         mov     eax, [eax]
         ret
 get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         INVOKE  __search_hwnd, hWnd
-        Print OFFSET hexStr,eax
         .IF eax == -1
                 mov eax, 0
                 ret
         .ENDIF
-        mov     eax, __buttons[eax * SIZEOF DWORD]
+        AINVOKE AA1, OFFSET __buttons, eax
         ret
 get_button ENDP
 
@@ -84,6 +83,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         String malloc_failed, "malloc failed", 10, 13
         String btnErr, "CreateButton failed", 10, 13
 
+        
+
         .IF __button_count >= N_BUTTONS
                 Print   OFFSET btnErr
                 INVOKE  ExitProcess, 1
@@ -97,17 +98,17 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     esi, eax        ; esi holds ptr to new button for rest of proc
 
         ; finding a free id
-        INVOKE  id_to_hwnd, parent, __id_count
+        AINVOKE id_to_hwnd, parent, __id_count
         .WHILE eax != 0
                 ;Print   OFFSET hexStr, __id_count
                 ;Print   OFFSET newline
                 inc     __id_count
-                INVOKE  id_to_hwnd, parent, __id_count
+                AINVOKE id_to_hwnd, parent, __id_count
         .ENDW
 
         ; create a hWnd
-        INVOKE  CreateWindowEx, 0, ADDR btnStr, 0,
-                WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW,
+        AINVOKE CreateWindowEx, 0, ADDR btnStr, 0, \
+                WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW, \
                 x, y, wd, ht, parent, __id_count, 0, 0
 
         .IF eax == 0
@@ -119,6 +120,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         mov     eax, k
         mov     (Button PTR [esi]).k, eax
         mov     eax, type_
+        String cbt, "Create button type %d", 10, 13
+        Print   OFFSET cbt, type_
         mov     (Button PTR [esi]).type_, eax
         mov     (Button PTR [esi]).gray, 0
         mov     (Button PTR [esi]).moving, 0
@@ -128,23 +131,40 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
 
         ; search for empty btn
         mov     edi, 0
-        mov     eax, N_BUTTONS
-        mov     ebx, SIZEOF DWORD
-        mul     ebx
-        .WHILE  __buttons[edi] != 0
-                add     edi, SIZEOF DWORD
-                .IF edi >= eax
+        AINVOKE AA1, OFFSET __buttons, edi
+        mov     ebx, [eax]
+        .WHILE  ebx != 0
+                inc     edi
+                AINVOKE AA1, OFFSET __buttons, edi
+                mov     ebx, [eax]
+                .IF edi >= N_BUTTONS
                         Print   OFFSET empty_struct
                         INVOKE  ExitProcess, 0
                 .ENDIF
         .ENDW
 
-        add     edi, OFFSET __buttons
-        mov     [edi], esi
-
+        mov     [eax], esi
     
         ret
+
 create_button ENDP
+
+
+print_buttons PROC USES eax ebx ecx edi
+        mov     ecx, 0
+        .WHILE ecx < N_BUTTONS
+                AINVOKE AA1, ADDR __buttons, ecx
+                mov     ebx, [eax]
+                .IF ebx == 0
+                        jmp     continue
+                .ENDIF
+                String  binfo, "Button: i %d hWnd %d type %d", 10, 13
+                Print   OFFSET binfo, ecx, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_
+            continue:
+                inc     ecx
+        .ENDW 
+        ret
+print_buttons ENDP
 
 __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
         mov     eax, 4
@@ -172,8 +192,9 @@ delete_button ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  drawbutton, "draw_button", 10, 13
-        ;Print   OFFSET drawbutton
+        Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
+
         INVOKE  id_to_hwnd, parent, id
         .IF eax == 0
                 String  ith, "id_to_hwnd failed", 10, 13
@@ -187,25 +208,30 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ENDIF
         mov     esi, eax        ; esi will hold btn for the rest of this proc
 
-        String  bm, "bitmap", 10, 13
-
         mov     ebx, (Button PTR [esi]).gray
         .IF ebx == 0
                 mov     ebx, 1
         .ELSE
                 mov     ebx, 0
         .ENDIF
-
         mov     ecx, (Button PTR [esi]).type_
 
+        Print   OFFSET decStr, ecx
+        Print   OFFSET newline
+        AINVOKE AA2, ADDR bitmaps, ebx, ecx
 
-        INVOKE  AA2, ADDR bitmaps, ebx, ecx
+        Print   OFFSET hexStr, bitmaps
+        Print   OFFSET newline
+        Print   OFFSET hexStr, eax
+        Print   OFFSET newline
         mov     eax, [eax]
+        ret
+
 
         mov     edi, dis
         mov     esi, (DRAWITEMSTRUCT PTR [edi]).hdc
 
-        INVOKE  DrawStateW, esi, 0, 0, eax, 0, 0, 0, 0, 0, DST_BITMAP
+        AINVOKE DrawStateW, esi, 0, 0, eax, 0, 0, 0, 0, 0, DST_BITMAP
         .IF eax == 0
                 String  drawstate, "Draw state 0", 10, 13
                 Print   OFFSET drawstate
@@ -213,7 +239,7 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ENDIF
 
 
-    ret
+        ret
 draw_button ENDP
 
 set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:DWORD

@@ -5,6 +5,10 @@ N_BUTTON_TYPES  = 19
 TILE_WIDTH      = 64
 TILE_HEIGHT     = 64
 
+TILE_HWIDTH     = 32
+TILE_HHEIGHT    = 32
+
+
 TYPE_CARROT     = 0
 TYPE_CORN       = 1
 TYPE_GRASS      = 2
