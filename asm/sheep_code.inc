@@ -29,6 +29,9 @@ win ENDP
 
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local insert_index:DWORD,count:DWORD
+    Print offset newline
+    Print offset newline
+    Print offset hexStr ,btn1
     mov count ,1
     mov ecx, 0
     .WHILE ecx < slot_count
@@ -48,6 +51,7 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         pop ecx
         inc ecx
     .ENDW
+
     mov insert_index,ecx
     S1:
         Print OFFSET decStr , insert_index
@@ -57,33 +61,33 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     ret 
 update_slot ENDP
 
-handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn1:DWORD
+handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
     LOCAL time_double : real8
-    INVOKE is_tile , btn1
-    mov ebx , btn1
+    INVOKE is_tile , btn2
+    mov ebx , btn2
     mov ecx , start_game
     mov edx , end_game 
     mov esi , undo_btn
     .IF eax != 0
-        mov esi , btn1
+        mov esi , btn2
         mov edi , (Button PTR [esi]).in_slot
         .IF edi !=0
             ret
         .ENDIF
-        mov esi , btn1
+        mov esi , btn2
         mov ebx , (Button PTR [esi]).hWnd
-        mov ecx , btn1
+        mov ecx , btn2
         INVOKE win_pos , ebx , ecx
-        mov esi , btn1
+        mov esi , btn2
         mov ebx , (Button PTR [esi]).start_pos.x
         mov ecx , (Button PTR [esi]).start_pos.y
         mov last_x , ebx
         mov last_y , ecx
         mov last_button , esi
-        INVOKE update_slot , btn1
-        ret
-        INVOKE update
+        INVOKE update_slot , btn2
 
+        INVOKE update
+        ret
         mov eax, slot_count
         mov ebx , SLOT_SIZE
         .IF  eax > ebx
@@ -104,7 +108,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn1:DWORD
     .ELSEIF ebx == edx
         mov eax , last_button
         .IF eax != 0
-            mov esi , btn1
+            mov esi , btn2
             mov (Button PTR [esi]).callback ,1
             mov (Button PTR [esi]).in_slot , 0
             mov ebx ,last_x

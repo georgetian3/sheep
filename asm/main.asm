@@ -69,7 +69,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
                                 INVOKE  handle_button_click, hWnd, esi
-                                ;INVOKE  move_button, esi, 100, 100, test_time
+                                ;mov ebx , (Button PTR [esi]).hWnd
+                                ;INVOKE  move_button, ebx, 100, 100, test_time
                         .ENDIF
                 .ENDIF                
 
@@ -77,21 +78,21 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 INVOKE  load_bitmaps
                 INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
-                INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                ; INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
 
                 ;INVOKE  ExitProcess, 1

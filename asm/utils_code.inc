@@ -22,46 +22,52 @@ Array2D ENDP
 
 overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     local pt_a:DWORD, pt_b:DWORD
-    mov ebx, (Button PTR [a]).k
-    mov ecx, (Button PTR [b]).k
+    mov edx , a
+    mov esi , b 
+    mov ebx, (Button PTR [edx]).k
+    mov ecx, (Button PTR [esi]).k
     .IF (ebx <= ecx)
         mov eax, 0
         jmp F1
     .ENDIF
-    lea ebx, (Button PTR [a]).in_slot
+    lea ebx, (Button PTR [edx]).in_slot
     .IF (ebx)
         mov eax, 0
         jmp F1
     .ENDIF
 
-    mov ebx, (Button PTR [a]).hWnd
+    mov ebx, (Button PTR [edx]).hWnd
     mov ecx, pt_a
     INVOKE win_pos, ebx, ecx
-    mov ebx, (Button PTR [b]).hWnd
+    mov ebx, (Button PTR [esi]).hWnd
     mov ecx, pt_b
     INVOKE win_pos, ebx, ecx
-
-    mov edx, (POINT PTR [pt_b]).x
+    mov ecx, pt_b
+    mov edx, (POINT PTR [ecx]).x
     mov ebx, TILE_WIDTH
-    add ebx, (POINT PTR [pt_b]).x
+    mov ecx, pt_b
+    add ebx, (POINT PTR [ecx]).x
     .IF (edx >= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ebx, (POINT PTR [pt_b]).x
+    mov ecx, pt_b
+    mov ebx, (POINT PTR [ecx]).x
     sub ebx, TILE_WIDTH
     .IF (edx <= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov edx, (POINT PTR [pt_b]).y
-    mov ebx, (POINT PTR [pt_b]).y
+    mov ecx, pt_b
+    mov edx, (POINT PTR [ecx]).y
+    mov ebx, (POINT PTR [ecx]).y
     add ebx, TILE_HEIGHT
     .IF (edx >= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ebx, (POINT PTR [pt_b]).y
+    mov ecx, pt_b
+    mov ebx, (POINT PTR [ecx]).y
     sub ebx, TILE_HEIGHT
     .IF (edx <= ebx)
         mov eax, 0
@@ -120,22 +126,17 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
             dec ecx
         .ENDW
         L1:
-        Print Offset hexStr ,index
-        Print offset newline
         mov eax , 4
         mov ecx ,index
         mul ecx
+
         mov esi, btn_insert
         mov slot[eax], esi
         mov (Button PTR [esi]).in_slot, 1
         mov (Button PTR [esi]).callback, 2
         inc slot_count
-
         INVOKE slot_x, index
-        Print offset newline
-        Print offset hexStr ,eax
-        INVOKE move_button, btn_insert, eax, SLOT_Y, SLOT_MOVE_TIME
-        
+        INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME
     ret
 insert_slot ENDP
 
@@ -185,7 +186,6 @@ paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
         Print OFFSET paint_failed
     .ENDIF
     mov blankBmp, eax
-
     INVOKE SelectObject, hdc_memBuffer, blankBmp
     INVOKE SelectObject, hdc_loadBmp, bmp_bg
     INVOKE BitBlt, hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY

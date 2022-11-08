@@ -30,9 +30,10 @@ win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
         mov     ebx, eax
         INVOKE  MapWindowPoints, HWND_DESKTOP, ebx, ADDR rect, 2
         mov     ecx, rect.left
-        mov     (POINT PTR [point]).x, ecx
+        mov     edx , point
+        mov     (POINT PTR [edx]).x, ecx
         mov     ecx, rect.top
-        mov     (POINT PTR [point]).y, ecx
+        mov     (POINT PTR [edx]).y, ecx
         ret
 win_pos ENDP
 
@@ -52,6 +53,7 @@ get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
                 INVOKE  ExitProcess, 1
         .ENDIF
         lea     eax, [index + eax * SIZEOF DWORD]
+        ret
         mov     eax, __buttons[eax]
         ret
 get_button_at_index ENDP
