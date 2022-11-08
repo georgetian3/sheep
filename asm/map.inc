@@ -60,6 +60,6 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     .ENDW
 
     INVOKE shuffle, item, total
-
+    INVOKE crt_free, item
     ret
 build_map ENDP
