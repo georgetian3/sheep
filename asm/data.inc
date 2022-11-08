@@ -9,6 +9,5 @@ include sheep_data.inc
 COMMENT ~
 
 
-include sheep_data.inc
 
 ~
