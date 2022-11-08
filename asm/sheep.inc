@@ -50,8 +50,8 @@ update PROC USES eax ebx ecx edx esi edi
             .ENDIF
             cmp a, b
             je S2
-
             
+
             S2:
                 pop esi
                 inc esi 

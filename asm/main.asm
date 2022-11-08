@@ -14,6 +14,23 @@ include data.inc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .CODE
 
+AA2 PROC USES ebx ecx p:DWORD, i:DWORD, j:DWORD
+    COMMENT !
+        p: pointer to 2D array
+        i, j: array indexes
+        returns in eax the pointer
+        to the corresponding element
+    !
+    
+        mov     eax, p
+        mov     ebx, i
+        mov     ecx, j
+        lea     eax, [eax + ebx * SIZEOF DWORD]
+        mov     eax, [eax]
+        lea     eax, [eax + ecx * SIZEOF DWORD]
+    ret
+AA2 ENDP
+
 String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13
 String  hexStr, "%x"

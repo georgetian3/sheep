@@ -206,7 +206,7 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
         INVOKE  id_to_hwnd, parent, id
         INVOKE  get_button, eax
-        mov     edx, eax        ; edx will hold btn for the rest of this proc
+        mov     esi, eax        ; esi will hold btn for the rest of this proc
 
         .IF edx == 0    ; if (btn == 0) 
                 String  notfound, "Draw button not found", 10, 13
@@ -215,32 +215,21 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
 
         String  bm, "bitmap", 10, 13
 
-        ; HBITMAP** ptr = bitmaps
-        mov     esi, OFFSET bitmaps
-
         
 
         mov     eax, (Button PTR [edx]).gray
-        .IF !eax    ; if (!btn->gray)
-                add     esi, SIZEOF DWORD   ; ptr += 4
-        .ENDIF
+        and     eax, 1
 
-        ; ptr = *ptr // now points to the subarray holding HBITMAPS
-        mov     esi, [esi]
+        mov     ebx, (Button PTR [edx]).type_
 
-        ; ptr += btn->type * 4
-        mov     ebx, (Button PTR [ecx]).type_
-        mov     eax, SIZEOF DWORD
-        mul     ebx
-        add     esi, eax
-        ; esi should now point to the right HBITMAP
+        INVOKE  AA2, ADDR bitmaps, eax, ebx
 
+        mov     eax, [eax]
 
-        mov     ecx, dis
-        mov     eax, (DRAWITEMSTRUCT PTR [ecx]).hdc
+        mov     edi, dis
+        mov     esi, (DRAWITEMSTRUCT PTR [edi]).hdc
 
-
-        INVOKE  DrawStateW, eax, 0, 0, esi, 0, 0, 0, 0, 0, DST_BITMAP
+        INVOKE  DrawStateW, esi, 0, 0, eax, 0, 0, 0, 0, 0, DST_BITMAP
 
         .IF eax == 0
                 String  drawstatee, "Draw state 0", 10, 13
