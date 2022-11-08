@@ -105,8 +105,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
 
         INVOKE  __search_struct, 0
         mov     index, eax
-        .IF (index == -1)
-                Print   empty_struct
+        .IF index == -1
+                Print   OFFSET empty_struct
         .ENDIF
 
         mov     eax, 4
