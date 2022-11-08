@@ -139,7 +139,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn:DWORD
         .ENDIF
         mov esi , btn
         mov ebx , (Button PTR [esi]).hWnd
-        mov ecx , btn[64]
+        mov ecx , btn[0]
         INVOKE win_pos , ebx , ecx
         mov esi , btn
         mov ebx , (Button PTR [esi]).start_pos.x
@@ -169,8 +169,39 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn:DWORD
     .ELSEIF ebx == edx
         mov eax , last_button
         .IF eax != 0
-
-
+            mov esi , btn
+            mov (Button PTR [esi]).callback ,1
+            mov (Button PTR [esi]).in_slot , 0
+            mov ebx ,last_x
+            mov ecx ,last_y
+            INVOKE move_button(eax,last_x,last_y,0.2)
+            inc total
+            mov last_button , 0
+            mov ecx , last_index+1
+            mov eax ,slot_count
+            .WHILE ecx < eax
+                push ecx
+                mov eax,4
+                mul ecx
+                mov esi , slot[eax]
+                mov (Button PTR [esi]).callback , 0
+                mov ebx , ecx
+                dec ebx 
+                INVOKE slot_x , ebx
+                INVOKE move_button(esi,eax,SLOT_Y,SLOT_MOVE_TIME)              
+                mov eax , 4
+                mul ebx
+                mov edi , slot[eax]
+                mov edi , esi
+                pop ecx 
+                inc ecx
+            .ENDW
+            dec slot_count
+        .ENDIF
+    .ELSEIF ebx == esi
+        invoke ExitProcess, 0
+    .ENDIF
+handle_button_click ENDP
 COMMENT `
     for (int i = 0; i < N_BUTTONS; i++) {
         b = get_button_index(i);
