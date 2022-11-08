@@ -1,6 +1,6 @@
 
 update PROC USES eax ebx ecx edx esi edi
-    LOCAL a:DWORD, b:DWORD, btn_update:DWORD
+    LOCAL a:DWORD, b:DWORD, btn_update:DWORD, flag:DWORD
     String update_begin, "begin update", 0ah, 0dh
     String no_button, "no button found", 0ah, 0dh
     String update_end, "update end", 0ah, 0dh
@@ -43,7 +43,8 @@ update PROC USES eax ebx ecx edx esi edi
             .IF eax
                 jmp S2
             .ENDIF
-            cmp a, b
+            mov eax, a
+            cmp eax, ebx
             je S2
             INVOKE overlap, a, b
             mov edx, eax
