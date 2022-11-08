@@ -3,7 +3,7 @@ res_dir BYTE "../res/"
 read_mode BYTE "r"
 
 build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
-    local i:DWORD, j:DWORD, k:DWORD, fp:DWORD, map_filename:DWORD, total:DWORD, offset_x:DWORD, offset_y:DWORD, 
+    local i:DWORD, j:DWORD, k:DWORD, fp:DWORD, map_filename:DWORD, total_:DWORD, offset_x:DWORD, offset_y:DWORD, 
         tiles_num:DWORD, item:DWORD, flag:DWORD, map_width:DWORD, map_length:DWORD, map_height:DWORD
     String build_map_failed, "failed", 0ah, 0dh
     String file_open_failed, "file open failed", 0ah, 0dh
@@ -23,7 +23,7 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
         Print offset file_open_failed
     .ENDIF
     mov fp, eax
-    INVOKE crt_fscanf, fp, addr one_int, addr total
+    INVOKE crt_fscanf, fp, addr one_int, addr total_
     INVOKE crt_fscanf, fp, addr two_int, addr offset_x, addr offset_y
     
     mov ecx, 0
@@ -37,7 +37,7 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     .ENDW
 
     mov eax, 4
-    mul total
+    mul total_
     INVOKE crt_malloc, eax
     .IF eax == 0
         Print OFFSET build_map_failed
@@ -45,7 +45,7 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     mov item, eax
 
     mov ecx, 0
-    .WHILE ecx < total
+    .WHILE ecx < total_
         mov esi, 0
         .WHILE esi < N_TILE_TYPES
             mov eax, 4
@@ -67,10 +67,10 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
         .ENDW
     .ENDW
 
-    INVOKE shuffle, item, total
+    INVOKE shuffle, item, total_
 
     INVOKE crt_fscanf, fp, addr three_int, addr map_width, addr map_length, addr map_height
-    mov total, 0
+    mov total_, 0
     INVOKE crt_fscanf, fp, addr one_int, addr flag
     mov ebx, eax
     .WHILE ebx != -1
@@ -87,7 +87,7 @@ build_map PROC uses ebx ecx edx esi edi hwnd:DWORD, map_name:DWORD
     .ENDW
     INVOKE crt_fclose, fp
 
-    ; ask what total used
     INVOKE crt_free, item
+    mov eax, total_
     ret
 build_map ENDP

@@ -1,6 +1,6 @@
 include tile_code.inc
 include button_code.inc
-include map_code.inc
+;include map_code.inc
 include sound_code.inc
 
 

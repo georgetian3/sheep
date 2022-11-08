@@ -171,28 +171,63 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
     ret
 insert_slot ENDP
 
-lose PROC
-    String loseprint, "LOSE", 0ah, 0dh
-    Print loseprint
-lose ENDP
+destroy_all_button PROC uses eax ebx ecx edx esi edi
+    String destroy_print, "%d", 0ah, 0dh
+    mov ecx, 0
+    .WHILE ecx < N_BUTTONS
+        mov eax, 4
+        mul ecx
+        mov ebx, __buttons[eax]
+        .IF ebx
+            pushad
+            INVOKE delete_button_struct, ebx
+            popad
+            Print OFFSET destroy_print, ecx
+        .ENDIF
+        inc ecx
+    .ENDW
+    mov start_game, 0
+    mov end_game, 0
+    mov undo_btn, 0
+    ret
+destroy_all_button ENDP
 
+paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
+    local ps:PAINTSTRUCT, hdc_window:HDC, hdc_memBuffer:HDC, hdc_loadBmp:HDC, blankBmp:DWORD
+    String paint_failed, "Paint() error", 0ah, 0dh
+    mov ebx, hWnd
+    INVOKE BeginPaint, ebx, addr ps
+    .IF eax == 0
+        Print OFFSET paint_failed
+    .ENDIF
+    mov hdc_window, eax
 
-bmp_bg  DWORD ?
+    INVOKE CreateCompatibleDC, hdc_window
+    .IF eax == 0
+        Print OFFSET paint_failed
+    .ENDIF
+    mov hdc_memBuffer, eax
 
-COMMENT `
-void paint(HWND hWnd) {
-    PAINTSTRUCT ps;
-    HDC hdc_window = BeginPaint(hWnd, &ps);
-    HDC hdc_memBuffer = CreateCompatibleDC(hdc_window);
-    HDC hdc_loadBmp = CreateCompatibleDC(hdc_window);
-    HBITMAP blankBmp = CreateCompatibleBitmap(hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT);
-    SelectObject(hdc_memBuffer, blankBmp);
-    SelectObject(hdc_loadBmp, bmp_bg);
-    BitBlt(hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY);
-    BitBlt(hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY);
-    DeleteObject(blankBmp);
-    DeleteDC(hdc_memBuffer);
-    DeleteDC(hdc_loadBmp);
-    EndPaint(hWnd, &ps);
-}
-`
+    INVOKE CreateCompatibleDC, hdc_window
+    .IF eax == 0
+        Print OFFSET paint_failed
+    .ENDIF
+    mov hdc_loadBmp, eax
+
+    INVOKE CreateCompatibleBitmap, hdc_window, WINDOW_WIDTH, WINDOW_HEIGHT
+    .IF eax == 0
+        Print OFFSET paint_failed
+    .ENDIF
+    mov blankBmp, eax
+
+    INVOKE SelectObject, hdc_memBuffer, blankBmp
+    INVOKE SelectObject, hdc_loadBmp, bmp_bg
+    INVOKE BitBlt, hdc_memBuffer, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_loadBmp, 0, 0, SRCCOPY
+    INVOKE BitBlt, hdc_window, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdc_memBuffer, 0, 0, SRCCOPY
+    INVOKE DeleteObject, blankBmp
+    INVOKE DeleteDC, hdc_memBuffer
+    INVOKE DeleteDC, hdc_loadBmp
+    mov ebx, hWnd
+    INVOKE EndPaint, ebx, addr ps
+    ret
+paint ENDP
