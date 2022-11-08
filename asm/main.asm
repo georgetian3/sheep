@@ -1,4 +1,4 @@
-.386
+.686
 .model flat, stdcall  ; 32 bit memory model
 option casemap :none  ; case sensitive
 
@@ -6,6 +6,8 @@ include includes.inc
 
 ;#############################################################
 .DATA
+
+include data.inc
 
 include macros.inc
 WindowName  byte "Sheep", 0
@@ -16,11 +18,7 @@ hInstance   DWORD ?
 
 emptyStr    byte    0
 
-; button.inc required data
-N_BUTTONS equ 100
-__button_count DWORD 0
-__id_count DWORD 0
-__buttons DWORD N_BUTTONS DUP(?)
+
 
 ; Define the Application's Window class structure.
 MainWin WNDCLASS <NULL,WinProc,NULL,NULL,NULL,NULL,NULL,COLOR_WINDOW,NULL,WindowName>
@@ -54,10 +52,12 @@ slot_count DWORD 0
 slot DWORD SLOT_SIZE DUP(0)
 
 
-
-
 ;#############################################################
 .CODE
+
+
+
+
 
 String  here, "HERE", 10, 13
 String  done, "DONE", 10, 13
@@ -65,16 +65,8 @@ String  hexStr, "%x"
 String  decStr, "%d"
 String  newline, 10, 13
 
-include tile.inc
-include button.inc
-COMMENT `
-include animation.inc
-include utils.inc
-include random.inc
-include sound.inc
-include sheep.inc
-`
-Print WindowName
+
+include code.inc
 
 
 

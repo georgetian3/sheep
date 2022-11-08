@@ -1,39 +1,3 @@
-
-STATE_DISABLE equ 0
-STATE_ENABLE equ 1
-STATE_MOVING equ 2
-STATE_HIDDEN equ 3
-N_STATES equ 4
-
-
-Button STRUCT
-    hWnd DWORD ?
-    active DWORD ?
-    moving DWORD ?
-    gray DWORD ?
-    in_slot DWORD ?
-    callback DWORD ?
-    type_ DWORD ?
-    id DWORD ?
-    k DWORD ?
-    start_time DWORD ?
-    dxpf REAL8 ?
-    dypf REAL8 ?
-    frame DWORD ?
-    frames DWORD ?
-    start_pos POINT <>
-Button ENDS
-
-start_game DWORD ?
-end_game DWORD ?
-undo_btn DWORD ?
-last_x DWORD 0
-last_y DWORD 0
-last_index DWORD -1
-last_button DWORD 0
-
-
-
 __search_struct PROC uses ebx ecx edx esi edi btn:DWORD
     mov ecx, 0
     .WHILE (ecx < N_BUTTONS)

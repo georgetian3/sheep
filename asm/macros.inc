@@ -10,4 +10,3 @@ Print MACRO strPtrs:VARARG
     invoke crt_printf, strPtrs
     popad
 ENDM
-

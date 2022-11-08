@@ -5,6 +5,21 @@ Stage Struct
     bg DWORD ?
 Stage ENDS
 
+Array2D PROC p:DWORD, i:DWORD, j:DWORD
+
+        ; i, j *= 4
+        sal     i, 2
+        sal     j, 2
+
+        mov     eax, p
+        add     eax, i
+        mov     eax, [eax]
+
+        add     eax, j
+
+    ret
+Array2D ENDP
+
 overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     local pt_a:DWORD, pt_b:DWORD
     mov ebx, (Button PTR [a]).k
