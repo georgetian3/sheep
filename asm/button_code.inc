@@ -1,20 +1,3 @@
-__search_struct PROC uses ebx ecx edx esi edi btn:DWORD
-        mov ecx, 0
-        .WHILE (ecx < N_BUTTONS)
-                mov edx, 4
-                mul ecx
-                mov eax, btn
-                .IF __buttons[edx] == eax
-                        mov eax, edx    ;if want to have exact loca, then mov eax, edx
-                        jmp F1
-                .ENDIF
-                inc ecx
-        .ENDW
-        mov eax, -1
-        F1:
-                ret
-__search_struct ENDP
-
 __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
         mov     ebx, hWnd
         mov     eax, 0
@@ -102,7 +85,14 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         .ENDIF
 
 
-        INVOKE  __search_struct, 0
+        ; search for empty btn
+        mov     eax, 0
+        mov     esi, __buttons[eax]
+        .WHILE  esi != 0
+                add     eax, SIZEOF DWORD
+                mov     esi, __buttons[eax]
+        .ENDW
+
         mov     index, eax
         .IF index == -1
                 Print   OFFSET empty_struct
