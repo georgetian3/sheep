@@ -1,29 +1,25 @@
-__search_hwnd PROC uses ebx ecx edx esi edi hWnd_:DWORD
+__search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
 
         COMMENT !
             hWnd: hWnd of the button
-            Returns: in eax, index of the button
-            corresponding to hWnd in __buttons,
+            Returns: in eax, pointer to element
+            containing button with hWnd in __buttons,
             -1 if not found
         !
-        mov     ebx, hWnd_
-        mov     ecx, 0
-        .WHILE ecx < N_BUTTONS
-                AINVOKE get_button_at_index, ecx
-                .IF eax != 0
-                        mov     eax, (Button PTR [eax]).hWnd
-                        Print   OFFSET hexStr, eax
-                        Print   OFFSET newline
-                        Print   OFFSET hexStr, ebx
-                        Print   OFFSET newline
-                        .IF eax == ebx
-                                mov     eax, ecx
+        mov     eax, OFFSET __buttons
+        lea     ebx, [eax + N_BUTTONS * SIZEOF DWORD]
+        mov     ecx, hWnd
+        .WHILE eax < ebx
+                mov     edx, [eax]
+                .IF edx != 0
+                        mov     edx, (Button PTR [edx]).hWnd
+                        .IF ecx == edx
                                 ret
                         .ENDIF
                 .ENDIF
-                inc     ecx
+                add     eax, SIZEOF DWORD
         .ENDW
-        mov     eax, -1
+        mov     eax, 0
         ret
 __search_hwnd ENDP
 
@@ -56,25 +52,17 @@ get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
                 Print   OFFSET err
                 INVOKE  ExitProcess, 1
         .ENDIF
-        INVOKE  AA1, OFFSET __buttons, index
+        AINVOKE AA1, OFFSET __buttons, index
         mov     eax, [eax]
         ret
 get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
-        INVOKE  __search_hwnd, hWnd
-        ;Print   OFFSET hexStr,eax       ; index of button
-        ;Print   OFFSET newline
-        .IF eax == -1
-                mov eax, 0
+        AINVOKE __search_hwnd, hWnd
+        .IF eax == 0
                 ret
         .ENDIF
-        AINVOKE AA1, OFFSET __buttons, eax
-        Print   OFFSET here
-        INVOKE  ExitProcess, 1
         mov     eax, [eax]
-        ;Print   OFFSET hexStr,eax       ; print the location of specific button
-        ;Print   OFFSET newline
         ret
 get_button ENDP
 
@@ -89,6 +77,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         String malloc_failed, "malloc failed", 10, 13
         String cbf, "CreateButton failed", 10, 13
 
+        Print OFFSET hexStr, __button_count
+        Print OFFSET newline
         
 
         .IF __button_count >= N_BUTTONS
@@ -102,6 +92,7 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 INVOKE  ExitProcess, 1
         .ENDIF
         mov     esi, eax        ; esi holds ptr to new button for rest of proc
+        
         ; finding a free id
         AINVOKE id_to_hwnd, parent, __id_count
         .WHILE eax != 0
@@ -112,6 +103,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         .ENDW
 
         ; create a hWnd
+        String  cwstr, "CreateWindow x %d y %d wd %d ht %d parent %x id %d", 10, 13
+        Print   OFFSET cwstr, x, y, wd, ht, parent, __id_count
         AINVOKE CreateWindowEx, 0, ADDR btnStr, 0, \
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW, \
                 x, y, wd, ht, parent, __id_count, 0, 0
@@ -144,11 +137,14 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 mov     ebx, [eax]
                 .IF edi >= N_BUTTONS
                         Print   OFFSET empty_struct
-                        INVOKE  ExitProcess, 0
+                        PINVOKE  ExitProcess, 0
                 .ENDIF
         .ENDW
 
+        inc     __button_count
+
         mov     [eax], esi
+        mov     eax, esi
     
         ret
 
@@ -157,6 +153,14 @@ create_button ENDP
 
 print_buttons PROC USES eax ebx ecx edi
         mov     ecx, 0
+        String  separator1, 10, 13, "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv", 10, 13
+        String  separator2, "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", 10, 13, 10, 13
+
+        String  pbtn, "print_buttons", 10, 13
+
+        Print   OFFSET separator1
+        Print   OFFSET pbtn
+
         .WHILE ecx < N_BUTTONS
                 AINVOKE get_button_at_index, ecx
                 .IF eax == 0
@@ -167,46 +171,48 @@ print_buttons PROC USES eax ebx ecx edi
             continue:
                 inc     ecx
         .ENDW 
+
+        Print   OFFSET separator2
         ret
 print_buttons ENDP
 
-__delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
-        String testtext,"test",0ah,0dh
-        mov     eax, 4
-        mul     ind
-        mov     edx , __buttons[eax]
-        mov     esi ,eax
-
-        mov     ebx, (Button PTR [edx]).hWnd
-        INVOKE  DestroyWindow, ebx
-        INVOKE  crt_free, edx
-        mov     edx, 0
-        dec     __button_count
-        Print OFFSET testtext
-        Print OFFSET decStr , eax
-        ret
-__delete_button ENDP
 
 
-delete_button PROC uses eax hWnd:DWORD
+delete_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD
+        PINVOKE print_buttons
+        String  delbtn, "Deleting button hwnd %x", 10, 13
+        Print   OFFSET delbtn, hWnd
+
+
         String del_hwnd_err, "Delete hwnd not found", 0ah, 0dh
-        INVOKE  __search_hwnd, hWnd
-        .IF eax == -1
+
+        AINVOKE __search_hwnd, hWnd
+        .IF eax == 0
                 Print   OFFSET del_hwnd_err
                 INVOKE  ExitProcess, 1
         .ENDIF
-        INVOKE  __delete_button, eax
+        mov     ebx, [eax]
+        mov     ecx, (Button PTR [ebx]).hWnd
+        PINVOKE DestroyWindow, ecx
+        PINVOKE crt_free, ebx
+        mov     ebx, 0
+        mov     [eax], ebx
+        dec     __button_count
         ret
 delete_button ENDP
 
 delete_all_buttons PROC uses eax ebx ecx edx esi edi
+        String  dab, "Delete all buttons", 10, 13
+        Print   OFFSET dab
+
         mov ecx, 0
         .WHILE ecx < N_BUTTONS
-                AINVOKE AA1, __buttons, ecx
-                mov     eax, [eax]
+                AINVOKE get_button_at_index, ecx
                 .IF eax != 0
-                        INVOKE  delete_button, (Button PTR [eax]).hWnd
+                        mov     eax, (Button PTR [eax]).hWnd
+                        INVOKE  delete_button, eax
                 .ENDIF
+        
                 inc ecx
         .ENDW
         ret
@@ -218,24 +224,18 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         PINVOKE print_buttons
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
 
-        INVOKE  id_to_hwnd, parent, id
+        AINVOKE id_to_hwnd, parent, id
         .IF eax == 0
                 String  ith, "id_to_hwnd failed", 10, 13
                 Print   OFFSET ith
         .ENDIF
-        
         AINVOKE get_button, eax
-
         .IF eax == 0    ; if (btn == 0) 
                 String  notfound, "Draw button not found", 10, 13
                 Print   OFFSET notfound
         .ENDIF
         mov     esi, eax        ; esi will hold btn for the rest of this proc
-        String  btnptr, "button ptr: %x", 10, 13
-        ;Print   OFFSET btnptr, esi
 
-        String  binfo1, "Button1: hWnd %d type %d", 10, 13
-        ;Print   OFFSET binfo1, (Button PTR [esi]).hWnd, (Button PTR [esi]).type_
 
 
         mov     ebx, (Button PTR [esi]).gray
@@ -244,8 +244,6 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ELSE
                 mov     ebx, 0
         .ENDIF
-        Print   OFFSET here
-        INVOKE  ExitProcess, 1
         mov     ecx, (Button PTR [esi]).type_
 
         String  gtb, "gray %d type %d", 10, 13
@@ -256,6 +254,7 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  gbm, "got bitmap: %x", 10, 13
         ;Print   OFFSET gbm, eax
 
+        
         ;ret
         mov     eax, [eax]
 

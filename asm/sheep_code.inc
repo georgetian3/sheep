@@ -170,6 +170,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         String handle_click, "handle_button_click", 10, 13
         Print OFFSET handle_click
 
+        Print   OFFSET parStr, parent
+
         mov     esi, btn2
         
         AINVOKE is_tile, btn2
@@ -205,9 +207,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov     ebx, (Button PTR [esi]).type_
         .IF ebx == TYPE_START
                 AINVOKE delete_all_buttons
-                AINVOKE build_map, parent, OFFSET MAP1
+                ;AINVOKE build_map, parent, OFFSET MAP1
                 mov     total, eax
-                ret
                 AINVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
                 AINVOKE update 
         .ELSEIF ebx == TYPE_UNDO
