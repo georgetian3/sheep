@@ -72,11 +72,6 @@ get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         ret
 get_button ENDP
 
-get_free_id PROC uses eax ebx ecx edx esi edi parent:DWORD
-        
-        ret
-get_free_id ENDP
-
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
         local new_btn:DWORD, index:DWORD
 

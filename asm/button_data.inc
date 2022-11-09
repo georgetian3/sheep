@@ -38,3 +38,15 @@ last_index DWORD -1
 last_button DWORD 0
 
 btnStr BYTE "button", 0
+
+
+win_pos PROTO hWnd:DWORD, point:DWORD
+id_to_hwnd PROTO parent:DWORD, id:DWORD
+get_button_at_index PROTO index:DWORD
+get_button PROTO hWnd:DWORD
+create_button PROTO parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
+print_buttons PROTO
+delete_button PROTO hWnd:DWORD
+draw_button PROTO parent:DWORD, id:DWORD, dis:DWORD
+set_active PROTO btn_active:DWORD, active:DWORD
+is_tile PROTO btn_istile:DWORD
