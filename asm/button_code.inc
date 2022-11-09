@@ -176,8 +176,8 @@ __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
         INVOKE  crt_free, edx
         mov     edx, 0
         dec     __button_count
-        Print OFFSET testtext
-        Print OFFSET decStr , eax
+        ; Print OFFSET testtext
+        ; Print OFFSET decStr , eax
         ret
 __delete_button ENDP
 

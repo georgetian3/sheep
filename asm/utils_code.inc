@@ -129,14 +129,18 @@ print_eip ENDP
 insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         String  insertprint, "Insert Slot", 0ah, 0dh
         String  inWhile, "inWile", 0ah, 0dh
+        String  stat , "slot count = %d ",0ah,0dh
+        String  movstr,"move %d to %d",0ah,0dh
+        String  stat1 ,"eax = %d btn = %x",0ah,0dh
         Print   OFFSET insertprint
-        Print OFFSET decStr, slot_count
-        Print OFFSET newline
-        Print OFFSET decStr, index_
-        Print OFFSET newline
-        Print OFFSET newline
+        ; Print OFFSET decStr, slot_count
+        ; Print OFFSET newline
+        ; Print OFFSET decStr, index_
+        ; Print OFFSET newline
+        ; Print OFFSET newline
 
         mov ecx, slot_count
+        Print offset stat , slot_count
         dec ecx
         .IF ecx == 0FFFFFFFFh
             jmp L1
@@ -144,12 +148,15 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         .WHILE (ecx >= index_)
             mov ebx, ecx
             inc ebx
-            INVOKE slot_x, ebx
+            AINVOKE slot_x, ebx
             mov edi, eax
             Print OFFSET inWhile
             mov eax, 4
             mul ecx
             mov esi, slot[eax]
+            Print OFFSET stat1,eax,esi
+            PINVOKE print_buttons
+            mov (Button PTR [esi]).callback ,0
             INVOKE move_button, esi, edi, SLOT_Y, SLOT_MOVE_TIME
             mov eax, 4
             mul ebx
@@ -170,8 +177,9 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         mul ecx
 
         mov esi, btn_insert
-        PINVOKE print_buttons
-        Print   OFFSET hexStr, btn_insert
+        ; PINVOKE print_buttons
+        Print   OFFSET decStr ,eax
+        Print   Offset here
         Print   OFFSET newline
         mov slot[eax], esi
         mov (Button PTR [esi]).in_slot, 1
@@ -204,9 +212,6 @@ destroy_all_button PROC uses eax ebx ecx edx esi edi
         .ENDIF
         inc ecx
     .ENDW
-    mov start_game, 0
-    mov end_game, 0
-    mov undo_btn, 0
     ret
 destroy_all_button ENDP
 

@@ -19,10 +19,10 @@ update PROC USES eax ebx ecx edx esi edi
             mov ebx, 0
         .ENDIF
         .IF ebx
-            Print offset newline
-            Print offset hexStr, eax
-            Print offset newline
-            Print offset newline
+            ; Print offset newline
+            ; Print offset hexStr, eax
+            ; Print offset newline
+            ; Print offset newline
             jmp S1
         .ENDIF
         ret
@@ -42,12 +42,12 @@ update PROC USES eax ebx ecx edx esi edi
             mov a, eax
             mov ebx, b
 
-            Print offset newline
-            Print offset hexStr, eax
-            Print offset newline
-            Print offset hexStr, ebx
-            Print offset newline
-            Print offset newline
+            ; Print offset newline
+            ; Print offset hexStr, eax
+            ; Print offset newline
+            ; Print offset hexStr, ebx
+            ; Print offset newline
+            ; Print offset newline
             ret
             cmp eax, ebx
             je S2
@@ -115,6 +115,7 @@ update ENDP
 match_slot PROC uses eax ebx ecx edx esi edi
     local count:DWORD, prev_type:DWORD
     String test_print , "test here" ,0ah,0dh
+    String test_print1 , "test here1" ,0ah,0dh
     String matching, "match slot", 0ah, 0dh
     Print offset matching
     mov count, 0
@@ -135,13 +136,14 @@ match_slot PROC uses eax ebx ecx edx esi edi
                     sub     ebx, edx
                     AINVOKE AA1, OFFSET slot, ebx
                     mov     eax, [eax]
-                    INVOKE  delete_button, (Button PTR [eax]).hWnd
+                    PINVOKE  delete_button, (Button PTR [eax]).hWnd
                     pop edx
                     inc edx
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
                 mov     edx, ebx
+
                 .WHILE edx < slot_count
                         push edx
                         mov     ebx, edx
@@ -149,11 +151,28 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         mov     eax ,4
                         mul     edx
                         mov     esi ,eax
-                        INVOKE  slot_x, ebx
+                        ; Print offset test_print
+                        ; Print offset decStr,esi
+                        ; Print offset newline
+                        ; Print offset newline
+                        ; Print offset here
                         mov     edi , slot[esi]
-                        INVOKE move_button, edi, eax, SLOT_Y, SLOT_MOVE_TIME
+
+
+
+                        AINVOKE  slot_x, ebx
+                        mov (Button PTR [edi]).callback,0
+                        PINVOKE move_button, edi, eax, SLOT_Y, SLOT_MOVE_TIME
+                        pop edx
+                        ; Print offset test_print1
+                        ; Print offset test_print1
+                        ; Print offset decStr,edx
+                        ; Print offset newline
+                        ; Print offset newline
+                        ; Print offset test_print
                         mov     eax ,4
                         mul     edx
+                        push edx
                         mov     esi, slot[eax]
                         mov     eax ,4
                         mul     ebx
@@ -240,6 +259,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
     String printfloat, "%f", 0ah, 0dh ;for testing float
+    String posi ,"x = %d , y = %d ",0ah,0dh
     Print OFFSET startmove
     finit
     fld epsilon
@@ -261,10 +281,10 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     .ENDIF
     popad
     mov edx, (Button PTR [ebx]).callback
-    Print OFFSET newline
-    Print OFFSET decStr, edx
-    Print OFFSET newline
-    Print OFFSET newline
+    ; Print OFFSET newline
+    ; Print OFFSET decStr, edx
+    ; Print OFFSET newline
+    ; Print OFFSET newline
     .IF edx == 1
         INVOKE update
     .ELSEIF edx == 2
@@ -276,10 +296,11 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     mov edi, hWnd
     ;INVOKE  get_button, hWnd
     ;mov     edi, eax
+
     mov ebx, (Button PTR [edi]).hWnd
-    INVOKE win_pos, ebx, edi
 
-
+    Print offset here
+    INVOKE win_pos ,ebx,edi
     mov (Button PTR [edi]).moving, 1
     mov (Button PTR [edi]).frame, 1
     INVOKE GetTickCount
@@ -301,11 +322,12 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     fild temp_differnece
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dxpf
-    Print offset newline
-    Print OFFSET printfloat, (Button PTR [edi]).dxpf
-    Print offset newline
+    ; Print offset newline
+    ; Print OFFSET printfloat, (Button PTR [edi]).dxpf
+    ; Print offset newline
     
     mov ebx, (Button PTR [edi]).start_pos.y
+    Print OFFSET posi,esi,ebx
     mov eax, y
     sub eax, ebx
     mov temp_differnece, eax
@@ -314,9 +336,9 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
 
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dypf
-    Print offset newline
-    Print OFFSET printfloat, (Button PTR [edi]).dypf
-    Print offset newline
+    ; Print offset newline
+    ; Print OFFSET printfloat, (Button PTR [edi]).dypf
+    ; Print offset newline
 
     INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
     .IF eax == 0

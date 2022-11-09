@@ -34,7 +34,7 @@
 
 #define SLOT_MOVE_TIME      0.2
 
-int slot_count = 0;
+int  = 0;
 int stage = 1;
 int total=0;
 
@@ -113,6 +113,7 @@ void match_slot() {
                     delete_button_struct(slot[i - j]);
                 }
                 for (int j = i + 1; j < slot_count; j++) {
+                    
                     move_button(slot[j], slot_x(j - count), SLOT_Y, SLOT_MOVE_TIME);
                     slot[j - count] = slot[j];
                 }
