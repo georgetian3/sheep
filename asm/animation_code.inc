@@ -114,23 +114,34 @@ update ENDP
 
 match_slot PROC uses eax ebx ecx edx esi edi
     local count:DWORD, prev_type:DWORD
-
+    String test_print , "test here" ,0ah,0dh
     String matching, "match slot", 0ah, 0dh
     Print offset matching
     mov count, 0
     mov prev_type, -1
     mov ecx, 0
     .WHILE (ecx < slot_count)
-        mov esi, slot[ecx]
+        mov eax , 4
+        mul ecx
+        mov esi, slot[eax]
         mov edi, (Button PTR [esi]).type_
         .IF( edi == prev_type)
             inc count
             .IF (count >= MATCH_COUNT)
                 mov edx, 0
                 .WHILE(edx < count)
+
                     mov     ebx, ecx
                     sub     ebx, edx
-                    INVOKE  delete_button, (Button PTR slot[ebx]).hWnd
+                    mov     eax, 4
+                    mul     ebx
+                    pushad
+                    INVOKE print_buttons
+                    popad
+                    mov     edx ,slot[eax]
+
+                    mov     esi ,(Button PTR [edx]).hWnd
+                    INVOKE  delete_button, esi
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
@@ -141,8 +152,12 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         INVOKE  slot_x_, ebx
 
                         ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
-                        mov     esi, slot[edx]
-                        mov     slot[ebx], esi
+                        mov     eax ,4
+                        mul     edx
+                        mov     esi, slot[eax]
+                        mov     eax ,4
+                        mul     ebx
+                        mov     slot[eax], esi
                 .ENDW
                 mov esi, count
                 sub slot_count, esi
@@ -150,7 +165,9 @@ match_slot PROC uses eax ebx ecx edx esi edi
             .ENDIF
         .ELSE
             mov count, 1
-            mov ebx, slot[ecx]
+            mov eax ,4
+            mul ecx
+            mov ebx, slot[eax]
             mov eax, (Button PTR [ebx]).type_
             mov prev_type, eax
         .ENDIF
@@ -207,9 +224,9 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
         INVOKE KillTimer, hWnd, idEvent
         mov ecx, (Button PTR [edi]).callback
         .IF ecx == 1
-            ;INVOKE update
+            INVOKE update
         .ELSEIF ecx==2
-            ;INVOKE match_slot
+            INVOKE match_slot
         .ENDIF
     .ENDIF
     mov ebx, (Button PTR [edi]).hWnd
