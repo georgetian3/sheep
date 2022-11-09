@@ -13,16 +13,19 @@ update PROC USES eax ebx ecx edx esi edi
         .ENDIF
         mov b, eax
         INVOKE is_tile, b
-        not eax
-        .IF eax
+        .IF eax == 0
+            mov ebx, 1
+        .ELSEIF eax == 1
+            mov ebx, 0
+        .ENDIF
+        .IF ebx
             Print offset newline
             Print offset hexStr, eax
             Print offset newline
             Print offset newline
-            ret
             jmp S1
         .ENDIF
-        
+        ret
         mov ebx, b
         mov eax, (Button PTR [ebx]).moving
         .IF eax
