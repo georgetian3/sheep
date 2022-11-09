@@ -11,3 +11,5 @@ Release
 *.o
 *.s
 c.bat
+*.ilk
+*.pdb

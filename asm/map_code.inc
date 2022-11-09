@@ -97,7 +97,6 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
 
                                 mov     eax, [eax]
                                 PINVOKE create_button, hWnd, eax, x, y, edx, TILE_WIDTH, TILE_HEIGHT
-                                ret
                                 popad
 
                                 inc     total_
