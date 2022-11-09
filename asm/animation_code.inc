@@ -136,6 +136,8 @@ match_slot PROC uses eax ebx ecx edx esi edi
                     AINVOKE AA1, OFFSET slot, ebx
                     mov     eax, [eax]
                     INVOKE  delete_button, (Button PTR [eax]).hWnd
+                    pop edx
+                    inc edx
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
@@ -147,7 +149,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         mov     eax ,4
                         mul     edx
                         mov     esi ,eax
-                        INVOKE  slot_x_, ebx
+                        INVOKE  slot_x, ebx
                         mov     edi , slot[esi]
                         INVOKE move_button, edi, eax, SLOT_Y, SLOT_MOVE_TIME
                         mov     eax ,4
