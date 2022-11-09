@@ -81,12 +81,12 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         String empty_struct, "No Empty Button Struct???", 0ah, 0dh
         String window_failed, "CreateWindow failed", 0ah, 0dh
         String malloc_failed, "malloc failed", 10, 13
-        String btnErr, "CreateButton failed", 10, 13
+        String cbf, "CreateButton failed", 10, 13
 
         
 
         .IF __button_count >= N_BUTTONS
-                Print   OFFSET btnErr
+                Print   OFFSET cbf
                 INVOKE  ExitProcess, 1
         .ENDIF
 
