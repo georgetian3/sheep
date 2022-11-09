@@ -136,7 +136,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
         .ENDIF
         inc ecx
     .ENDW
-    INVOKE print_buttons
+    ;INVOKE print_buttons
     ret
 match_slot ENDP
 
@@ -214,7 +214,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
             mul ecx
             mov esi, slot[eax]
             Print OFFSET stat1,eax,esi
-            PINVOKE print_buttons
+            ;PINVOKE print_buttons
             mov (Button PTR [esi]).callback ,0
             INVOKE move_button, esi, edi, SLOT_Y, SLOT_MOVE_TIME
             mov eax, 4

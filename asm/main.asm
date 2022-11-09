@@ -96,7 +96,6 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                                 INVOKE  handle_button_click, hWnd, esi
                         .ENDIF
                 .ENDIF
-                PINVOKE print_buttons
 
         .ELSEIF ebx == WM_CREATE
                 mov ecx, OFFSET main_bg

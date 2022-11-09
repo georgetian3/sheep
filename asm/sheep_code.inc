@@ -250,4 +250,6 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                     Print   OFFSET MAP1
                     PINVOKE ExitProcess, 0
         .ENDIF
+        PINVOKE print_buttons
+
 handle_button_click ENDP

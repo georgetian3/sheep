@@ -178,7 +178,6 @@ print_buttons ENDP
 
 
 delete_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD
-        PINVOKE print_buttons
         String  delbtn, "Deleting button hwnd %x", 10, 13
         Print   OFFSET delbtn, hWnd
 
@@ -219,8 +218,7 @@ delete_all_buttons ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  drawbutton, "draw_button", 10, 13
-        Print   OFFSET drawbutton
-        PINVOKE print_buttons
+        ;Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
 
         AINVOKE id_to_hwnd, parent, id
