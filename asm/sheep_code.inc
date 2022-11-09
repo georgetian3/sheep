@@ -7,136 +7,136 @@ lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
 lost ENDP
 
 win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
-    mov eax, stage
-    .IF eax == 1
-        INVOKE  destroy_all_button
-        mov slot_count , 0
-        AINVOKE build_map, hWnd, OFFSET MAP2
-        mov     eax , total
-        INVOKE update
-        inc stage
-        mov total , eax
+        mov eax, stage
+        .IF eax == 1
+                INVOKE  destroy_all_button
+                mov     slot_count , 0
+                AINVOKE build_map, hWnd, OFFSET MAP2
+                mov     eax, total
+                INVOKE  update
+                inc     stage
+                mov     total, eax
+                ret
+        .ELSE
+                PINVOKE destroy_all_button
+                PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 0, 0
+                PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 0, 0
+        .ENDIF
         ret
-    .ELSE
-        INVOKE destroy_all_button
-        INVOKE create_button , hWnd , TYPE_START ,320,320,-1,0, 0
-        INVOKE create_button , hWnd , TYPE_END ,320,400,-1,0, 0
-    .ENDIF
-    ret
 win ENDP
 
 update PROC USES eax ebx ecx edx esi edi
-    LOCAL a:DWORD, b:DWORD, btn_update:DWORD, flag:DWORD
-    String update_begin, "begin update", 0ah, 0dh
-    String no_button, "no button found", 0ah, 0dh
-    String update_end, "update end", 0ah, 0dh
-    Print OFFSET update_begin
-    mov ecx, 0
-    .WHILE ecx < N_BUTTONS
-        push ecx
-        INVOKE get_button_at_index, ecx
-        .IF eax == -1
-            jmp S1
-        .ENDIF
-        mov b, eax
-        INVOKE is_tile, b
-        .IF eax == 0
-            mov ebx, 1
-        .ELSEIF eax == 1
-            mov ebx, 0
-        .ENDIF
-        .IF ebx
-            Print offset newline
-            Print offset hexStr, eax
-            Print offset newline
-            Print offset newline
-            jmp S1
-        .ENDIF
-        ret
-        mov ebx, b
-        mov eax, (Button PTR [ebx]).moving
-        .IF eax
-            jmp S1
-        .ENDIF
-        mov flag, 1
-        mov esi, 0
-        .WHILE esi < N_BUTTONS
-            push esi
-            INVOKE get_button_at_index, esi
+        LOCAL a:DWORD, b:DWORD, btn_update:DWORD, flag:DWORD
+        String update_begin, "begin update", 0ah, 0dh
+        String no_button, "no button found", 0ah, 0dh
+        String update_end, "update end", 0ah, 0dh
+        Print OFFSET update_begin
+        mov ecx, 0
+        .WHILE ecx < N_BUTTONS
+            push ecx
+            INVOKE get_button_at_index, ecx
             .IF eax == -1
-                jmp S2
+                jmp S1
             .ENDIF
-            mov a, eax
-            mov ebx, b
-
-            Print offset newline
-            Print offset hexStr, eax
-            Print offset newline
-            Print offset hexStr, ebx
-            Print offset newline
-            Print offset newline
+            mov b, eax
+            INVOKE is_tile, b
+            .IF eax == 0
+                mov ebx, 1
+            .ELSEIF eax == 1
+                mov ebx, 0
+            .ENDIF
+            .IF ebx
+                Print offset newline
+                Print offset hexStr, eax
+                Print offset newline
+                Print offset newline
+                jmp S1
+            .ENDIF
             ret
-            cmp eax, ebx
-            je S2
-            INVOKE is_tile, a   ;note!!
-            not eax
-            .IF eax
-                jmp S2
-            .ENDIF
             mov ebx, b
             mov eax, (Button PTR [ebx]).moving
             .IF eax
-                jmp S2
+                jmp S1
             .ENDIF
-            mov eax, a
-            INVOKE overlap, a, b
-            mov edx, eax
-            mov eax, (Button PTR [ebx]).in_slot  
-            .IF eax
-                INVOKE set_active, b, 0
+            mov flag, 1
+            mov esi, 0
+            .WHILE esi < N_BUTTONS
+                push esi
+                INVOKE get_button_at_index, esi
+                .IF eax == -1
+                    jmp S2
+                .ENDIF
+                mov a, eax
+                mov ebx, b
+
+                Print offset newline
+                Print offset hexStr, eax
+                Print offset newline
+                Print offset hexStr, ebx
+                Print offset newline
+                Print offset newline
+                ret
+                cmp eax, ebx
+                je S2
+                INVOKE is_tile, a   ;note!!
+                not eax
+                .IF eax
+                    jmp S2
+                .ENDIF
+                mov ebx, b
+                mov eax, (Button PTR [ebx]).moving
+                .IF eax
+                    jmp S2
+                .ENDIF
+                mov eax, a
+                INVOKE overlap, a, b
+                mov edx, eax
+                mov eax, (Button PTR [ebx]).in_slot  
+                .IF eax
+                    INVOKE set_active, b, 0
+                    mov (Button PTR [ebx]).gray, 0
+                    mov flag, 0
+                .ELSEIF  edx
+                    INVOKE set_active, b, 0
+                    mov (Button PTR [ebx]).gray, 1
+                    mov flag, 0
+                    mov edi, (Button PTR [ebx]).hWnd
+                    mov esi, b
+                    INVOKE win_pos, edi, esi
+                .ENDIF
+                S2:
+                    pop esi
+                    inc esi 
+            .ENDW
+            mov eax, flag
+            .IF eax == 1
+                INVOKE set_active, b, 1
+                mov ebx, b
                 mov (Button PTR [ebx]).gray, 0
-                mov flag, 0
-            .ELSEIF  edx
-                INVOKE set_active, b, 0
-                mov (Button PTR [ebx]).gray, 1
-                mov flag, 0
-                mov edi, (Button PTR [ebx]).hWnd
-                mov esi, b
-                INVOKE win_pos, edi, esi
             .ENDIF
-            S2:
-                pop esi
-                inc esi 
+            S1:
+                pop ecx
+                inc ecx
         .ENDW
-        mov eax, flag
-        .IF eax == 1
-            INVOKE set_active, b, 1
-            mov ebx, b
-            mov (Button PTR [ebx]).gray, 0
-        .ENDIF
-        S1:
+        mov ecx, 0
+        .WHILE ecx < N_BUTTONS
+            push ecx
+            INVOKE get_button_at_index, ecx
+            .IF eax == 0
+                Print OFFSET no_button
+            .ENDIF
+            mov btn_update, eax
+            .IF btn_update
+                mov ebx, btn_update
+                mov edx, (Button PTR [ebx]).hWnd
+                INVOKE InvalidateRect, edx, 0, 0
+            .ENDIF
             pop ecx
             inc ecx
-    .ENDW
-    mov ecx, 0
-    .WHILE ecx < N_BUTTONS
-        push ecx
-        INVOKE get_button_at_index, ecx
-        .IF eax == 0
-            Print OFFSET no_button
-        .ENDIF
-        mov btn_update, eax
-        .IF btn_update
-            mov ebx, btn_update
-            mov edx, (Button PTR [ebx]).hWnd
-            INVOKE InvalidateRect, edx, 0, 0
-        .ENDIF
-        pop ecx
-        inc ecx
-    .ENDW
+        .ENDW
 
-    Print OFFSET update_end
-    ret
+        Print OFFSET update_end
+        ret
 update ENDP
 
 match_slot PROC uses eax ebx ecx edx esi edi
