@@ -25,6 +25,7 @@ MATCH_COUNT = 3
 slot_count DWORD 0
 stage DWORD 1
 total DWORD 0
+realzero REAL8 0.0
 
 index_insert DWORD -1
 slot DWORD SLOT_SIZE DUP(0)

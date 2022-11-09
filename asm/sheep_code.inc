@@ -28,36 +28,34 @@ win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
 win ENDP
 
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
-    local insert_index:DWORD,count:DWORD
+    local __insert_index:DWORD, __count:DWORD
     ; Print offset newline
     ; Print offset newline
     ; Print offset hexStr ,btn1
-    mov count ,1
+    mov __count ,1
     mov ecx, 0
     .WHILE ecx < slot_count
-        push ecx
-        mov eax,4
+        mov eax, 4
         mul ecx
-        mov ebx,slot[eax]
+        mov ebx, slot[eax]
         mov edx , (Button PTR [ebx]).type_
         mov esi , btn1
         mov edi , (Button PTR [esi]).type_
         .IF edx == edi
-            inc count
-        .ELSEIF count > 1
-            Print OFFSET MAP1
+            inc __count
+        .ELSEIF __count > 1
+            ;Print OFFSET MAP1
             jmp S1
         .ENDIF
-        pop ecx
         inc ecx
     .ENDW
-
-    mov insert_index,ecx
     S1:
+        mov __insert_index, ecx
         ;Print OFFSET decStr , insert_index
-        INVOKE insert_slot ,btn1,insert_index
-        mov eax , insert_index
-        mov  last_index , eax 
+        Print OFFSET here
+        INVOKE insert_slot, btn1, __insert_index
+        mov ebx , __insert_index
+        mov last_index , ebx 
     ret 
 update_slot ENDP
 
@@ -84,8 +82,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov edx , (Button PTR [ebx]).start_pos.y
         mov last_y , edx
         mov last_button , ebx
-        ret         ;checked here
         INVOKE update_slot , ebx
+        ret         ;checked here
         INVOKE update
         mov eax, slot_count
         mov ecx , SLOT_SIZE

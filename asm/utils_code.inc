@@ -93,28 +93,47 @@ slot_x_ ENDP
 
 
 
-insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
+insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         String  insertprint, "Insert Slot", 0ah, 0dh
         String  inWhile, "inWile", 0ah, 0dh
         Print   OFFSET insertprint
+        Print OFFSET decStr, slot_count
+        Print OFFSET newline
+        Print OFFSET decStr, index_
+        Print OFFSET newline
+        Print OFFSET newline
+
         mov ecx, slot_count
         dec ecx
         .IF ecx == 0FFFFFFFFh
             jmp L1
-        .ENDIF
-        .WHILE (ecx >= index)
+        .ENDIF      ;is this .IF needed?
+        .WHILE (ecx >= index_)
             mov ebx, ecx
             inc ebx
             INVOKE slot_x_, ebx
+            mov edi, eax
             Print OFFSET inWhile
-            INVOKE move_button, slot[ecx], eax, SLOT_Y, SLOT_MOVE_TIME
-            mov esi, slot[ecx]
-            mov slot[ebx], esi
+            mov eax, 4
+            mul ecx
+            mov esi, slot[eax]
+            INVOKE move_button, esi, edi, SLOT_Y, SLOT_MOVE_TIME
+            mov eax, 4
+            mul ebx
+            mov edi, slot[eax]
+            mov edi, esi
             dec ecx
         .ENDW
+
+        Print OFFSET insertprint
+        Print OFFSET decStr, slot_count
+        Print OFFSET newline
+        Print OFFSET decStr, index_
+        Print OFFSET newline
+        Print OFFSET newline
         L1:
-        mov eax , 4
-        mov ecx ,index
+        mov eax, 4
+        mov ecx, index_
         mul ecx
 
         mov esi, btn_insert
@@ -122,8 +141,15 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
         mov (Button PTR [esi]).in_slot, 1
         mov (Button PTR [esi]).callback, 2
         inc slot_count
-        INVOKE slot_x_, index
-        INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME
+        dec total
+        mov ecx, total
+        .IF ecx == 0
+            INVOKE slot_x_, index_
+            INVOKE move_button, esi, eax, SLOT_Y, realzero
+        .ELSE
+            INVOKE slot_x_, index_
+            INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME
+        .ENDIF
     ret
 insert_slot ENDP
 
