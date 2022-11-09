@@ -90,6 +90,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov last_y , edx
         mov last_button , ebx
         INVOKE update_slot , ebx
+        PINVOKE print_buttons
         ret         ;checked here
         INVOKE update
         mov eax, slot_count
