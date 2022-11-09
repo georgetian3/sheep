@@ -152,12 +152,11 @@ create_button ENDP
 print_buttons PROC USES eax ebx ecx edi
         mov     ecx, 0
         .WHILE ecx < N_BUTTONS
-                AINVOKE AA1, ADDR __buttons, ecx
-                mov     eax, [eax]
+                AINVOKE get_button_at_index, ecx
                 .IF eax == 0
                         jmp     continue
                 .ENDIF
-                String  binfo, "Button: i %d ptr %x hWnd %d type %d gray %d", 10, 13
+                String  binfo, "Button: i %02d ptr 0x%07x hWnd 0x%07x type %02d gray %d", 10, 13
                 Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray
             continue:
                 inc     ecx
