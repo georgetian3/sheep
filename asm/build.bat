@@ -2,10 +2,10 @@
 
 if exist main.exe del main.exe
 
-C:\MASM32\BIN\Ml.exe /c /coff /Fl main.asm
+C:\MASM32\BIN\Ml.exe /c /coff /Fl /Zd /Zi /Zf main.asm
 if errorlevel 1 goto err
 
-C:\MASM32\BIN\Link.exe /SUBSYSTEM:CONSOLE main.obj
+C:\MASM32\BIN\Link.exe /debug /SUBSYSTEM:CONSOLE main.obj
 if errorlevel 1 goto err
 
 echo Build completed successfully!
@@ -21,6 +21,6 @@ echo.
 
 :cleanup
 
-if exist main.lst del main.lst
+::if exist main.lst del main.lst
 if exist main.obj del main.obj
 if exist main.exe start /WAIT /B main.exe

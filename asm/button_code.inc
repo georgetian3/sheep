@@ -108,7 +108,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         AINVOKE CreateWindowEx, 0, ADDR btnStr, 0, \
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW, \
                 x, y, wd, ht, parent, __id_count, 0, 0
-
         .IF eax == 0
                 Print OFFSET window_failed
                 INVOKE  ExitProcess, 1

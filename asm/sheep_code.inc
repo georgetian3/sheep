@@ -175,6 +175,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         
         AINVOKE is_tile, btn2
         .IF eax != 0
+                
                 mov     eax, (Button PTR [esi]).in_slot
                 .IF eax != 0
                         ret
@@ -208,8 +209,10 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         .IF ebx == TYPE_START
                 AINVOKE delete_all_buttons
                 AINVOKE build_map, parent, OFFSET MAP1
+                
                 mov     total, eax
                 AINVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
+                
                 
                 ;AINVOKE update 
         .ELSEIF ebx == TYPE_UNDO
