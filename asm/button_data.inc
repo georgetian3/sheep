@@ -29,9 +29,6 @@ Button STRUCT
     frames DWORD ?
 Button ENDS
 
-start_game DWORD ?
-end_game DWORD ?
-undo_btn DWORD ?
 last_x DWORD 0
 last_y DWORD 0
 last_index DWORD -1

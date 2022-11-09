@@ -165,19 +165,19 @@ print_buttons PROC USES eax ebx ecx edi
 print_buttons ENDP
 
 __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
-        AINVOKE AA1, OFFSET __buttons, ind
-        mov     eax, [eax]
-        .IF eax == 0
-                String  nobtn, "Deleting 0", 10, 13
-                Print   OFFSET nobtn
-                INVOKE  ExitProcess, 1
-        .ENDIF
-        mov     ebx, (Button PTR [eax]).hWnd
+        String testtext,"test",0ah,0dh
+        mov     eax, 4
+        mul     ind
+        mov     edx , __buttons[eax]
+        mov     esi ,eax
+
+        mov     ebx, (Button PTR [edx]).hWnd
         INVOKE  DestroyWindow, ebx
-        INVOKE  crt_free, eax
-        mov     ebx, 0
-        mov     [eax], ebx
+        INVOKE  crt_free, edx
+        mov     edx, 0
         dec     __button_count
+        Print OFFSET testtext
+        Print OFFSET decStr , eax
         ret
 __delete_button ENDP
 

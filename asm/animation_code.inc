@@ -141,7 +141,8 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 mov     ebx, ecx
                 inc     ebx
                 .WHILE ebx < slot_count
-        Print OFFSET here
+                        push ebx
+                        Print OFFSET here
                         mov     edx, ebx
                         sub     edx, count
                         AINVOKE slot_x, edx
@@ -152,7 +153,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         mov     edi, [eax]
                         AINVOKE AA1, OFFSET slot, edx
                         mov     [eax], edi
-
+                        pop ebx
                         inc     ebx
                 .ENDW
                 mov esi, count
