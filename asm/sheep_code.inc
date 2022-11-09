@@ -9,7 +9,7 @@ lost ENDP
 win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
         mov eax, stage
         .IF eax == 1
-                INVOKE  destroy_all_button
+                INVOKE  delete_all_buttons
                 mov     slot_count , 0
                 AINVOKE build_map, hWnd, OFFSET MAP2
                 mov     eax, total
@@ -18,7 +18,7 @@ win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
                 mov     total, eax
                 ret
         .ELSE
-                PINVOKE destroy_all_button
+                PINVOKE delete_all_buttons
                 PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 0, 0
                 PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 0, 0
         .ENDIF
@@ -275,7 +275,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
 
         mov     ebx, (Button PTR [esi]).type_
         .IF ebx == TYPE_START
-                AINVOKE destroy_all_button
+                AINVOKE delete_all_buttons
                 AINVOKE build_map, parent, OFFSET MAP1
                 mov     total, eax
                 ret

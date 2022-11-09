@@ -190,21 +190,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
     ret
 insert_slot ENDP
 
-destroy_all_button PROC uses eax ebx ecx edx esi edi
-    String destroy_print, "%d", 0ah, 0dh
-    mov ecx, 0
-    .WHILE ecx < N_BUTTONS
-        mov eax, 4
-        mul ecx
-        mov ebx, __buttons[eax]
-        .IF ebx
-            INVOKE  delete_button, (Button PTR [ebx]).hWnd
-            Print   OFFSET destroy_print, ecx
-        .ENDIF
-        inc ecx
-    .ENDW
-    ret
-destroy_all_button ENDP
+
 
 paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
     local ps:PAINTSTRUCT, hdc_window:HDC, hdc_memBuffer:HDC, hdc_loadBmp:HDC, blankBmp:DWORD

@@ -1,4 +1,4 @@
-__search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
+__search_hwnd PROC uses ebx ecx edx esi edi hWnd_:DWORD
 
         COMMENT !
             hWnd: hWnd of the button
@@ -6,18 +6,22 @@ __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
             corresponding to hWnd in __buttons,
             -1 if not found
         !
-
-        mov     ebx, hWnd
-        mov     eax, 0
-        .WHILE eax < N_BUTTONS
-                mov     esi, __buttons[eax * SIZEOF DWORD]
-                .IF esi != 0
-                        mov     ecx, (Button PTR [esi]).hWnd
-                        .IF ebx == ecx
+        mov     ebx, hWnd_
+        mov     ecx, 0
+        .WHILE ecx < N_BUTTONS
+                AINVOKE get_button_at_index, ecx
+                .IF eax != 0
+                        mov     eax, (Button PTR [eax]).hWnd
+                        Print   OFFSET hexStr, eax
+                        Print   OFFSET newline
+                        Print   OFFSET hexStr, ebx
+                        Print   OFFSET newline
+                        .IF eax == ebx
+                                mov     eax, ecx
                                 ret
                         .ENDIF
                 .ENDIF
-                inc     eax
+                inc     ecx
         .ENDW
         mov     eax, -1
         ret
@@ -66,6 +70,8 @@ get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
                 ret
         .ENDIF
         AINVOKE AA1, OFFSET __buttons, eax
+        Print   OFFSET here
+        INVOKE  ExitProcess, 1
         mov     eax, [eax]
         ;Print   OFFSET hexStr,eax       ; print the location of specific button
         ;Print   OFFSET newline
@@ -96,7 +102,6 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 INVOKE  ExitProcess, 1
         .ENDIF
         mov     esi, eax        ; esi holds ptr to new button for rest of proc
-
         ; finding a free id
         AINVOKE id_to_hwnd, parent, __id_count
         .WHILE eax != 0
@@ -115,6 +120,7 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
                 Print OFFSET window_failed
                 INVOKE  ExitProcess, 1
         .ENDIF
+
 
         mov     (Button PTR [esi]).hWnd, eax
         mov     eax, k
@@ -193,9 +199,23 @@ delete_button PROC uses eax hWnd:DWORD
         ret
 delete_button ENDP
 
+delete_all_buttons PROC uses eax ebx ecx edx esi edi
+        mov ecx, 0
+        .WHILE ecx < N_BUTTONS
+                AINVOKE AA1, __buttons, ecx
+                mov     eax, [eax]
+                .IF eax != 0
+                        INVOKE  delete_button, (Button PTR [eax]).hWnd
+                .ENDIF
+                inc ecx
+        .ENDW
+        ret
+delete_all_buttons ENDP
+
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  drawbutton, "draw_button", 10, 13
-        ;Print   OFFSET drawbutton
+        Print   OFFSET drawbutton
+        PINVOKE print_buttons
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
 
         INVOKE  id_to_hwnd, parent, id
@@ -203,7 +223,9 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
                 String  ith, "id_to_hwnd failed", 10, 13
                 Print   OFFSET ith
         .ENDIF
-        INVOKE  get_button, eax
+        
+        AINVOKE get_button, eax
+
         .IF eax == 0    ; if (btn == 0) 
                 String  notfound, "Draw button not found", 10, 13
                 Print   OFFSET notfound
@@ -215,12 +237,15 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  binfo1, "Button1: hWnd %d type %d", 10, 13
         ;Print   OFFSET binfo1, (Button PTR [esi]).hWnd, (Button PTR [esi]).type_
 
+
         mov     ebx, (Button PTR [esi]).gray
         .IF ebx == 0
                 mov     ebx, 1
         .ELSE
                 mov     ebx, 0
         .ENDIF
+        Print   OFFSET here
+        INVOKE  ExitProcess, 1
         mov     ecx, (Button PTR [esi]).type_
 
         String  gtb, "gray %d type %d", 10, 13

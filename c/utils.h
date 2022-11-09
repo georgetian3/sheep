@@ -149,7 +149,7 @@ void insert_slot(struct Button* btn, int index) {
 
 }
 
-void destroy_all_button(){
+void delete_all_buttons(){
     for(int i=0;i<N_BUTTONS;i++){
         if(__buttons[i]){
             delete_button_struct(__buttons[i]);
