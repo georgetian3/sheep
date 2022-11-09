@@ -29,11 +29,15 @@ win ENDP
 
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
+    String update_slot_print, "Update Slot", 0ah, 0dh
     ; Print offset newline
     ; Print offset newline
     ; Print offset hexStr ,btn1
     mov __count ,1
     mov ecx, 0
+    Print OFFSET newline
+    Print OFFSET update_slot_print
+
     .WHILE ecx < slot_count
         mov eax, 4
         mul ecx
@@ -55,6 +59,10 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         INVOKE insert_slot, btn1, __insert_index
         mov ebx , __insert_index
         mov last_index , ebx 
+        Print   OFFSET decStr, slot_count
+        Print OFFSET newline
+        Print OFFSET decStr, __count
+        Print OFFSET newline
     ret 
 update_slot ENDP
 
