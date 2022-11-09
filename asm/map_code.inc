@@ -74,7 +74,7 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR map_length
     PINVOKE crt_fscanf, fp, ADDR one_int, ADDR map_height
 
-    Print   OFFSET here
+    ;Print   OFFSET here
 
     mov     total_, 0
 

@@ -42,8 +42,8 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
 
                 AINVOKE AA1, OFFSET slot, ecx
                 mov     eax, [eax]
-                Print   OFFSET here
-                Print   OFFSET decStr, eax
+                ;Print   OFFSET here
+                Print   OFFSET hexStr, eax
                 Print   OFFSET newline
                 mov     esi ,(Button PTR [eax]).type_
                 mov     ebx , btn1

@@ -129,17 +129,19 @@ match_slot PROC uses eax ebx ecx edx esi edi
             .IF count >= MATCH_COUNT
                 mov edx, 0
                 .WHILE(edx < count)
-
                     push edx
                     mov     ebx, ecx
                     sub     ebx, edx
                     AINVOKE AA1, OFFSET slot, ebx
                     mov     eax, [eax]
                     INVOKE  delete_button, (Button PTR [eax]).hWnd
+                    pop edx
+                    inc edx
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
                 .WHILE ebx < slot_count
+        Print OFFSET here
                         mov     edx, ebx
                         sub     edx, count
                         AINVOKE slot_x, edx
@@ -167,6 +169,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
         .ENDIF
         inc ecx
     .ENDW
+    INVOKE print_buttons
     ret
 match_slot ENDP
 
