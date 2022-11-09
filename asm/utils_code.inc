@@ -203,9 +203,6 @@ destroy_all_button PROC uses eax ebx ecx edx esi edi
         .ENDIF
         inc ecx
     .ENDW
-    mov start_game, 0
-    mov end_game, 0
-    mov undo_btn, 0
     ret
 destroy_all_button ENDP
 

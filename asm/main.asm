@@ -100,7 +100,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 INVOKE load_bitmap, ecx
                 mov bmp_bg, eax
                 INVOKE  load_bitmaps
-
+                INVOKE  win, hWnd
 
 
                 PINVOKE print_buttons
