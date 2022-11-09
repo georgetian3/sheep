@@ -156,8 +156,8 @@ print_buttons PROC USES eax ebx ecx edi
                 .IF eax == 0
                         jmp     continue
                 .ENDIF
-                String  binfo, "Button: i %02d ptr 0x%07x hWnd 0x%07x type %02d gray %d", 10, 13
-                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray
+                String  binfo, "btn i %02d ptr %07x hWnd %07x type %02d gray %d active %d in_slot %d", 10, 13
+                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray, (Button PTR [eax]).active, (Button PTR [eax]).in_slot
             continue:
                 inc     ecx
         .ENDW 
