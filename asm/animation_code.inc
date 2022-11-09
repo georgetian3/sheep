@@ -130,6 +130,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 mov edx, 0
                 .WHILE(edx < count)
 
+                    push edx
                     mov     ebx, ecx
                     sub     ebx, edx
                     AINVOKE AA1, OFFSET slot, ebx

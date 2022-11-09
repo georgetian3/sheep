@@ -167,6 +167,11 @@ print_buttons ENDP
 __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
         AINVOKE AA1, OFFSET __buttons, ind
         mov     eax, [eax]
+        .IF eax == 0
+                String  nobtn, "Deleting 0", 10, 13
+                Print   OFFSET nobtn
+                INVOKE  ExitProcess, 1
+        .ENDIF
         mov     ebx, (Button PTR [eax]).hWnd
         INVOKE  DestroyWindow, ebx
         INVOKE  crt_free, eax
