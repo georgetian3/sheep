@@ -158,7 +158,6 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
 
             dec ecx
         .ENDW
-
         ; Print OFFSET decStr, slot_count
         ; Print OFFSET newline
         ; Print OFFSET decStr, index_

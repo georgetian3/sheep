@@ -129,35 +129,32 @@ match_slot PROC uses eax ebx ecx edx esi edi
             .IF count >= MATCH_COUNT
                 mov edx, 0
                 .WHILE(edx < count)
-
                     push edx
                     mov     ebx, ecx
                     sub     ebx, edx
                     AINVOKE AA1, OFFSET slot, ebx
                     mov     eax, [eax]
                     INVOKE  delete_button, (Button PTR [eax]).hWnd
+                    pop edx
+                    inc edx
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
-                mov     edx, ebx
-                .WHILE edx < slot_count
-                        push edx
-                        mov     ebx, edx
-                        sub     ebx, count
-                        mov     eax ,4
-                        mul     edx
-                        mov     esi ,eax
-                        INVOKE  slot_x_, ebx
-                        mov     edi , slot[esi]
-                        INVOKE move_button, edi, eax, SLOT_Y, SLOT_MOVE_TIME
-                        mov     eax ,4
-                        mul     edx
-                        mov     esi, slot[eax]
-                        mov     eax ,4
-                        mul     ebx
-                        mov     slot[eax], esi
-                        pop     edx
-                        inc     edx
+                .WHILE ebx < slot_count
+                        push ebx
+                        Print OFFSET here
+                        mov     edx, ebx
+                        sub     edx, count
+                        AINVOKE slot_x, edx
+                        mov     esi, eax
+                        AINVOKE AA1, OFFSET slot, ebx
+                        mov     eax, [eax]
+                        PINVOKE move_button, eax, esi, SLOT_Y, SLOT_MOVE_TIME
+                        mov     edi, [eax]
+                        AINVOKE AA1, OFFSET slot, edx
+                        mov     [eax], edi
+                        pop ebx
+                        inc     ebx
                 .ENDW
                 mov esi, count
                 sub slot_count, esi
@@ -173,6 +170,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
         .ENDIF
         inc ecx
     .ENDW
+    INVOKE print_buttons
     ret
 match_slot ENDP
 
