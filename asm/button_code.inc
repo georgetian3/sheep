@@ -173,8 +173,9 @@ __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
 
         mov     ebx, (Button PTR [edx]).hWnd
         INVOKE  DestroyWindow, ebx
-        INVOKE  crt_free, __buttons[esi]
-        mov     __buttons[esi], 0
+        INVOKE  crt_free, eax
+        mov     ebx, 0
+        mov     [eax], ebx
         dec     __button_count
         Print OFFSET testtext
         Print OFFSET decStr , eax
@@ -183,7 +184,6 @@ __delete_button ENDP
 
 
 delete_button PROC uses eax hWnd:DWORD
-        local index:DWORD
         String del_hwnd_err, "Delete hwnd not found", 0ah, 0dh
         INVOKE  __search_hwnd, hWnd
         .IF eax == -1

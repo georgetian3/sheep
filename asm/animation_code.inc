@@ -121,31 +121,21 @@ match_slot PROC uses eax ebx ecx edx esi edi
     mov prev_type, -1
     mov ecx, 0
     .WHILE (ecx < slot_count)
-        mov eax , 4
-        mul ecx
-        mov esi, slot[eax]
+        AINVOKE AA1, OFFSET slot, ecx
+        mov esi, [eax]
         mov edi, (Button PTR [esi]).type_
-        .IF( edi == prev_type)
-            inc count
-            .IF (count >= MATCH_COUNT)
+        .IF edi == prev_type
+            inc     count
+            .IF count >= MATCH_COUNT
                 mov edx, 0
                 .WHILE(edx < count)
 
                     push edx
                     mov     ebx, ecx
                     sub     ebx, edx
-                    mov     eax, 4
-                    mul     ebx
-
-                    ; pushad
-                    ; INVOKE print_buttons
-                    ; popad
-
-                    mov     edi ,slot[eax]
-                    mov     esi ,(Button PTR [edi]).hWnd
-                    INVOKE  delete_button, esi
-                    pop edx
-                    inc edx
+                    AINVOKE AA1, OFFSET slot, ebx
+                    mov     eax, [eax]
+                    INVOKE  delete_button, (Button PTR [eax]).hWnd
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
@@ -171,20 +161,18 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 .ENDW
                 mov esi, count
                 sub slot_count, esi
-                jmp F1
+                mov     last_button, 0
+                ret
             .ENDIF
         .ELSE
             mov count, 1
-            mov eax ,4
-            mul ecx
-            mov ebx, slot[eax]
-            mov eax, (Button PTR [ebx]).type_
-            mov prev_type, eax
+            AINVOKE AA1, OFFSET slot, ecx
+            mov     eax, [eax]
+            mov     eax, (Button PTR [eax]).type_
+            mov     prev_type, eax
         .ENDIF
         inc ecx
     .ENDW
-    ;update()?
-    F1:
     ret
 match_slot ENDP
 

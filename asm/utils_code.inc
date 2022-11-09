@@ -106,16 +106,25 @@ shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
         ret
 shuffle ENDP
 
-slot_x_ PROC uses ebx ecx edx esi edi slot_index:DWORD
+slot_x PROC uses ebx ecx edx esi edi slot_index:DWORD
     mov ebx, SLOT_X_OFFSET
     add ebx, TILE_WIDTH
     mov eax, slot_index
     mul ebx
     add eax, SLOT_X
     ret
-slot_x_ ENDP
+slot_x ENDP
 
 
+print_eip PROC USES eax ebx ecx edx esi edi 
+        call next_
+    next_:
+        pop eax
+
+        String  eipstr, "EIP: %h", 10, 13
+        Print   OFFSET eipstr, eax
+    ret
+print_eip ENDP
 
 insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         String  insertprint, "Insert Slot", 0ah, 0dh
@@ -135,7 +144,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         .WHILE (ecx >= index_)
             mov ebx, ecx
             inc ebx
-            INVOKE slot_x_, ebx
+            INVOKE slot_x, ebx
             mov edi, eax
             Print OFFSET inWhile
             mov eax, 4
@@ -161,6 +170,9 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         mul ecx
 
         mov esi, btn_insert
+        PINVOKE print_buttons
+        Print   OFFSET hexStr, btn_insert
+        Print   OFFSET newline
         mov slot[eax], esi
         mov (Button PTR [esi]).in_slot, 1
         mov (Button PTR [esi]).callback, 2
@@ -170,10 +182,10 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         .IF ecx == 0
             fldz
             fst realzero
-            INVOKE slot_x_, index_
+            INVOKE slot_x, index_
             INVOKE move_button, esi, eax, SLOT_Y, realzero
         .ELSE
-            INVOKE slot_x_, index_
+            INVOKE slot_x, index_
             INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME
         .ENDIF
     ret

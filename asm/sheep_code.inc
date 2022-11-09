@@ -29,41 +29,38 @@ win ENDP
 
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
-    String update_slot_print, "Update Slot", 0ah, 0dh
-    ; Print offset newline
-    ; Print offset newline
-    ; Print offset hexStr ,btn1
-    mov __count ,1
-    mov ecx, 0
-    Print OFFSET newline
-    Print OFFSET update_slot_print
+        String update_slot_print, "Update Slot", 0ah, 0dh
+        ; Print offset newline
+        ; Print offset newline
+        ; Print offset hexStr ,btn1
+        mov     __count, 1
+        mov     ecx, 0
+        Print   OFFSET newline
+        Print   OFFSET update_slot_print
 
-    .WHILE ecx < slot_count
-        mov eax, 4
-        mul ecx
-        mov ebx, slot[eax]
-        mov edx , (Button PTR [ebx]).type_
-        mov esi , btn1
-        mov edi , (Button PTR [esi]).type_
-        .IF edx == edi
-            inc __count
-        .ELSEIF __count > 1
-            ;Print OFFSET MAP1
-            jmp S1
-        .ENDIF
-        inc ecx
-    .ENDW
+        .WHILE ecx < slot_count
+
+                AINVOKE AA1, OFFSET slot, ecx
+                mov     eax, [eax]
+                Print   OFFSET here
+                Print   OFFSET decStr, eax
+                Print   OFFSET newline
+                mov     esi ,(Button PTR [eax]).type_
+                mov     ebx , btn1
+                mov     edi , (Button PTR [ebx]).type_
+                .IF esi == edi
+                        inc     __count
+                .ELSEIF __count > 1
+                    ;Print OFFSET MAP1
+                    jmp S1
+                .ENDIF
+                inc ecx
+        .ENDW
+
     S1:
-        mov __insert_index, ecx
-        ;Print OFFSET decStr , insert_index
-        INVOKE insert_slot, btn1, __insert_index
-        mov ebx , __insert_index
-        mov last_index , ebx 
-        Print   OFFSET decStr, slot_count
-        Print OFFSET newline
-        Print OFFSET decStr, __count
-        Print OFFSET newline
-    ret 
+        PINVOKE insert_slot, btn1, ecx
+        mov     last_index , ecx 
+        ret 
 update_slot ENDP
 
 handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
@@ -90,6 +87,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov last_y , edx
         mov last_button , ebx
         INVOKE update_slot , ebx
+    PINVOKE print_buttons
+
         ret         ;checked here
         INVOKE update
         mov eax, slot_count
@@ -132,7 +131,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 mov (Button PTR [esi]).callback , 0
                 mov ebx, ecx
                 dec ebx 
-                INVOKE slot_x_, ebx
+                INVOKE slot_x, ebx
                 INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME              
                 mov eax, 4
                 mul ebx
