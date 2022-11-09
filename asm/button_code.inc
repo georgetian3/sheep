@@ -251,25 +251,6 @@ set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:DWORD
 set_active ENDP
 
 is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
-    mov edi, btn_istile
-    mov esi, (Button PTR [edi]).type_
-    .IF esi > 0
-        jge S1
-    .ENDIF
-    mov edx, 0
-    S1:
-    mov ebx, N_TILE_TYPES
-    .IF esi > ebx
-        jl S2
-    .ENDIF
-    mov edx, 0
-    S2:
-    mov edx, 1
-    mov eax, edx
-    ret
-is_tile ENDP
-
-is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
 
     mov edi, btn_istile
     mov esi, (Button PTR [edi]).type_
