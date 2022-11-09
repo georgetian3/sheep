@@ -156,8 +156,8 @@ print_buttons PROC USES eax ebx ecx edi
                 .IF eax == 0
                         jmp     continue
                 .ENDIF
-                String  binfo, "btn i %02d ptr %07x hWnd %07x type %02d gray %d active %d is_tile %d in_slot %d", 10, 13
-                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray, (Button PTR [eax]).active, (Button PTR [eax]).is_tile (Button PTR [eax]).in_slot
+                String  binfo, "btn i %02d ptr %07x hWnd %07x type %02d gray %d active %d in_slot %d", 10, 13
+                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray, (Button PTR [eax]).active, (Button PTR [eax]).in_slot
             continue:
                 inc     ecx
         .ENDW 
@@ -250,10 +250,10 @@ set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:DWORD
     ret
 set_active ENDP
 
-is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
+is_tile PROC uses esi btn_istile:DWORD
 
-    mov edi, btn_istile
-    mov esi, (Button PTR [edi]).type_
+    mov esi, btn_istile
+    mov esi, (Button PTR [esi]).type_
 
     mov     eax, 0
     .IF esi < 0
