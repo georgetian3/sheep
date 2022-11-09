@@ -188,6 +188,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 mov     last_button, esi
                 PINVOKE update_slot, esi
                 PINVOKE print_buttons
+                ret
                 PINVOKE update
                 mov     eax, slot_count
                 mov     ecx , SLOT_SIZE
@@ -206,10 +207,11 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov     ebx, (Button PTR [esi]).type_
         .IF ebx == TYPE_START
                 AINVOKE delete_all_buttons
-                ;AINVOKE build_map, parent, OFFSET MAP1
+                AINVOKE build_map, parent, OFFSET MAP1
                 mov     total, eax
                 AINVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
-                AINVOKE update 
+                
+                ;AINVOKE update 
         .ELSEIF ebx == TYPE_UNDO
                 mov     eax, last_button
                 .IF eax != 0
