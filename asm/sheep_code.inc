@@ -86,7 +86,7 @@ update PROC USES eax ebx ecx edx esi edi
             INVOKE overlap, edx, ebx
             .IF edi
                 INVOKE set_active, ebx, 0
-                move (Button PTR [ebx]).gray, 0
+                mov (Button PTR [ebx]).gray, 0
                 mov flag, 0
             .ELSEIF eax
                 INVOKE set_active, b, 0
