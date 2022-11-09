@@ -224,6 +224,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     String timerfailed, "SetTimer failed", 0ah, 0dh
     String printfloat, "%f", 0ah, 0dh ;for testing float
     Print OFFSET startmove
+    finit
     fld epsilon
     fldz
     fsub __time
@@ -283,7 +284,9 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     fild temp_differnece
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dxpf
-    ;Print OFFSET printfloat, (Button PTR [edi]).dxpf
+    Print offset newline
+    Print OFFSET printfloat, (Button PTR [edi]).dxpf
+    Print offset newline
     
     mov ebx, (Button PTR [edi]).start_pos.y
     mov eax, y
@@ -294,7 +297,9 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
 
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dypf
-    ;Print OFFSET printfloat, (Button PTR [edi]).dypf
+    Print offset newline
+    Print OFFSET printfloat, (Button PTR [edi]).dypf
+    Print offset newline
 
     INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
     .IF eax == 0

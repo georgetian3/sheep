@@ -145,7 +145,7 @@ void insert_slot(struct Button* btn, int index) {
     }else{
         move_button(btn, slot_x(index), SLOT_Y, SLOT_MOVE_TIME);
     }
-    
+        
 
 }
 
