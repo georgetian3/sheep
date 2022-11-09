@@ -60,6 +60,7 @@ String  hexStr, "%x"
 String  decStr, "%d"
 String  charStr, "%s", 0ah, 0dh
 String  newline, 10, 13
+String  parStr, "Parent: %x", 10, 13
 
 
 include code.inc
@@ -73,6 +74,9 @@ String clicked, "Button clicked", 10, 13
 test_time   REAL8 0.2
 
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
+
+        ;Print   OFFSET parStr, hWnd
+
 
         mov ebx, uMsg
 
@@ -90,24 +94,17 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
                                 INVOKE  handle_button_click, hWnd, esi
-                                ;mov ebx , (Button PTR [esi]).hWnd
-                                ;INVOKE  move_button, ebx, 100, 100, test_time
                         .ENDIF
                 .ENDIF                
-
         .ELSEIF ebx == WM_CREATE
                 mov ecx, OFFSET main_bg
                 INVOKE load_bitmap, ecx
                 mov bmp_bg, eax
-                INVOKE  load_bitmaps
-                INVOKE  build_map, hWnd, OFFSET MAP1
-                mov     total, eax
-                ;INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-                ;INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
+                PINVOKE  load_bitmaps
 
+                PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 200, 80
+                PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 200, 56
 
-
-                PINVOKE print_buttons
                 ;INVOKE  play_sound, 0, 0, 0
         .ELSEIF ebx == WM_PAINT
                 INVOKE paint, hWnd

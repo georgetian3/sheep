@@ -66,7 +66,7 @@ void lose(HWND hWnd) {
 }
 int win(HWND hWnd){
     if(stage==1){
-        destroy_all_button();
+        delete_all_buttons();
         slot_count = 0;
         int total=build_map(hWnd,"map1.txt");
         undo_btn=create_button(hWnd,TYPE_UNDO,500,730,-1,64,64);
@@ -74,7 +74,7 @@ int win(HWND hWnd){
         stage++;
         return total;
     }else{
-        destroy_all_button();
+        delete_all_buttons();
         start_game=create_button(hWnd,TYPE_START,320,320,-1,200,80);
         end_game = create_button(hWnd,TYPE_END,320,400,-1,200,56);
 
@@ -125,7 +125,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         }
     }
     else if(btn==start_game){
-        destroy_all_button();
+        delete_all_buttons();
         total=build_map(parent,"map1.txt");
         printf("undo %x",undo_btn);
         undo_btn=create_button(parent,TYPE_UNDO,500,730,-1,64,64);

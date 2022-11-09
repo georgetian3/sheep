@@ -1,4 +1,3 @@
-; button.inc r=ired data
 N_BUTTONS = 100
 __button_count DWORD 0
 __id_count DWORD 0

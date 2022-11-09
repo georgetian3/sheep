@@ -36,5 +36,5 @@ overlap PROTO a:DWORD, b:DWORD
 shuffle PROTO arr:DWORD, n:DWORD
 slot_x PROTO slot_index:DWORD
 insert_slot PROTO btn_insert:DWORD, index:DWORD
-destroy_all_button PROTO
+delete_all_buttons PROTO
 paint PROTO hWnd:DWORD

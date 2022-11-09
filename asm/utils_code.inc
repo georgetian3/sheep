@@ -21,9 +21,6 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
 
     `
 
-
-
-
     mov edx , a
     mov esi , b 
     mov ebx, (Button PTR [edx]).k
@@ -80,6 +77,68 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     F1:
         ret
 overlap ENDP
+
+match_slot PROC uses eax ebx ecx edx esi edi
+    local count:DWORD, prev_type:DWORD
+    String test_print , "test here" ,0ah,0dh
+    String matching, "match slot", 0ah, 0dh
+    Print offset matching
+    mov count, 0
+    mov prev_type, -1
+    mov ecx, 0
+    .WHILE (ecx < slot_count)
+        AINVOKE AA1, OFFSET slot, ecx
+        mov esi, [eax]
+        mov edi, (Button PTR [esi]).type_
+        .IF edi == prev_type
+            inc     count
+            .IF count >= MATCH_COUNT
+                mov edx, 0
+                .WHILE(edx < count)
+                    push edx
+                    mov     ebx, ecx
+                    sub     ebx, edx
+                    AINVOKE AA1, OFFSET slot, ebx
+                    mov     eax, [eax]
+                    INVOKE  delete_button, (Button PTR [eax]).hWnd
+                    pop edx
+                    inc edx
+                .ENDW
+                mov     ebx, ecx
+                inc     ebx
+                .WHILE ebx < slot_count
+                        push    ebx
+                        Print OFFSET here
+                        mov     edx, ebx
+                        sub     edx, count
+                        AINVOKE slot_x, edx
+                        mov     esi, eax
+                        AINVOKE AA1, OFFSET slot, ebx
+                        mov     eax, [eax]
+                        PINVOKE move_button, eax, esi, SLOT_Y, SLOT_MOVE_TIME
+                        mov     edi, [eax]
+                        AINVOKE AA1, OFFSET slot, edx
+                        mov     [eax], edi
+                        pop     ebx
+                        inc     ebx
+                .ENDW
+                mov esi, count
+                sub slot_count, esi
+                mov     last_button, 0
+                ret
+            .ENDIF
+        .ELSE
+            mov count, 1
+            AINVOKE AA1, OFFSET slot, ecx
+            mov     eax, [eax]
+            mov     eax, (Button PTR [eax]).type_
+            mov     prev_type, eax
+        .ENDIF
+        inc ecx
+    .ENDW
+    INVOKE print_buttons
+    ret
+match_slot ENDP
 
 shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
 
@@ -165,7 +224,6 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
 
             dec ecx
         .ENDW
-
         ; Print OFFSET decStr, slot_count
         ; Print OFFSET newline
         ; Print OFFSET decStr, index_
@@ -199,21 +257,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
     ret
 insert_slot ENDP
 
-destroy_all_button PROC uses eax ebx ecx edx esi edi
-    String destroy_print, "%d", 0ah, 0dh
-    mov ecx, 0
-    .WHILE ecx < N_BUTTONS
-        mov eax, 4
-        mul ecx
-        mov ebx, __buttons[eax]
-        .IF ebx
-            INVOKE  delete_button, (Button PTR [ebx]).hWnd
-            Print   OFFSET destroy_print, ecx
-        .ENDIF
-        inc ecx
-    .ENDW
-    ret
-destroy_all_button ENDP
+
 
 paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
     local ps:PAINTSTRUCT, hdc_window:HDC, hdc_memBuffer:HDC, hdc_loadBmp:HDC, blankBmp:DWORD
