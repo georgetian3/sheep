@@ -131,17 +131,21 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 mov edx, 0
                 .WHILE(edx < count)
 
+                    push edx
                     mov     ebx, ecx
                     sub     ebx, edx
                     mov     eax, 4
                     mul     ebx
-                    pushad
-                    INVOKE print_buttons
-                    popad
-                    mov     edx ,slot[eax]
 
-                    mov     esi ,(Button PTR [edx]).hWnd
+                    ; pushad
+                    ; INVOKE print_buttons
+                    ; popad
+
+                    mov     edi ,slot[eax]
+                    mov     esi ,(Button PTR [edi]).hWnd
                     INVOKE  delete_button, esi
+                    pop edx
+                    inc edx
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
