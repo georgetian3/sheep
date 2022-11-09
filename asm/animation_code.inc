@@ -60,6 +60,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
     String printfloat, "%f", 0ah, 0dh ;for testing float
+    String posi ,"x = %d , y = %d ",0ah,0dh
     Print OFFSET startmove
     finit
     fld epsilon
@@ -81,10 +82,10 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     .ENDIF
     popad
     mov edx, (Button PTR [ebx]).callback
-    Print OFFSET newline
-    Print OFFSET decStr, edx
-    Print OFFSET newline
-    Print OFFSET newline
+    ; Print OFFSET newline
+    ; Print OFFSET decStr, edx
+    ; Print OFFSET newline
+    ; Print OFFSET newline
     .IF edx == 1
         INVOKE update
     .ELSEIF edx == 2
@@ -96,10 +97,11 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     mov edi, hWnd
     ;INVOKE  get_button, hWnd
     ;mov     edi, eax
+
     mov ebx, (Button PTR [edi]).hWnd
-    INVOKE win_pos, ebx, edi
 
-
+    Print offset here
+    INVOKE win_pos ,ebx,edi
     mov (Button PTR [edi]).moving, 1
     mov (Button PTR [edi]).frame, 1
     INVOKE GetTickCount
@@ -121,11 +123,12 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     fild temp_differnece
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dxpf
-    Print offset newline
-    Print OFFSET printfloat, (Button PTR [edi]).dxpf
-    Print offset newline
+    ; Print offset newline
+    ; Print OFFSET printfloat, (Button PTR [edi]).dxpf
+    ; Print offset newline
     
     mov ebx, (Button PTR [edi]).start_pos.y
+    Print OFFSET posi,esi,ebx
     mov eax, y
     sub eax, ebx
     mov temp_differnece, eax
@@ -134,9 +137,9 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
 
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dypf
-    Print offset newline
-    Print OFFSET printfloat, (Button PTR [edi]).dypf
-    Print offset newline
+    ; Print offset newline
+    ; Print OFFSET printfloat, (Button PTR [edi]).dypf
+    ; Print offset newline
 
     INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
     .IF eax == 0

@@ -134,6 +134,7 @@ update ENDP
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
         String update_slot_print, "Update Slot", 0ah, 0dh
+        String countstr ,"slot count = %d ,ecx = %d",0ah,0dh
         ; Print offset newline
         ; Print offset newline
         ; Print offset hexStr ,btn1
@@ -146,9 +147,6 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
 
                 AINVOKE AA1, OFFSET slot, ecx
                 mov     eax, [eax]
-                ;Print   OFFSET here
-                Print   OFFSET hexStr, eax
-                Print   OFFSET newline
                 mov     esi ,(Button PTR [eax]).type_
                 mov     ebx , btn1
                 mov     edi , (Button PTR [ebx]).type_
