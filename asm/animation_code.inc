@@ -8,21 +8,21 @@ update PROC USES eax ebx ecx edx esi edi
     .WHILE ecx < N_BUTTONS
         push ecx
         INVOKE get_button_at_index, ecx
-        Print offset newline
-        Print offset decStr , eax
-        Print offset newline
-        Print offset newline
-        ret
         .IF eax == -1
             jmp S1
         .ENDIF
         mov b, eax
         INVOKE is_tile, b
-        ret
         not eax
         .IF eax
+            Print offset newline
+            Print offset hexStr, eax
+            Print offset newline
+            Print offset newline
+            ret
             jmp S1
         .ENDIF
+        
         mov ebx, b
         mov eax, (Button PTR [ebx]).moving
         .IF eax
@@ -37,6 +37,17 @@ update PROC USES eax ebx ecx edx esi edi
                 jmp S2
             .ENDIF
             mov a, eax
+            mov ebx, b
+
+            Print offset newline
+            Print offset hexStr, eax
+            Print offset newline
+            Print offset hexStr, ebx
+            Print offset newline
+            Print offset newline
+            ret
+            cmp eax, ebx
+            je S2
             INVOKE is_tile, a   ;note!!
             not eax
             .IF eax
@@ -48,8 +59,6 @@ update PROC USES eax ebx ecx edx esi edi
                 jmp S2
             .ENDIF
             mov eax, a
-            cmp eax, ebx
-            je S2
             INVOKE overlap_, a, b
             mov edx, eax
             mov eax, (Button PTR [ebx]).in_slot  
