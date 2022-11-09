@@ -43,7 +43,7 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
                 AINVOKE AA1, OFFSET slot, ecx
                 mov     eax, [eax]
                 Print   OFFSET here
-                Print   OFFSET decStr, eax
+                Print   OFFSET hexStr, eax
                 Print   OFFSET newline
                 mov     esi ,(Button PTR [eax]).type_
                 mov     ebx , btn1
@@ -69,11 +69,9 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
     String undo_print, "undo %x", 0ah, 0dh
     Print OFFSET handle_click
 
-    INVOKE is_tile , btn2
-    mov ebx , btn2
-    mov ecx , start_game
-    mov edx , end_game
-    mov esi , undo_btn
+    mov     eax, btn2
+    mov     ebx , (Button PTR [eax]).type_
+    INVOKE  is_tile, btn2
     .IF eax != 0
         mov edi , (Button PTR [ebx]).in_slot
         .IF edi !=0
@@ -87,7 +85,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov last_y , edx
         mov last_button , ebx
         INVOKE update_slot , ebx
-    PINVOKE print_buttons
+        PINVOKE print_buttons
 
         ret         ;checked here
         INVOKE update
@@ -102,7 +100,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
             INVOKE win, parent
             mov total , eax
         .ENDIF
-    .ELSEIF ebx == ecx
+    .ELSEIF ebx == TYPE_START
         INVOKE destroy_all_button
         ;INVOKE build_map,parent ,MAP2
         ;mov total , eax
@@ -111,7 +109,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         mov undo_btn , eax 
 
         INVOKE update 
-    .ELSEIF ebx == esi
+    .ELSEIF ebx == TYPE_UNDO
         mov eax, last_button
         .IF eax != 0
             mov (Button PTR [ebx]).callback ,1
