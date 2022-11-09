@@ -116,12 +116,13 @@ update PROC USES eax ebx ecx edx esi edi
         push ecx
         INVOKE get_button_at_index, ecx
         .IF eax == 0
-            Print OFFSET no_button
+            jmp S3
         .ENDIF
         .IF eax
             mov edx, (Button PTR [eax]).hWnd
             INVOKE InvalidateRect, edx, 0, 0
         .ENDIF
+        S3:
         pop ecx
         inc ecx
     .ENDW
