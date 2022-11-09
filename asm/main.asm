@@ -100,10 +100,6 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 INVOKE load_bitmap, ecx
                 mov bmp_bg, eax
                 INVOKE  load_bitmaps
-                INVOKE  build_map, hWnd, OFFSET MAP1
-                mov     total, eax
-                ;INVOKE  create_button, hWnd, 9, 100, 100, 1, TILE_WIDTH, TILE_HEIGHT
-                ;INVOKE  create_button, hWnd, 8, 200, 200, 1, TILE_WIDTH, TILE_HEIGHT
 
 
 

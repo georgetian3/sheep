@@ -2,17 +2,17 @@
 
 
 lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
-    invoke ExitProcess, 0
-    ret
+        invoke ExitProcess, 0
+        ret
 lost ENDP
 
 win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
     mov eax, stage
     .IF eax == 1
-        INVOKE destroy_all_button
+        INVOKE  destroy_all_button
         mov slot_count , 0
-        ;INVOKE build_map ,hWnd, OFFSET MAP1
-        mov eax , total
+        AINVOKE build_map, hWnd, OFFSET MAP2
+        mov     eax , total
         INVOKE update
         inc stage
         mov total , eax
@@ -101,9 +101,9 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
             mov total , eax
         .ENDIF
     .ELSEIF ebx == TYPE_START
-        INVOKE destroy_all_button
-        ;INVOKE build_map,parent ,MAP2
-        ;mov total , eax
+        INVOKE  destroy_all_button
+        AINVOKE build_map, parent , MAP2
+        mov     total , eax
         Print offset undo_print, esi
         INVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
         mov undo_btn , eax 
