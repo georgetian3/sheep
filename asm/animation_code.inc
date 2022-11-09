@@ -191,7 +191,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         sub     ebx, count
                         INVOKE  slot_x_, ebx
 
-                        INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
+                        ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
                         mov     esi, slot[edx]
                         mov     slot[ebx], esi
                 .ENDW
@@ -258,9 +258,9 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
         INVOKE KillTimer, hWnd, idEvent
         mov ecx, (Button PTR [edi]).callback
         .IF ecx == 1
-            INVOKE update
+            ;INVOKE update
         .ELSEIF ecx==2
-            INVOKE match_slot
+            ;INVOKE match_slot
         .ENDIF
     .ENDIF
     mov ebx, (Button PTR [edi]).hWnd
