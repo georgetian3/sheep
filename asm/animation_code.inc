@@ -224,7 +224,6 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     String timerfailed, "SetTimer failed", 0ah, 0dh
     String printfloat, "%f", 0ah, 0dh ;for testing float
     Print OFFSET startmove
-    Print OFFSET printfloat, epsilon
     fld epsilon
     fldz
     fsub __time
@@ -233,7 +232,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     ; fstp floattest
     ; Print OFFSET printfloat, floattest
     ja skip
-    Print OFFSET here   ;没到过这里
+    Print OFFSET done   ;没到过这里
     mov ebx, hWnd
     mov ecx, SWP_NOSIZE
     or ecx, SWP_NOZORDER

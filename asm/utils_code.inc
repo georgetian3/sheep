@@ -146,6 +146,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
             mul ebx
             mov edi, slot[eax]
             mov edi, esi
+
             dec ecx
         .ENDW
 
@@ -166,11 +167,6 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         inc slot_count
         dec total
         mov ecx, total
-
-        Print OFFSET decStr, ecx
-        Print OFFSET newline
-        Print OFFSET newline
-
         .IF ecx == 0
             fldz
             fst realzero
