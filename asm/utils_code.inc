@@ -1,4 +1,4 @@
-overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
+overlap_ PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     local pt_a:DWORD, pt_b:DWORD
     mov edx , a
     mov esi , b 
@@ -55,7 +55,7 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     mov eax, 1
     F1:
         ret
-overlap ENDP
+overlap_ ENDP
 
 shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
 
@@ -82,14 +82,14 @@ shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
         ret
 shuffle ENDP
 
-slot_x PROC uses ebx ecx edx esi edi slot_index:DWORD
+slot_x_ PROC uses ebx ecx edx esi edi slot_index:DWORD
     mov ebx, SLOT_X_OFFSET
     add ebx, TILE_WIDTH
     mov eax, slot_index
     mul ebx
     add eax, SLOT_X
     ret
-slot_x ENDP
+slot_x_ ENDP
 
 
 
@@ -105,7 +105,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
         .WHILE (ecx >= index)
             mov ebx, ecx
             inc ebx
-            INVOKE slot_x, ebx
+            INVOKE slot_x_, ebx
             Print OFFSET inWhile
             INVOKE move_button, slot[ecx], eax, SLOT_Y, SLOT_MOVE_TIME
             mov esi, slot[ecx]
@@ -122,7 +122,7 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index:DWORD
         mov (Button PTR [esi]).in_slot, 1
         mov (Button PTR [esi]).callback, 2
         inc slot_count
-        INVOKE slot_x, index
+        INVOKE slot_x_, index
         INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME
     ret
 insert_slot ENDP

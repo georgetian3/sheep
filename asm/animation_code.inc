@@ -50,7 +50,7 @@ update PROC USES eax ebx ecx edx esi edi
             mov eax, a
             cmp eax, ebx
             je S2
-            INVOKE overlap, a, b
+            INVOKE overlap_, a, b
             mov edx, eax
             mov eax, (Button PTR [ebx]).in_slot  
             .IF eax
@@ -126,7 +126,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 .WHILE edx < slot_count
                         mov     ebx, edx
                         sub     ebx, count
-                        INVOKE  slot_x, ebx
+                        INVOKE  slot_x_, ebx
 
                         ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
                         mov     esi, slot[edx]
