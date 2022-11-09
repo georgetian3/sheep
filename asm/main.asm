@@ -101,7 +101,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 INVOKE load_bitmap, ecx
                 mov bmp_bg, eax
                 PINVOKE  load_bitmaps
-
+                
                 PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 200, 80
                 PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 200, 56
 
