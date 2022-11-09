@@ -85,7 +85,6 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 ; HIWORD(wParam): event
                 
                 Print   OFFSET clicked
-
                 INVOKE  get_button, lParam
                 mov     esi, eax
                 .IF eax != 0

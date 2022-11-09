@@ -62,83 +62,83 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
 update_slot ENDP
 
 handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
-    LOCAL time_double : real8
+    LOCAL time_handle : real8
+    String handle_click, "handle_button_click start", 0ah, 0dh
+    String undo_print, "undo %x", 0ah, 0dh
+    Print OFFSET handle_click
+
     INVOKE is_tile , btn2
     mov ebx , btn2
     mov ecx , start_game
-    mov edx , end_game 
+    mov edx , end_game
     mov esi , undo_btn
     .IF eax != 0
-        mov esi , btn2
-        mov edi , (Button PTR [esi]).in_slot
+        mov edi , (Button PTR [ebx]).in_slot
         .IF edi !=0
             ret
         .ENDIF
-        mov esi , btn2
-        mov ebx , (Button PTR [esi]).hWnd
-        mov ecx , btn2
-        INVOKE win_pos , ebx , ecx
-        mov esi , btn2
-        mov ebx , (Button PTR [esi]).start_pos.x
-        mov ecx , (Button PTR [esi]).start_pos.y
-        mov last_x , ebx
-        mov last_y , ecx
-        mov last_button , esi
-        INVOKE update_slot , btn2
-
+        mov edi , (Button PTR [ebx]).hWnd
+        INVOKE win_pos , edi , ebx
+        mov edx , (Button PTR [ebx]).start_pos.x
+        mov last_x , edx
+        mov edx , (Button PTR [ebx]).start_pos.y
+        mov last_y , edx
+        mov last_button , ebx
+        ret         ;checked here
+        INVOKE update_slot , ebx
         INVOKE update
-        ret
         mov eax, slot_count
-        mov ebx , SLOT_SIZE
-        .IF  eax > ebx
-            INVOKE lost , parent
+        mov ecx , SLOT_SIZE
+        .IF  eax > ecx
+            mov edx, parent
+            INVOKE lost, edx
         .ENDIF
         mov eax ,total
         .IF eax == 0 
-            INVOKE win,parent
+            INVOKE win, parent
             mov total , eax
         .ENDIF
     .ELSEIF ebx == ecx
         INVOKE destroy_all_button
-        INVOKE create_button , parent , TYPE_UNDO,500,730,-1,TILE_WIDTH,TILE_HEIGHT
-        mov undo_btn , eax 
         ;INVOKE build_map,parent ,MAP2
-        mov total , eax
+        ;mov total , eax
+        Print offset undo_print, esi
+        INVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
+        mov undo_btn , eax 
+
         INVOKE update 
-    .ELSEIF ebx == edx
-        mov eax , last_button
+    .ELSEIF ebx == esi
+        mov eax, last_button
         .IF eax != 0
-            mov esi , btn2
-            mov (Button PTR [esi]).callback ,1
-            mov (Button PTR [esi]).in_slot , 0
-            mov ebx ,last_x
-            mov ecx ,last_y
-            INVOKE move_button ,eax,last_x,last_y,TIME_DOUBLE
+            mov (Button PTR [ebx]).callback ,1
+            mov (Button PTR [ebx]).in_slot , 0
+            INVOKE move_button, eax, last_x, last_y, TIME_DOUBLE
 
             inc total
             mov last_button , 0
-            mov ecx , last_index+1
-            mov eax ,slot_count
+            mov ecx , last_index
+            inc ecx
+            mov eax, slot_count
             .WHILE ecx < eax
                 push ecx
-                mov eax,4
+                mov eax, 4
                 mul ecx
-                mov esi , slot[eax]
+                mov esi, slot[eax]
                 mov (Button PTR [esi]).callback , 0
-                mov ebx , ecx
+                mov ebx, ecx
                 dec ebx 
-                INVOKE slot_x_ , ebx
-                INVOKE move_button ,esi,eax,SLOT_Y,SLOT_MOVE_TIME              
-                mov eax , 4
+                INVOKE slot_x_, ebx
+                INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME              
+                mov eax, 4
                 mul ebx
-                mov edi , slot[eax]
-                mov edi , esi
+                mov edi, slot[eax]
+                mov edi, esi
                 pop ecx 
                 inc ecx
             .ENDW
             dec slot_count
         .ENDIF
-    .ELSEIF ebx == esi
+    .ELSEIF ebx == edx
         Print OFFSET MAP1
         invoke ExitProcess, 0
     .ENDIF
