@@ -152,13 +152,12 @@ create_button ENDP
 print_buttons PROC USES eax ebx ecx edi
         mov     ecx, 0
         .WHILE ecx < N_BUTTONS
-                AINVOKE AA1, ADDR __buttons, ecx
-                mov     eax, [eax]
+                AINVOKE get_button_at_index, ecx
                 .IF eax == 0
                         jmp     continue
                 .ENDIF
-                String  binfo, "Button: i %d ptr %x hWnd %d type %d gray %d", 10, 13
-                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray
+                String  binfo, "btn i %02d ptr %07x hWnd %07x type %02d gray %d active %d is_tile %d in_slot %d", 10, 13
+                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray, (Button PTR [eax]).active, (Button PTR [eax]).is_tile (Button PTR [eax]).in_slot
             continue:
                 inc     ecx
         .ENDW 
@@ -268,4 +267,22 @@ is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
     mov edx, 1
     mov eax, edx
     ret
+is_tile ENDP
+
+is_tile PROC uses ebx ecx edx esi edi btn_istile:DWORD
+
+    mov edi, btn_istile
+    mov esi, (Button PTR [edi]).type_
+
+    mov     eax, 0
+    .IF esi < 0
+            ret
+    .ENDIF
+    .IF esi >= N_TILE_TYPES
+            ret
+    .ENDIF
+
+    mov     eax, 1
+    ret
+
 is_tile ENDP
