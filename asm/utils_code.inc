@@ -149,12 +149,11 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
             dec ecx
         .ENDW
 
-        Print OFFSET insertprint
-        Print OFFSET decStr, slot_count
-        Print OFFSET newline
-        Print OFFSET decStr, index_
-        Print OFFSET newline
-        Print OFFSET newline
+        ; Print OFFSET decStr, slot_count
+        ; Print OFFSET newline
+        ; Print OFFSET decStr, index_
+        ; Print OFFSET newline
+        ; Print OFFSET newline
         L1:
         mov eax, 4
         mov ecx, index_
@@ -167,7 +166,14 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         inc slot_count
         dec total
         mov ecx, total
+
+        Print OFFSET decStr, ecx
+        Print OFFSET newline
+        Print OFFSET newline
+
         .IF ecx == 0
+            fldz
+            fst realzero
             INVOKE slot_x_, index_
             INVOKE move_button, esi, eax, SLOT_Y, realzero
         .ELSE
