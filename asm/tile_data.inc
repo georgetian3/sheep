@@ -66,3 +66,6 @@ bitmaps_light DWORD N_BUTTON_TYPES DUP(0)
 
 
 bitmaps DWORD OFFSET bitmaps_dark, OFFSET bitmaps_light
+
+load_bitmap PROTO filename:DWORD
+load_bitmaps PROTO

@@ -1,5 +1,3 @@
-
-
 load_bitmap PROC uses ebx ecx edx edx edi filename:DWORD
         INVOKE  LoadImageA, 0, filename, IMAGE_BITMAP,
                 0, 0, LR_LOADFROMFILE

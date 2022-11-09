@@ -31,3 +31,9 @@ slot DWORD SLOT_SIZE DUP(0)
 
 bmp_bg  DWORD ?
 
+overlap PROTO a:DWORD, b:DWORD
+shuffle PROTO arr:DWORD, n:DWORD
+slot_x PROTO slot_index:DWORD
+insert_slot PROTO btn_insert:DWORD, index:DWORD
+destroy_all_button PROTO
+paint PROTO hWnd:DWORD
