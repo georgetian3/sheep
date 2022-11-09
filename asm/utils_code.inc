@@ -1,5 +1,29 @@
-overlap_ PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
-    local pt_a:DWORD, pt_b:DWORD
+overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
+    local pa:DWORD, pb:DWORD, a_x:DWORD, a_y:DWORD, b_x:DWORD, b_y:DWORD
+
+
+    COMMENT `
+    mov     eax, a
+    mov     ebx, b
+    mov     ecx, (Button PTR [eax]).k
+    mov     edx, (Button PTR [ebx]).k
+
+    .IF ecx <= edx
+            mov     eax, 0
+            ret
+    .ENDIF
+
+    mov     ecx (Button PTR [eax]).in_slot
+    .IF eax != 0
+            mov     eac, 0
+            ret
+    ret
+
+    `
+
+
+
+
     mov edx , a
     mov esi , b 
     mov ebx, (Button PTR [edx]).k
@@ -15,28 +39,28 @@ overlap_ PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     .ENDIF
 
     mov ebx, (Button PTR [edx]).hWnd
-    mov ecx, pt_a
+    mov ecx, pa
     INVOKE win_pos, ebx, ecx
     mov ebx, (Button PTR [esi]).hWnd
-    mov ecx, pt_b
+    mov ecx, pb
     INVOKE win_pos, ebx, ecx
-    mov ecx, pt_b
+    mov ecx, pb
     mov edx, (POINT PTR [ecx]).x
     mov ebx, TILE_WIDTH
-    mov ecx, pt_b
+    mov ecx, pb
     add ebx, (POINT PTR [ecx]).x
     .IF (edx >= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ecx, pt_b
+    mov ecx, pb
     mov ebx, (POINT PTR [ecx]).x
     sub ebx, TILE_WIDTH
     .IF (edx <= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ecx, pt_b
+    mov ecx, pb
     mov edx, (POINT PTR [ecx]).y
     mov ebx, (POINT PTR [ecx]).y
     add ebx, TILE_HEIGHT
@@ -44,7 +68,7 @@ overlap_ PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ecx, pt_b
+    mov ecx, pb
     mov ebx, (POINT PTR [ecx]).y
     sub ebx, TILE_HEIGHT
     .IF (edx <= ebx)
@@ -55,7 +79,7 @@ overlap_ PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     mov eax, 1
     F1:
         ret
-overlap_ ENDP
+overlap ENDP
 
 shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
 

@@ -62,7 +62,7 @@ update PROC USES eax ebx ecx edx esi edi
                 jmp S2
             .ENDIF
             mov eax, a
-            INVOKE overlap_, a, b
+            INVOKE overlap, a, b
             mov edx, eax
             mov eax, (Button PTR [ebx]).in_slot  
             .IF eax
