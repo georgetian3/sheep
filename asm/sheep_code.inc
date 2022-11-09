@@ -52,7 +52,6 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     S1:
         mov __insert_index, ecx
         ;Print OFFSET decStr , insert_index
-        Print OFFSET here
         INVOKE insert_slot, btn1, __insert_index
         mov ebx , __insert_index
         mov last_index , ebx 

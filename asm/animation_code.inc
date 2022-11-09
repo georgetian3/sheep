@@ -217,20 +217,23 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
     ret
 __move_button ENDP
 
-move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time:REAL8
+move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __time:REAL8
     local temp_FPS:DWORD, temp_frames_result:DWORD, temp_differnece:DWORD
     String startmove, "Move button", 0ah, 0dh
     String movebtnfailed, "move button failed", 0ah, 0dh
     String timerfailed, "SetTimer failed", 0ah, 0dh
     String printfloat, "%f", 0ah, 0dh ;for testing float
     Print OFFSET startmove
-    ;Print OFFSET printfloat, time
+    Print OFFSET printfloat, epsilon
     fld epsilon
     fldz
-    fsub time
+    fsub __time
     fabs
     fcom ST(1)
+    ; fstp floattest
+    ; Print OFFSET printfloat, floattest
     ja skip
+    Print OFFSET here   ;没到过这里
     mov ebx, hWnd
     mov ecx, SWP_NOSIZE
     or ecx, SWP_NOZORDER
@@ -241,6 +244,10 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     .ENDIF
     popad
     mov edx, (Button PTR [ebx]).callback
+    Print OFFSET newline
+    Print OFFSET decStr, edx
+    Print OFFSET newline
+    Print OFFSET newline
     .IF edx == 1
         INVOKE update
     .ELSEIF edx == 2
@@ -262,7 +269,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, time
     mov (Button PTR [edi]).start_time, eax
     mov temp_FPS, FPS
     fild temp_FPS
-    fmul time
+    fmul __time
     fist temp_frames_result
     mov eax, temp_frames_result
     mov (Button PTR [edi]).frames, eax
