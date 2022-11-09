@@ -151,17 +151,23 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 inc     ebx
                 mov     edx, ebx
                 .WHILE edx < slot_count
+                        push edx
                         mov     ebx, edx
                         sub     ebx, count
+                        mov     eax ,4
+                        mul     edx
+                        mov     esi ,eax
                         INVOKE  slot_x_, ebx
-
-                        ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
+                        mov     edi , slot[esi]
+                        INVOKE move_button, edi, eax, SLOT_Y, SLOT_MOVE_TIME
                         mov     eax ,4
                         mul     edx
                         mov     esi, slot[eax]
                         mov     eax ,4
                         mul     ebx
                         mov     slot[eax], esi
+                        pop     edx
+                        inc     edx
                 .ENDW
                 mov esi, count
                 sub slot_count, esi

@@ -170,13 +170,14 @@ __delete_button PROC uses eax ebx ecx edx esi edi ind:DWORD
         mul     ind
         mov     edx , __buttons[eax]
         mov     esi ,eax
-        Print OFFSET testtext
-        Print OFFSET decStr , eax
+
         mov     ebx, (Button PTR [edx]).hWnd
         INVOKE  DestroyWindow, ebx
         INVOKE  crt_free, __buttons[esi]
         mov     __buttons[esi], 0
         dec     __button_count
+        Print OFFSET testtext
+        Print OFFSET decStr , eax
         ret
 __delete_button ENDP
 
