@@ -124,7 +124,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 mov (Button PTR [esi]).callback , 0
                 mov ebx, ecx
                 dec ebx 
-                INVOKE slot_x_, ebx
+                INVOKE slot_x, ebx
                 INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME              
                 mov eax, 4
                 mul ebx

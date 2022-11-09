@@ -3,7 +3,7 @@ MSPF = 8
 epsilon REAL8 1.0E-13
 floattest REAL8 ?
 
-slot_x_ PROTO slot_index:DWORD
+slot_x PROTO slot_index:DWORD
 overlap PROTO a:DWORD, b:DWORD
 update PROTO
 match_slot PROTO
