@@ -74,7 +74,6 @@ test_time   REAL8 0.2
 
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
-
         mov ebx, uMsg
 
         .IF ebx == WM_DRAWITEM

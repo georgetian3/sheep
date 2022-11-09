@@ -114,7 +114,7 @@ update ENDP
 
 match_slot PROC uses eax ebx ecx edx esi edi
     local count:DWORD, prev_type:DWORD
-
+    String test_print , "test here" ,0ah,0dh
     String matching, "match slot", 0ah, 0dh
     Print offset matching
     mov count, 0
@@ -129,6 +129,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
             .IF count >= MATCH_COUNT
                 mov edx, 0
                 .WHILE(edx < count)
+
                     mov     ebx, ecx
                     sub     ebx, edx
                     AINVOKE AA1, OFFSET slot, ebx
@@ -214,9 +215,9 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
         INVOKE KillTimer, hWnd, idEvent
         mov ecx, (Button PTR [edi]).callback
         .IF ecx == 1
-            ;INVOKE update
+            INVOKE update
         .ELSEIF ecx==2
-            ;INVOKE match_slot
+            INVOKE match_slot
         .ENDIF
     .ENDIF
     mov ebx, (Button PTR [edi]).hWnd

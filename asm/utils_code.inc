@@ -116,6 +116,15 @@ slot_x PROC uses ebx ecx edx esi edi slot_index:DWORD
 slot_x ENDP
 
 
+print_eip PROC USES eax ebx ecx edx esi edi 
+        call next_
+    next_:
+        pop eax
+
+        String  eipstr, "EIP: %h", 10, 13
+        Print   OFFSET eipstr, eax
+    ret
+print_eip ENDP
 
 insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         String  insertprint, "Insert Slot", 0ah, 0dh
@@ -161,6 +170,9 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         mul ecx
 
         mov esi, btn_insert
+        PINVOKE print_buttons
+        Print   OFFSET hexStr, btn_insert
+        Print   OFFSET newline
         mov slot[eax], esi
         mov (Button PTR [esi]).in_slot, 1
         mov (Button PTR [esi]).callback, 2
