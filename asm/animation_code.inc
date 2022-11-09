@@ -121,43 +121,50 @@ match_slot PROC uses eax ebx ecx edx esi edi
     mov prev_type, -1
     mov ecx, 0
     .WHILE (ecx < slot_count)
-        mov esi, slot[ecx]
+        AINVOKE AA1, OFFSET slot, ecx
+        mov esi, [eax]
         mov edi, (Button PTR [esi]).type_
-        .IF( edi == prev_type)
-            inc count
-            .IF (count >= MATCH_COUNT)
+        .IF edi == prev_type
+            inc     count
+            .IF count >= MATCH_COUNT
                 mov edx, 0
                 .WHILE(edx < count)
                     mov     ebx, ecx
                     sub     ebx, edx
-                    INVOKE  delete_button, (Button PTR slot[ebx]).hWnd
+                    AINVOKE AA1, OFFSET slot, ebx
+                    mov     eax, [eax]
+                    INVOKE  delete_button, (Button PTR [eax]).hWnd
                 .ENDW
                 mov     ebx, ecx
                 inc     ebx
-                mov     edx, ebx
-                .WHILE edx < slot_count
-                        mov     ebx, edx
-                        sub     ebx, count
-                        INVOKE  slot_x, ebx
+                .WHILE ebx < slot_count
+                        mov     edx, ebx
+                        sub     edx, count
+                        AINVOKE slot_x, edx
+                        mov     esi, eax
+                        AINVOKE AA1, OFFSET slot, ebx
+                        mov     eax, [eax]
+                        PINVOKE move_button, eax, esi, SLOT_Y, SLOT_MOVE_TIME
+                        mov     edi, [eax]
+                        AINVOKE AA1, OFFSET slot, edx
+                        mov     [eax], edi
 
-                        ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
-                        mov     esi, slot[edx]
-                        mov     slot[ebx], esi
+                        inc     ebx
                 .ENDW
                 mov esi, count
                 sub slot_count, esi
-                jmp F1
+                mov     last_button, 0
+                ret
             .ENDIF
         .ELSE
             mov count, 1
-            mov ebx, slot[ecx]
-            mov eax, (Button PTR [ebx]).type_
-            mov prev_type, eax
+            AINVOKE AA1, OFFSET slot, ecx
+            mov     eax, [eax]
+            mov     eax, (Button PTR [eax]).type_
+            mov     prev_type, eax
         .ENDIF
         inc ecx
     .ENDW
-    ;update()?
-    F1:
     ret
 match_slot ENDP
 
