@@ -20,9 +20,7 @@ win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
     .ELSE
         INVOKE destroy_all_button
         INVOKE create_button , hWnd , TYPE_START ,320,320,-1,0, 0
-        mov start_game , eax
         INVOKE create_button , hWnd , TYPE_END ,320,400,-1,0, 0
-        mov end_game ,eax
     .ENDIF
     ret
 win ENDP
@@ -68,7 +66,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
     String handle_click, "handle_button_click start", 0ah, 0dh
     String undo_print, "undo %x", 0ah, 0dh
     Print OFFSET handle_click
-
+    
     mov     eax, btn2
     mov     ebx , (Button PTR [eax]).type_
     INVOKE  is_tile, btn2
@@ -106,7 +104,6 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         ;mov total , eax
         Print offset undo_print, esi
         INVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
-        mov undo_btn , eax 
 
         INVOKE update 
     .ELSEIF ebx == TYPE_UNDO

@@ -1,5 +1,5 @@
 update PROC USES eax ebx ecx edx esi edi
-    LOCAL a:DWORD, b:DWORD, btn_update:DWORD, flag:DWORD
+    LOCAL a:DWORD, b:DWORD, flag:DWORD
     String update_begin, "begin update", 0ah, 0dh
     String no_button, "no button found", 0ah, 0dh
     String update_end, "update end", 0ah, 0dh
@@ -8,7 +8,7 @@ update PROC USES eax ebx ecx edx esi edi
     .WHILE ecx < N_BUTTONS
         push ecx
         INVOKE get_button_at_index, ecx
-        .IF eax == -1
+        .IF eax == 0
             jmp S1
         .ENDIF
         mov b, eax
@@ -19,10 +19,6 @@ update PROC USES eax ebx ecx edx esi edi
             mov ebx, 0
         .ENDIF
         .IF ebx
-            Print offset newline
-            Print offset hexStr, eax
-            Print offset newline
-            Print offset newline
             jmp S1
         .ENDIF
         ret
@@ -31,29 +27,27 @@ update PROC USES eax ebx ecx edx esi edi
         .IF eax
             jmp S1
         .ENDIF
+
+
         mov flag, 1
         mov esi, 0
         .WHILE esi < N_BUTTONS
             push esi
             INVOKE get_button_at_index, esi
-            .IF eax == -1
+            .IF eax == 0
                 jmp S2
             .ENDIF
             mov a, eax
             mov ebx, b
-
-            Print offset newline
-            Print offset hexStr, eax
-            Print offset newline
-            Print offset hexStr, ebx
-            Print offset newline
-            Print offset newline
-            ret
             cmp eax, ebx
             je S2
             INVOKE is_tile, a   ;note!!
-            not eax
-            .IF eax
+            .IF eax == 0
+                mov ebx, 1
+            .ELSEIF eax == 1
+                mov ebx, 0
+            .ENDIF
+            .IF ebx
                 jmp S2
             .ENDIF
             mov ebx, b
@@ -61,36 +55,38 @@ update PROC USES eax ebx ecx edx esi edi
             .IF eax
                 jmp S2
             .ENDIF
-            mov eax, a
-            INVOKE overlap, a, b
-            mov edx, eax
-            mov eax, (Button PTR [ebx]).in_slot  
-            .IF eax
-                INVOKE set_active, b, 0
-                mov (Button PTR [ebx]).gray, 0
+
+            mov ebx, b
+            mov edx, a
+            mov edi, (Button PTR [ebx]).in_slot
+            INVOKE overlap, edx, ebx
+            .IF edi
+                INVOKE set_active, ebx, 0
+                move (Button PTR [ebx]).gray, 0
                 mov flag, 0
-            .ELSEIF  edx
+            .ELSEIF eax
                 INVOKE set_active, b, 0
                 mov (Button PTR [ebx]).gray, 1
                 mov flag, 0
                 mov edi, (Button PTR [ebx]).hWnd
-                mov esi, b
-                INVOKE win_pos, edi, esi
+                INVOKE win_pos, edi, ebx
             .ENDIF
             S2:
                 pop esi
                 inc esi 
         .ENDW
+
         mov eax, flag
         .IF eax == 1
-            INVOKE set_active, b, 1
             mov ebx, b
+            INVOKE set_active, ebx, 1
             mov (Button PTR [ebx]).gray, 0
         .ENDIF
         S1:
             pop ecx
             inc ecx
     .ENDW
+
     mov ecx, 0
     .WHILE ecx < N_BUTTONS
         push ecx
@@ -98,10 +94,8 @@ update PROC USES eax ebx ecx edx esi edi
         .IF eax == 0
             Print OFFSET no_button
         .ENDIF
-        mov btn_update, eax
-        .IF btn_update
-            mov ebx, btn_update
-            mov edx, (Button PTR [ebx]).hWnd
+        .IF eax
+            mov edx, (Button PTR [eax]).hWnd
             INVOKE InvalidateRect, edx, 0, 0
         .ENDIF
         pop ecx
@@ -141,7 +135,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 mov     ebx, ecx
                 inc     ebx
                 .WHILE ebx < slot_count
-                        push ebx
+                        push    ebx
                         Print OFFSET here
                         mov     edx, ebx
                         sub     edx, count
@@ -153,7 +147,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         mov     edi, [eax]
                         AINVOKE AA1, OFFSET slot, edx
                         mov     [eax], edi
-                        pop ebx
+                        pop     ebx
                         inc     ebx
                 .ENDW
                 mov esi, count
