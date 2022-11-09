@@ -1,66 +1,3 @@
-slot_x_ PROC uses ebx ecx edx esi edi slot_index:DWORD
-    mov ebx, SLOT_X_OFFSET
-    add ebx, TILE_WIDTH
-    mov eax, slot_index
-    mul ebx
-    add eax, SLOT_X
-    ret
-slot_x_ ENDP
-
-
-overlap_ PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
-    local pt_a:DWORD, pt_b:DWORD
-    mov ebx, (Button PTR [a]).k
-    mov ecx, (Button PTR [b]).k
-    .IF (ebx <= ecx)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-    lea ebx, (Button PTR [a]).in_slot
-    .IF (ebx)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-
-    mov ebx, (Button PTR [a]).hWnd
-    mov ecx, pt_a
-    INVOKE win_pos, ebx, ecx
-    mov ebx, (Button PTR [b]).hWnd
-    mov ecx, pt_b
-    INVOKE win_pos, ebx, ecx
-
-    mov edx, (POINT PTR [pt_b]).x
-    mov ebx, TILE_WIDTH
-    add ebx, (POINT PTR [pt_b]).x
-    .IF (edx >= ebx)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-    mov ebx, (POINT PTR [pt_b]).x
-    sub ebx, TILE_WIDTH
-    .IF (edx <= ebx)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-    mov edx, (POINT PTR [pt_b]).y
-    mov ebx, (POINT PTR [pt_b]).y
-    add ebx, TILE_HEIGHT
-    .IF (edx >= ebx)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-    mov ebx, (POINT PTR [pt_b]).y
-    sub ebx, TILE_HEIGHT
-    .IF (edx <= ebx)
-        mov eax, 0
-        jmp F1
-    .ENDIF
-
-    mov eax, 1
-    F1:
-        ret
-overlap_ ENDP
-
 update PROC USES eax ebx ecx edx esi edi
     LOCAL a:DWORD, b:DWORD, btn_update:DWORD, flag:DWORD
     String update_begin, "begin update", 0ah, 0dh
@@ -113,7 +50,7 @@ update PROC USES eax ebx ecx edx esi edi
             mov eax, a
             cmp eax, ebx
             je S2
-            INVOKE overlap_, a, b
+            INVOKE overlap, a, b
             mov edx, eax
             mov eax, (Button PTR [ebx]).in_slot  
             .IF eax
@@ -189,7 +126,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                 .WHILE edx < slot_count
                         mov     ebx, edx
                         sub     ebx, count
-                        INVOKE  slot_x_, ebx
+                        INVOKE  slot_x, ebx
 
                         ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
                         mov     esi, slot[edx]
