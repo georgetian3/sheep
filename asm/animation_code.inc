@@ -191,7 +191,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         sub     ebx, count
                         INVOKE  slot_x_, ebx
 
-                        ;INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
+                        INVOKE move_button, slot[edx], eax, SLOT_Y, SLOT_LOSE_TIME
                         mov     esi, slot[edx]
                         mov     slot[ebx], esi
                 .ENDW

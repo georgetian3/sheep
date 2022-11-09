@@ -59,16 +59,16 @@ get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         INVOKE  __search_hwnd, hWnd
-        Print   OFFSET hexStr,eax
-        Print   OFFSET newline
+        ;Print   OFFSET hexStr,eax       ; index of button
+        ;Print   OFFSET newline
         .IF eax == -1
                 mov eax, 0
                 ret
         .ENDIF
         AINVOKE AA1, OFFSET __buttons, eax
         mov     eax, [eax]
-        Print   OFFSET hexStr,eax
-        Print   OFFSET newline
+        ;Print   OFFSET hexStr,eax       ; print the location of specific button
+        ;Print   OFFSET newline
         ret
 get_button ENDP
 
@@ -162,8 +162,8 @@ print_buttons PROC USES eax ebx ecx edi
                 .IF eax == 0
                         jmp     continue
                 .ENDIF
-                String  binfo, "Button: i %d ptr %x hWnd %d type %d", 10, 13
-                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_
+                String  binfo, "Button: i %d ptr %x hWnd %d type %d gray %d", 10, 13
+                Print   OFFSET binfo, ecx, eax, (Button PTR [eax]).hWnd, (Button PTR [eax]).type_, (Button PTR [eax]).gray
             continue:
                 inc     ecx
         .ENDW 
@@ -196,7 +196,7 @@ delete_button ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         String  drawbutton, "draw_button", 10, 13
-        Print   OFFSET drawbutton
+        ;Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
 
         INVOKE  id_to_hwnd, parent, id
@@ -204,7 +204,6 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
                 String  ith, "id_to_hwnd failed", 10, 13
                 Print   OFFSET ith
         .ENDIF
-
         INVOKE  get_button, eax
         .IF eax == 0    ; if (btn == 0) 
                 String  notfound, "Draw button not found", 10, 13
@@ -212,10 +211,10 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         .ENDIF
         mov     esi, eax        ; esi will hold btn for the rest of this proc
         String  btnptr, "button ptr: %x", 10, 13
-        Print   OFFSET btnptr, esi
+        ;Print   OFFSET btnptr, esi
 
         String  binfo1, "Button1: hWnd %d type %d", 10, 13
-        Print   OFFSET binfo1, (Button PTR [esi]).hWnd, (Button PTR [esi]).type_
+        ;Print   OFFSET binfo1, (Button PTR [esi]).hWnd, (Button PTR [esi]).type_
 
         mov     ebx, (Button PTR [esi]).gray
         .IF ebx == 0
@@ -226,13 +225,12 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
         mov     ecx, (Button PTR [esi]).type_
 
         String  gtb, "gray %d type %d", 10, 13
-        Print   OFFSET gtb, ebx, ecx
+        ;Print   OFFSET gtb, ebx, ecx
 
         AINVOKE AA2, ADDR bitmaps, ebx, ecx
 
         String  gbm, "got bitmap: %x", 10, 13
-        Print   OFFSET gbm, eax
-
+        ;Print   OFFSET gbm, eax
 
         ;ret
         mov     eax, [eax]
@@ -246,7 +244,6 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
                 Print   OFFSET drawstate
                 INVOKE  ExitProcess, 0
         .ENDIF
-
 
         ret
 draw_button ENDP

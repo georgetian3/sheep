@@ -42,7 +42,7 @@ load_bitmaps PROC uses eax ebx ecx edx edx esi edi
                         .ENDIF
 
                         String  bitm, "Bitmap, %x", 10, 13
-                        Print   OFFSET bitm, eax
+                        ;Print   OFFSET bitm, eax
 
                         mov     esi, eax
 
