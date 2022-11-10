@@ -185,7 +185,6 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         Print   OFFSET parStr, parent
 
         mov     esi, btn2
-        push    esi
         AINVOKE is_tile, btn2
         .IF eax != 0
                 mov     eax, (Button PTR [esi]).in_slot
@@ -216,9 +215,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                         mov     total , eax
                 .ENDIF
         .ENDIF
-
-        ret
-        pop     esi
+        ;ret
+        mov     esi, btn2
         mov     ebx, (Button PTR [esi]).type_
         .IF ebx == TYPE_START
                 AINVOKE delete_all_buttons
@@ -257,11 +255,11 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                             inc ecx
                         .ENDW
                         dec slot_count
-                    .ENDIF
-            .ELSEIF ebx == TYPE_END
-                    Print   OFFSET MAP1
-                    PINVOKE ExitProcess, 0
+                .ENDIF
+        .ELSEIF ebx == TYPE_END
+                Print   OFFSET MAP1
+                PINVOKE ExitProcess, 0
         .ENDIF
         PINVOKE print_buttons
-
+        ret
 handle_button_click ENDP
