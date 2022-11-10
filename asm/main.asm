@@ -98,6 +98,13 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
         .ELSEIF ebx == WM_CREATE
 
+                AINVOKE LoadImageA, 0, OFFSET icon, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE
+                mov     ecx, eax
+                PINVOKE SendMessage, hWnd, WM_SETICON, ICON_SMALL, ecx;
+                PINVOKE SendMessage, hWnd, WM_SETICON, ICON_BIG, ecx;
+                AINVOKE GetWindow, hWnd, GW_OWNER
+                PINVOKE SendMessage, eax, WM_SETICON, ICON_SMALL, ecx;
+                PINVOKE SendMessage, eax, WM_SETICON, ICON_BIG, ecx;
 
                 AINVOKE LoadImageA, 0, OFFSET icon, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE
                 mov     ecx, eax
@@ -115,8 +122,8 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 PINVOKE  load_bitmaps
                 ;INVOKE  build_map, hWnd, OFFSET MAP1
                 ;mov     total, eax
-                PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 200, 80
-                PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 200, 56
+                PINVOKE create_button, hWnd, TYPE_START, 300, 320, -1, 200, 80
+                PINVOKE create_button, hWnd, TYPE_END, 300, 400, -1, 200, 56
 
                 INVOKE  play_sound, 0, 0, 0
                 ;PINVOKE update

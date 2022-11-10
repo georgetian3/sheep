@@ -5,7 +5,7 @@ if exist main.exe del main.exe
 C:\MASM32\BIN\Ml.exe /c /coff /Fl main.asm
 if errorlevel 1 goto err
 
-C:\MASM32\BIN\Link.exe /debug /SUBSYSTEM:CONSOLE main.obj
+C:\MASM32\BIN\Link.exe /debug /SUBSYSTEM:WINDOWS main.obj
 if errorlevel 1 goto err
 
 echo Build completed successfully!
