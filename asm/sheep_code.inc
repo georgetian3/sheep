@@ -27,7 +27,9 @@ update PROC USES eax ebx ecx edx esi edi
     String update_begin, "begin update", 0ah, 0dh
     String no_button, "no button found", 0ah, 0dh
     String update_end, "update end", 0ah, 0dh
-    String overlapStr , "INVOKE OVERLAP HERE ",0ah,0dh
+    String overlapStr , "FALG TRUE ",0ah,0dh
+    String EAXSTR , "eax = %d" ,0ah,0dh
+    String overlapInfo , "btn %x is overlapeed by btn %x",0ah,0dh
     Print OFFSET update_begin
     mov ecx, 0
     .WHILE ecx < N_BUTTONS
@@ -83,7 +85,6 @@ update PROC USES eax ebx ecx edx esi edi
             mov ebx, b
             mov edx, a
             mov edi, (Button PTR [ebx]).in_slot
-            Print OFFSET overlapStr
             AINVOKE overlap, edx, ebx
             .IF edi
                 PINVOKE set_active, ebx, 0
@@ -91,6 +92,7 @@ update PROC USES eax ebx ecx edx esi edi
                 mov flag, 0
             .ELSEIF eax
                 PINVOKE set_active, ebx, 0
+                Print OFFSET overlapInfo,b,a
                 mov (Button PTR [ebx]).gray, 1
                 mov flag, 0
                 mov edi, (Button PTR [ebx]).hWnd
@@ -100,14 +102,14 @@ update PROC USES eax ebx ecx edx esi edi
                 pop esi
                 inc esi 
         .ENDW
-
-        mov eax, flag
-        .IF eax == 1
-            mov ebx, b
-            PINVOKE set_active, ebx, 1
-            mov (Button PTR [ebx]).gray, 0
-        .ENDIF
         S1:
+            mov eax, flag
+            Print OFFSET EAXSTR ,eax
+            .IF eax == 1
+                mov ebx, b
+                PINVOKE set_active, ebx, 1
+                mov (Button PTR [ebx]).gray, 0
+            .ENDIF
             pop ecx
             inc ecx
     .ENDW

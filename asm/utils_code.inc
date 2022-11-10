@@ -2,7 +2,6 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     local pa:DWORD, pb:DWORD, a_x:DWORD, a_y:DWORD, b_x:DWORD, b_y:DWORD
     String pointpos , "point x = %x y= %x",0ah,0dh
     String overlapstr ,"overlap start",0ah,0dh
-    Print OFFSET overlapstr
     COMMENT `
     mov     eax, a
     mov     ebx, b
@@ -49,13 +48,13 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     mov ecx, pb
     mov edx, (POINT PTR [ecx]).x
     mov ebx, TILE_WIDTH
-    mov ecx, pb
+    mov ecx, pa
     add ebx, (POINT PTR [ecx]).x
     .IF (edx >= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ecx, pb
+    mov ecx, pa
     mov ebx, (POINT PTR [ecx]).x
     sub ebx, TILE_WIDTH
     .IF (edx <= ebx)
@@ -64,13 +63,14 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     .ENDIF
     mov ecx, pb
     mov edx, (POINT PTR [ecx]).y
+    mov ecx ,pa
     mov ebx, (POINT PTR [ecx]).y
     add ebx, TILE_HEIGHT
     .IF (edx >= ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-    mov ecx, pb
+    mov ecx, pa
     mov ebx, (POINT PTR [ecx]).y
     sub ebx, TILE_HEIGHT
     .IF (edx <= ebx)
@@ -80,6 +80,8 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
 
     mov eax, 1
     F1:
+        PINVOKE crt_free , pa
+        PINVOKE crt_free , pb
         ret
 overlap ENDP
 
