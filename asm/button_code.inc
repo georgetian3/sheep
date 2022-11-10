@@ -58,7 +58,7 @@ is_button PROC USES ebx ecx edx esi edi p:DWORD
                         mov     eax, 1
                         ret
                 .ENDIF
-                inc     eax
+                inc     ecx
         .ENDW
         mov     eax, 0
 is_button ENDP
