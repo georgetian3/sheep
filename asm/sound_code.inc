@@ -1,5 +1,8 @@
 
 play_sound PROC uses eax ebx ecx edx esi edi sound:DWORD, bloop:DWORD, interrupt:DWORD
+    COMMENT !
+        plays the theme song
+    !
     .IF (interrupt == 1)
         INVOKE PlaySoundA, 0, 0, 0
     .ENDIF

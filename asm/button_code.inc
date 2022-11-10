@@ -1,10 +1,9 @@
 __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
-
         COMMENT !
             hWnd: hWnd of the button
             Returns: in eax, pointer to element
             containing button with hWnd in __buttons,
-            -1 if not found
+            0 if not found
         !
         mov     eax, OFFSET __buttons
         lea     ebx, [eax + N_BUTTONS * SIZEOF DWORD]
@@ -24,6 +23,11 @@ __search_hwnd PROC uses ebx ecx edx esi edi hWnd:DWORD
 __search_hwnd ENDP
 
 win_pos PROC uses eax ebx ecx edx esi edi hWnd:DWORD, point:DWORD
+        COMMENT !
+            hWnd: hWnd of the window
+            point: pointer to a point struct
+            saves the coordinates of the top-left corner of the window in point
+        !
         LOCAL rect:RECT
         INVOKE  GetWindowRect, hWnd, ADDR rect
         INVOKE  GetParent, hWnd
@@ -43,6 +47,10 @@ id_to_hwnd PROC USES ebx ecx edx esi edi parent:DWORD, id:DWORD
 id_to_hwnd ENDP
 
 get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
+        COMMENT !
+            index: index of array
+            returns in eax: pointer to Button struct at index
+        !
         String err, "get_button bad index", 0ah, 0dh
         .IF     index < 0
                 Print   OFFSET err
@@ -58,6 +66,10 @@ get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
 get_button_at_index ENDP
 
 get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
+        COMMENT !
+            hWnd: hWnd of a button
+            retuns in eax: pointer to Button struct
+        !
         AINVOKE __search_hwnd, hWnd
         .IF eax == 0
                 ret
@@ -67,6 +79,13 @@ get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
 get_button ENDP
 
 create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, y:DWORD, k:DWORD, wd:DWORD, ht:DWORD
+        COMMENT !
+            parent: main window hWnd
+            type_: constant with prefix TYPE_
+            x, y: coordinates of button
+            wd, ht: width and height of button
+            returns in eax: pointer to Button struct of newly created button
+        !
         local new_btn:DWORD, index:DWORD
 
         String  createbutton, "create_button", 10, 13
@@ -151,6 +170,9 @@ create_button ENDP
 
 
 print_buttons PROC USES eax ebx ecx edi
+        COMMENT !
+            prints info of all buttons for debugging
+        !
         mov     ecx, 0
         String  separator1, 10, 13, "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv", 10, 13
         String  separator2, "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^", 10, 13, 10, 13
@@ -178,6 +200,10 @@ print_buttons ENDP
 
 
 delete_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD
+        COMMENT !
+            hWnd: hWnd of button to be deleted
+            deletes the button
+        !
         String  delbtn, "Deleting button hwnd %x", 10, 13
         Print   OFFSET delbtn, hWnd
 
@@ -217,6 +243,12 @@ delete_all_buttons PROC uses eax ebx ecx edx esi edi
 delete_all_buttons ENDP
 
 draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
+        COMMENT !
+            parent: hWnd of main window
+            id: id of button
+            dis: pointer to DRAWITEMSTRUCT
+            draws the button on screen
+        !
         String  drawbutton, "draw_button", 10, 13
         ;Print   OFFSET drawbutton
         ; struct Button* btn = get_button(id_to_hwnd(parent, id));
@@ -269,6 +301,10 @@ draw_button PROC uses eax ebx ecx edx edi esi parent:DWORD, id:DWORD, dis:DWORD
 draw_button ENDP
 
 set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:DWORD
+        COMMENT !
+            btn_active: pointer to Button struct
+            active: 0 for disabled, 1 for active
+        !
         mov     edi, btn_active
         mov     esi, active
         mov     (Button PTR [edi]).active, esi
@@ -277,7 +313,11 @@ set_active PROC USES eax ebx ecx edx esi edi btn_active:DWORD, active:DWORD
 set_active ENDP
 
 is_tile PROC uses esi btn_istile:DWORD
-
+    COMMENT !
+        btn_istile: pointer to Button struct
+        returns in eax: whether the button is a tile
+    !
+    
     mov esi, btn_istile
     mov esi, (Button PTR [esi]).type_
 

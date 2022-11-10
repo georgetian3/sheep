@@ -1,4 +1,7 @@
 coordinate PROC uses ebx ecx edx esi edi x:DWORD, y:DWORD, z:DWORD
+        COMMENT !
+            helper function for build_map to calculate the correct coordinates
+        !
         mov     eax, y
         mov     ebx, z
         mul     ebx
@@ -7,8 +10,16 @@ coordinate PROC uses ebx ecx edx esi edi x:DWORD, y:DWORD, z:DWORD
 coordinate ENDP
 
 build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
+
+        COMMENT !
+            map_name: string with the filename of the map
+            creates the tiles and places them correctly
+            returns in eax the number of tiles in map
+        !
         local i:DWORD, j:DWORD, k:DWORD, x:DWORD, y:DWORD, fp:DWORD, map_filename:DWORD, total_:DWORD, offset_x:DWORD, offset_y:DWORD, type_count:DWORD,
             tile_type_count:DWORD, item:DWORD, flag:DWORD, map_width:DWORD, map_length:DWORD, map_height:DWORD
+
+        
 
         String file_open_failed, "Failed to open map file", 10, 13
         String one_int, "%d"
