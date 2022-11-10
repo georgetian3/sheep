@@ -1,4 +1,9 @@
 __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:DWORD, dwTime:DWORD
+    ; called by move_button
+    ; for calculating moving component and actually moving the button
+    ; used FPU register and the stack for double calculations, comparisons, and transformations
+    ; there is no return value for __move_button
+
     local btn_mov:DWORD, temp_x_result:DWORD, temp_y_result:DWORD
     String move_button_not_found, "Move Button not found", 0ah, 0dh
     String wrong_stat, "Button not supposed to be moving", 0ah, 0dh
@@ -19,6 +24,7 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
     mov edi, btn_mov
     mov esi, (Button PTR [edi]).start_pos.x
     
+    ; for calculations
     fild (Button PTR [edi]).frame
     fmul (Button PTR [edi]).dxpf
     fist temp_x_result
@@ -55,6 +61,11 @@ __move_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD, uMsg:DWORD, idEvent:
 __move_button ENDP
 
 move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __time:REAL8
+    ; called everytime when a button needs to be moved
+    ; no matter if it's moving into the slot or moving around within the slot
+    ; used FPU register and the stack for double calculations, comparisons, and transformations
+    ; there is no return value for move_button
+
     local temp_FPS:DWORD, temp_frames_result:DWORD, temp_differnece:DWORD
     String startmove, "Move button", 0ah, 0dh
     String movebtnfailed, "move button failed", 0ah, 0dh
@@ -123,6 +134,7 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
     fild temp_differnece
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dxpf
+    ; for testing purposes
     ; Print offset newline
     ; Print OFFSET printfloat, (Button PTR [edi]).dxpf
     ; Print offset newline
@@ -137,10 +149,12 @@ move_button PROC USES eax ebx ecx edx esi edi hWnd:DWORD, x:DWORD, y:DWORD, __ti
 
     fdiv ST(0), ST(1)
     fstp (Button PTR [edi]).dypf
+    ; for testing purposes
     ; Print offset newline
     ; Print OFFSET printfloat, (Button PTR [edi]).dypf
     ; Print offset newline
 
+    ; after adjusting all the values, we can actually move the button
     INVOKE SetTimer, (Button PTR[edi]).hWnd, 0, MSPF, __move_button
     .IF eax == 0
         Print OFFSET timerfailed
