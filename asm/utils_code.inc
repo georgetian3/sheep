@@ -83,6 +83,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
     String test_print , "test here" ,0ah,0dh
     String matching, "match slot", 0ah, 0dh
     Print offset matching
+    Print offset newline
     mov count, 0
     mov prev_type, -1
     mov ecx, 0

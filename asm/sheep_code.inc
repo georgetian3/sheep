@@ -134,7 +134,9 @@ update ENDP
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
         String update_slot_print, "Update Slot", 0ah, 0dh
-        String countstr ,"slot count = %d ,ecx = %d",0ah,0dh
+        String insert_slot_adddr, "currently inserting: %x", 0ah, 0dh
+        String updating_slot_btn, "currently update_slot while button addr: %x", 0ah, 0dh
+        String updating_slot_type, "currently update_slot while button type: %x", 0ah, 0dh
         ; Print offset newline
         ; Print offset newline
         ; Print offset hexStr ,btn1
@@ -142,12 +144,15 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         mov     ecx, 0
         Print   OFFSET newline
         Print   OFFSET update_slot_print
+        Print OFFSET insert_slot_adddr, btn1
 
         .WHILE ecx < slot_count
 
                 AINVOKE AA1, OFFSET slot, ecx
                 mov     eax, [eax]
                 mov     esi ,(Button PTR [eax]).type_
+                Print OFFSET  updating_slot_btn, eax
+                Print OFFSET updating_slot_type, esi
                 mov     ebx , btn1
                 mov     edi , (Button PTR [ebx]).type_
                 .IF esi == edi
@@ -160,6 +165,12 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         .ENDW
 
     S1:
+        String update_slot_input, "Update: slot input info:", 0ah, 0dh
+        Print offset update_slot_input
+        Print offset updating_slot_btn, ebx
+        Print OFFSET updating_slot_type, edi
+        String ecx_print, "update_slot to inser_slot ecx: %d", 0ah, 0dh
+        Print OFFSET ecx_print, ecx
         PINVOKE insert_slot, btn1, ecx
         mov     last_index , ecx 
         ret 
@@ -172,10 +183,9 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         Print   OFFSET parStr, parent
 
         mov     esi, btn2
-        
+        push    esi
         AINVOKE is_tile, btn2
         .IF eax != 0
-                
                 mov     eax, (Button PTR [esi]).in_slot
                 .IF eax != 0
                         ret
@@ -189,10 +199,11 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 mov     last_button, esi
                 PINVOKE update_slot, esi
                 PINVOKE print_buttons
-                ret
                 PINVOKE update
-                mov     eax, slot_count
+                mov     eax,  slot_count
                 mov     ecx , SLOT_SIZE
+                String cur_slot, "current slot_count is: %d", 0ah, 0dh
+                Print OFFSET cur_slot, eax
                 .IF eax > ecx
                         mov     edx, parent
                         PINVOKE lost, edx
@@ -204,7 +215,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 .ENDIF
         .ENDIF
 
-
+        ret
+        pop     esi
         mov     ebx, (Button PTR [esi]).type_
         .IF ebx == TYPE_START
                 AINVOKE delete_all_buttons
@@ -212,9 +224,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 
                 mov     total, eax
                 AINVOKE create_button, parent, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
-                
-                
-                ;AINVOKE update 
+                PINVOKE update 
         .ELSEIF ebx == TYPE_UNDO
                 mov     eax, last_button
                 .IF eax != 0
