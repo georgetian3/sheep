@@ -14,7 +14,7 @@ include data.inc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .CODE
 
-;p:数组 i:索引 返回p[i]
+;p:1D Array i:index return :p[i]
 AA1 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD
     COMMENT !
         p: pointer to 1D array
@@ -31,7 +31,7 @@ AA1 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD
         ret
 AA1 ENDP
 
-;p:二维数组 i:索引 j:索引 返回p[i][j]
+;p:2D Array i:index j:index return:p[i][j]
 AA2 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD, j:DWORD
     COMMENT !
         p: pointer to 2D array
@@ -72,7 +72,7 @@ String clicked, "Button clicked", 10, 13
 
 test_time   REAL8 0.2
 
-;主消息循环
+;MessageLoop
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
         ;Print   OFFSET parStr, hWnd
@@ -142,7 +142,7 @@ WndProc ENDP
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;主窗口
+;MainWindow
 WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWORD
         LOCAL wc:WNDCLASS, msg:MSGStruct, winRect:RECT, hMainWnd:DWORD
 
