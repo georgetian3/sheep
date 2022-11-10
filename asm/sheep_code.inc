@@ -1,8 +1,9 @@
+;游戏失败 直接退出
 lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
         invoke ExitProcess, 0
         ret
 lost ENDP
-
+;游戏胜利，当stage为1的时候进入第二关，否则，回到开始界面
 win PROC USES ebx ecx edx esi edi hWnd:DWORD
         mov eax, stage
         .IF eax == 1
@@ -22,7 +23,7 @@ win PROC USES ebx ecx edx esi edi hWnd:DWORD
         .ENDIF
         ret
 win ENDP
-
+;更新按钮状态，堆叠情况，刷新按钮显示
 update PROC USES eax ebx ecx edx esi edi
     LOCAL a:DWORD, b:DWORD, flag:DWORD
     String update_begin, "begin update", 0ah, 0dh
@@ -134,7 +135,7 @@ update PROC USES eax ebx ecx edx esi edi
     Print OFFSET update_end
     ret
 update ENDP
-
+;更新槽状态，计算槽中匹配数
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
         String update_slot_print, "Update Slot", 0ah, 0dh
@@ -181,6 +182,7 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         ret 
 update_slot ENDP
 
+;点击事件 根据点击的按钮类型触发不同的动作
 handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         String handle_click, "handle_button_click", 10, 13
         Print OFFSET handle_click
