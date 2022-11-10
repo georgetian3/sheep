@@ -148,7 +148,7 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         .WHILE ecx < slot_count
 
                 AINVOKE AA1, OFFSET slot, ecx
-                Print offset countstr ,eax,ecx
+                ;Print offset countstr ,eax,ecx
                 mov     eax, [eax]
                 mov     esi ,(Button PTR [eax]).type_
                 Print OFFSET  updating_slot_btn, eax
@@ -200,7 +200,6 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 PINVOKE update_slot, esi
                 PINVOKE print_buttons
                 PINVOKE update
-                ret
                 mov     eax, slot_count
                 mov     ecx , SLOT_SIZE
                 String cur_slot, "current slot_count is: %d", 0ah, 0dh
@@ -209,7 +208,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                         mov     edx, parent
                         PINVOKE lost, edx
                 .ENDIF
-                mov eax ,total
+                mov eax, total
                 .IF eax == 0 
                         PINVOKE win, parent
                         mov     total , eax
@@ -257,7 +256,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                         .ENDW
                         dec slot_count
                     .ENDIF
-            .ELSEIF ebx == edx
+            .ELSEIF ebx == TYPE_END
                     Print   OFFSET MAP1
                     PINVOKE ExitProcess, 0
         .ENDIF
