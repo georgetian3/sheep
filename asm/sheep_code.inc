@@ -1,8 +1,11 @@
+;game lose ,exit game
 lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
         invoke ExitProcess, 0
         ret
 lost ENDP
-
+;game win if remain tile number = 0 
+;if stage is 1 ,stage2 starts
+;else return to start screen
 win PROC USES ebx ecx edx esi edi hWnd:DWORD
         mov eax, stage
         .IF eax == 1
@@ -22,7 +25,7 @@ win PROC USES ebx ecx edx esi edi hWnd:DWORD
         .ENDIF
         ret
 win ENDP
-
+;update buttons statues and overlap statues , repaint buttons
 update PROC USES eax ebx ecx edx esi edi
     LOCAL a:DWORD, b:DWORD, flag:DWORD
     String update_begin, "begin update", 0ah, 0dh
@@ -134,7 +137,7 @@ update PROC USES eax ebx ecx edx esi edi
     Print OFFSET update_end
     ret
 update ENDP
-
+;update slot status , computer number of matching slots
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
         String update_slot_print, "Update Slot", 0ah, 0dh
@@ -181,6 +184,7 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         ret 
 update_slot ENDP
 
+;click event ,enter different part when different types of buttons are clicked
 handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         String handle_click, "handle_button_click", 10, 13
         Print OFFSET handle_click
