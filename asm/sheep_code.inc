@@ -45,7 +45,6 @@ update PROC USES eax ebx ecx edx esi edi
         .IF ebx
             jmp S1
         .ENDIF
-        ret
         mov ebx, b
         mov eax, (Button PTR [ebx]).moving
         .IF eax
@@ -74,7 +73,7 @@ update PROC USES eax ebx ecx edx esi edi
             .IF ebx
                 jmp S2
             .ENDIF
-            mov ebx, b
+            mov ebx, a
             mov eax, (Button PTR [ebx]).moving
             .IF eax
                 jmp S2
@@ -83,17 +82,17 @@ update PROC USES eax ebx ecx edx esi edi
             mov ebx, b
             mov edx, a
             mov edi, (Button PTR [ebx]).in_slot
-            INVOKE overlap, edx, ebx
+            AINVOKE overlap, edx, ebx
             .IF edi
-                INVOKE set_active, ebx, 0
+                PINVOKE set_active, ebx, 0
                 mov (Button PTR [ebx]).gray, 0
                 mov flag, 0
             .ELSEIF eax
-                INVOKE set_active, b, 0
+                PINVOKE set_active, ebx, 0
                 mov (Button PTR [ebx]).gray, 1
                 mov flag, 0
                 mov edi, (Button PTR [ebx]).hWnd
-                INVOKE win_pos, edi, ebx
+                PINVOKE win_pos, edi, ebx
             .ENDIF
             S2:
                 pop esi
@@ -103,7 +102,7 @@ update PROC USES eax ebx ecx edx esi edi
         mov eax, flag
         .IF eax == 1
             mov ebx, b
-            INVOKE set_active, ebx, 1
+            PINVOKE set_active, ebx, 1
             mov (Button PTR [ebx]).gray, 0
         .ENDIF
         S1:
@@ -149,6 +148,7 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         .WHILE ecx < slot_count
 
                 AINVOKE AA1, OFFSET slot, ecx
+                Print offset countstr ,eax,ecx
                 mov     eax, [eax]
                 mov     esi ,(Button PTR [eax]).type_
                 Print OFFSET  updating_slot_btn, eax
@@ -200,7 +200,8 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 PINVOKE update_slot, esi
                 PINVOKE print_buttons
                 PINVOKE update
-                mov     eax,  slot_count
+                ret
+                mov     eax, slot_count
                 mov     ecx , SLOT_SIZE
                 String cur_slot, "current slot_count is: %d", 0ah, 0dh
                 Print OFFSET cur_slot, eax

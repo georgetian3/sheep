@@ -18,7 +18,6 @@
 #include <math.h>
 
 
-
 void update() {
     struct Button *a, *b;
     printf("begin update \n");
@@ -150,7 +149,7 @@ void handle_button_click(HWND parent, struct Button* btn) {
         exit(0);
     }
 
-    printf("slot_count  %d \n",slot_count);
+    
     //InvalidateRect(btn->hWnd, 0, 0);
 }
 

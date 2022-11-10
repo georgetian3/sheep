@@ -6,7 +6,7 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     mov     eax, a
     mov     ebx, b
     mov     ecx, (Button PTR [eax]).k
-    mov     edx, (Button PTR [ebx]).k
+    mov     edx, (Button PTR [ebx]).k 
 
     .IF ecx <= edx
             mov     eax, 0
@@ -82,6 +82,9 @@ match_slot PROC uses eax ebx ecx edx esi edi
     local count:DWORD, prev_type:DWORD
     String test_print , "test here" ,0ah,0dh
     String matching, "match slot", 0ah, 0dh
+    String istr, "i=%d", 0ah, 0dh
+    String jstr, "j=%d slotcount = %d", 0ah, 0dh
+
     Print offset matching
     Print offset newline
     mov count, 0
@@ -93,6 +96,7 @@ match_slot PROC uses eax ebx ecx edx esi edi
         mov edi, (Button PTR [esi]).type_
         .IF edi == prev_type
             inc     count
+            Print offset istr,count
             .IF count >= MATCH_COUNT
                 mov edx, 0
                 .WHILE(edx < count)
@@ -114,10 +118,14 @@ match_slot PROC uses eax ebx ecx edx esi edi
                         sub     edx, count
                         AINVOKE slot_x, edx
                         mov     esi, eax
+                        Print offset jstr,ebx,edx
                         AINVOKE AA1, OFFSET slot, ebx
                         mov     eax, [eax]
+                        Print OFFSET hexStr, eax
+                        Print offset newline
+                        Print offset here
                         PINVOKE move_button, eax, esi, SLOT_Y, SLOT_MOVE_TIME
-                        mov     edi, [eax]
+                        mov     edi, eax
                         AINVOKE AA1, OFFSET slot, edx
                         mov     [eax], edi
                         pop     ebx
@@ -192,6 +200,8 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         String  stat , "slot count = %d ",0ah,0dh
         String  movstr,"move %d to %d",0ah,0dh
         String  stat1 ,"eax = %d btn = %x",0ah,0dh
+        String  stat2 ,"insert btn to slot %d",0ah,0dh
+        String  stat3 , "btn %x index %d",0ah,0dh
         Print   OFFSET insertprint
         ; Print OFFSET decStr, slot_count
         ; Print OFFSET newline
@@ -206,24 +216,24 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
             jmp L1
         .ENDIF      ;is this .IF needed?
         .WHILE (ecx >= index_)
+            push ecx
             mov ebx, ecx
             inc ebx
             AINVOKE slot_x, ebx
             mov edi, eax
-            Print OFFSET inWhile
             mov eax, 4
             mul ecx
             mov esi, slot[eax]
-            Print OFFSET stat1,eax,esi
+            Print OFFSET movstr,ecx,ebx
             ;PINVOKE print_buttons
             mov (Button PTR [esi]).callback ,0
-            INVOKE move_button, esi, edi, SLOT_Y, SLOT_MOVE_TIME
+            PINVOKE move_button, esi, edi, SLOT_Y, SLOT_MOVE_TIME
             mov eax, 4
             mul ebx
-            mov edi, slot[eax]
-            mov edi, esi
-
+            mov slot[eax],esi
+            pop ecx
             dec ecx
+            Print OFFSET stat3,slot[eax],ebx
         .ENDW
         ; Print OFFSET decStr, slot_count
         ; Print OFFSET newline
@@ -231,19 +241,22 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         ; Print OFFSET newline
         ; Print OFFSET newline
         L1:
-        mov eax, 4
-        mov ecx, index_
-        mul ecx
+        
 
         mov esi, btn_insert
         ; PINVOKE print_buttons
         Print   OFFSET decStr ,eax
         Print   Offset here
         Print   OFFSET newline
+        mov eax, 4
+        mov ecx, index_
+        mul ecx
+        Print offset stat2,index_
         mov slot[eax], esi
         mov (Button PTR [esi]).in_slot, 1
         mov (Button PTR [esi]).callback, 2
         inc slot_count
+        Print offset stat,slot_count
         dec total
         mov ecx, total
         .IF ecx == 0

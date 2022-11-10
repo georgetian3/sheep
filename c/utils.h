@@ -34,7 +34,7 @@
 
 #define SLOT_MOVE_TIME      0.2
 
-int  = 0;
+int slot_count = 0;
 int stage = 1;
 int total=0;
 
@@ -108,12 +108,14 @@ void match_slot() {
     for (int i = 0; i < slot_count; i++) {
         if (slot[i]->type == prev_type) {
             count++;
+            printf("i=%d\n",i);
             if (count >= MATCH_COUNT) {
                 for (int j = 0; j < count; j++) {
                     delete_button_struct(slot[i - j]);
                 }
                 for (int j = i + 1; j < slot_count; j++) {
-                    
+                    printf("j=%d\n",j);
+                    printf("count  %d \n",count);
                     move_button(slot[j], slot_x(j - count), SLOT_Y, SLOT_MOVE_TIME);
                     slot[j - count] = slot[j];
                 }
@@ -133,13 +135,16 @@ void insert_slot(struct Button* btn, int index) {
     // moves tile at and to the right of index one slot to the right
     // moves btn to the newly freed slot
     for (int i = slot_count - 1; i >= index; i--) {
+        printf("move button %d to %d\n",i ,i+1);
         move_button(slot[i], slot_x(i + 1), SLOT_Y, SLOT_MOVE_TIME);
         slot[i + 1] = slot[i];
     }
+    printf("insert btn to %d\n",index);
     slot[index] = btn;
     btn->in_slot = TRUE;
     btn->callback = 2;
     slot_count++;
+    printf("slot_count is %d",slot_count);
     total--;
     if(total==0){
         move_button(btn, slot_x(index),SLOT_Y,0);
