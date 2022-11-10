@@ -107,7 +107,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 200, 80
                 PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 200, 56
 
-                INVOKE  play_sound, 0, 0, 0
+                ;INVOKE  play_sound, 0, 0, 0
                 ;PINVOKE update
                 PINVOKE print_buttons
         .ELSEIF ebx == WM_PAINT
