@@ -172,6 +172,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         }
         case WM_CREATE: {
 
+            HANDLE hIcon = LoadImage(0, "../res/icon.ico", IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_LOADFROMFILE);
+            if (hIcon) {
+                //Change both icons to the same icon handle.
+                SendMessage(hWnd, WM_SETICON, ICON_SMALL, hIcon);
+                SendMessage(hWnd, WM_SETICON, ICON_BIG, hIcon);
+
+                //This will ensure that the application icon gets changed too.
+                SendMessage(GetWindow(hWnd, GW_OWNER), WM_SETICON, ICON_SMALL, hIcon);
+                SendMessage(GetWindow(hWnd, GW_OWNER), WM_SETICON, ICON_BIG, hIcon);
+            }
+
             printf("WM_CREATE\n");
             bmp_bg = load_bitmap("../res/bg.bmp");
             load_bitmaps();

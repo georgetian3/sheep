@@ -62,7 +62,6 @@ String  charStr, "%s", 0ah, 0dh
 String  newline, 10, 13
 String  parStr, "Parent: %x", 10, 13
 
-
 include code.inc
 
 
@@ -98,9 +97,21 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 .ENDIF
 
         .ELSEIF ebx == WM_CREATE
-                mov ecx, OFFSET main_bg
-                INVOKE load_bitmap, ecx
-                mov bmp_bg, eax
+
+
+                AINVOKE LoadImageA, 0, OFFSET icon, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE
+                mov     ecx, eax
+                PINVOKE SendMessage, hWnd, WM_SETICON, ICON_SMALL, ecx;
+                PINVOKE SendMessage, hWnd, WM_SETICON, ICON_BIG, ecx;
+                AINVOKE GetWindow, hWnd, GW_OWNER
+                PINVOKE SendMessage, eax, WM_SETICON, ICON_SMALL, ecx;
+                PINVOKE SendMessage, eax, WM_SETICON, ICON_BIG, ecx;
+
+
+
+                mov     ecx, OFFSET main_bg
+                AINVOKE load_bitmap, ecx
+                mov     bmp_bg, eax
                 PINVOKE  load_bitmaps
                 ;INVOKE  build_map, hWnd, OFFSET MAP1
                 ;mov     total, eax
