@@ -1,8 +1,11 @@
+;game lose ,exit game
 lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
         invoke ExitProcess, 0
         ret
 lost ENDP
-
+;game win if remain tile number = 0 
+;if stage is 1 ,stage2 starts
+;else return to start screen
 win PROC USES ebx ecx edx esi edi hWnd:DWORD
         mov eax, stage
         .IF eax == 1
@@ -22,7 +25,7 @@ win PROC USES ebx ecx edx esi edi hWnd:DWORD
         .ENDIF
         ret
 win ENDP
-
+;update buttons statues and overlap statues , repaint buttons
 update PROC USES eax ebx ecx edx esi edi
     LOCAL a:DWORD, b:DWORD, flag:DWORD
     String update_begin, "begin update", 0ah, 0dh
@@ -93,7 +96,7 @@ update PROC USES eax ebx ecx edx esi edi
                 mov flag, 0
             .ELSEIF eax
                 PINVOKE set_active, ebx, 0
-                Print OFFSET overlapInfo,b,a
+                ;Print OFFSET overlapInfo,b,a
                 mov (Button PTR [ebx]).gray, 1
                 mov flag, 0
                 mov edi, (Button PTR [ebx]).hWnd
@@ -105,7 +108,7 @@ update PROC USES eax ebx ecx edx esi edi
         .ENDW
         S1:
             mov eax, flag
-            Print OFFSET EAXSTR ,eax
+            ;Print OFFSET EAXSTR ,eax
             .IF eax == 1
                 mov ebx, b
                 PINVOKE set_active, ebx, 1
@@ -134,7 +137,7 @@ update PROC USES eax ebx ecx edx esi edi
     Print OFFSET update_end
     ret
 update ENDP
-
+;update slot status , computer number of matching slots
 update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
     local __insert_index:DWORD, __count:DWORD
         String update_slot_print, "Update Slot", 0ah, 0dh
@@ -146,9 +149,9 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
         ; Print offset hexStr ,btn1
         mov     __count, 1
         mov     ecx, 0
-        Print   OFFSET newline
-        Print   OFFSET update_slot_print
-        Print OFFSET insert_slot_adddr, btn1
+        ;Print   OFFSET newline
+        ;Print   OFFSET update_slot_print
+        ;Print OFFSET insert_slot_adddr, btn1
 
         .WHILE ecx < slot_count
 
@@ -156,8 +159,8 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
                 ;Print offset countstr ,eax,ecx
                 mov     eax, [eax]
                 mov     esi ,(Button PTR [eax]).type_
-                Print OFFSET  updating_slot_btn, eax
-                Print OFFSET updating_slot_type, esi
+                ;Print OFFSET  updating_slot_btn, eax
+                ;Print OFFSET updating_slot_type, esi
                 mov     ebx , btn1
                 mov     edi , (Button PTR [ebx]).type_
                 .IF esi == edi
@@ -171,16 +174,17 @@ update_slot PROC USES eax ebx ecx edx esi edi btn1:DWORD
 
     S1:
         String update_slot_input, "Update: slot input info:", 0ah, 0dh
-        Print offset update_slot_input
-        Print offset updating_slot_btn, ebx
-        Print OFFSET updating_slot_type, edi
+        ;Print offset update_slot_input
+        ;Print offset updating_slot_btn, ebx
+        ;Print OFFSET updating_slot_type, edi
         String ecx_print, "update_slot to inser_slot ecx: %d", 0ah, 0dh
-        Print OFFSET ecx_print, ecx
+        ;Print OFFSET ecx_print, ecx
         PINVOKE insert_slot, btn1, ecx
         mov     last_index , ecx 
         ret 
 update_slot ENDP
 
+;click event ,enter different part when different types of buttons are clicked
 handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         String handle_click, "handle_button_click", 10, 13
         Print OFFSET handle_click
@@ -202,7 +206,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 mov     last_y , eax
                 mov     last_button, esi
                 PINVOKE update_slot, esi
-                PINVOKE print_buttons
+                ;PINVOKE print_buttons
                 PINVOKE update
                 mov     eax, slot_count
                 mov     ecx , SLOT_SIZE
@@ -260,6 +264,6 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 Print   OFFSET MAP1
                 PINVOKE ExitProcess, 0
         .ENDIF
-        PINVOKE print_buttons
+        ;PINVOKE print_buttons
         ret
 handle_button_click ENDP

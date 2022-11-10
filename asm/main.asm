@@ -14,7 +14,7 @@ include data.inc
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .CODE
 
-
+;p:1D Array i:index return :p[i]
 AA1 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD
     COMMENT !
         p: pointer to 1D array
@@ -31,7 +31,7 @@ AA1 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD
         ret
 AA1 ENDP
 
-
+;p:2D Array i:index j:index return:p[i][j]
 AA2 PROC USES ebx ecx edx esi edi p:DWORD, i:DWORD, j:DWORD
     COMMENT !
         p: pointer to 2D array
@@ -72,6 +72,7 @@ String clicked, "Button clicked", 10, 13
 
 test_time   REAL8 0.2
 
+;MessageLoop
 WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
         ;Print   OFFSET parStr, hWnd
@@ -127,7 +128,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
                 INVOKE  play_sound, 0, 0, 0
                 ;PINVOKE update
-                PINVOKE print_buttons
+                ;PINVOKE print_buttons
         .ELSEIF ebx == WM_PAINT
                 INVOKE paint, hWnd
         .ELSEIF ebx == WM_CLOSE
@@ -141,7 +142,7 @@ WndProc ENDP
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+;MainWindow
 WinMain PROC hInst:HINSTANCE, hPrevInst:HINSTANCE, pCmdLine:LPSTR, nCmdShow:DWORD
         LOCAL wc:WNDCLASS, msg:MSGStruct, winRect:RECT, hMainWnd:DWORD
 

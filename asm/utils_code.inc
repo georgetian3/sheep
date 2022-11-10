@@ -1,25 +1,12 @@
 overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
+    ; this is to check if two buttons/tiles are overlapped
+    ; if they are overlapped by others, then change their status and update
+    ; if they are no longer overlapped by others, then also change their status and update
+
     local pa:DWORD, pb:DWORD, a_x:DWORD, a_y:DWORD, b_x:DWORD, b_y:DWORD
     String pointpos , "point x = %x y= %x",0ah,0dh
     String overlapstr ,"overlap start",0ah,0dh
-    COMMENT `
-    mov     eax, a
-    mov     ebx, b
-    mov     ecx, (Button PTR [eax]).k
-    mov     edx, (Button PTR [ebx]).k 
 
-    .IF ecx <= edx
-            mov     eax, 0
-            ret
-    .ENDIF
-
-    mov     ecx (Button PTR [eax]).in_slot
-    .IF eax != 0
-            mov     eac, 0
-            ret
-    ret
-
-    `
     INVOKE  crt_malloc, SIZEOF POINT
     mov     pa,eax
     INVOKE  crt_malloc, SIZEOF POINT
@@ -41,6 +28,8 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     .ENDIF
     mov ebx, (Button PTR [edx]).hWnd
     mov ecx, pa
+
+    ; call win_pos to check position
     INVOKE win_pos, ebx, ecx
     mov ebx, (Button PTR [esi]).hWnd
     mov ecx, pb
@@ -86,6 +75,10 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
 overlap ENDP
 
 match_slot PROC uses eax ebx ecx edx esi edi
+    ; called when dealing with problems in slot
+    ; when there is still space, then buttons can be added to slot
+    ; when three identical tiles/buttons are in slot, then delete them
+    ; when exceeding the slot_count limit, then lose
     local count:DWORD, prev_type:DWORD
     String test_print , "test here" ,0ah,0dh
     String matching, "match slot", 0ah, 0dh
@@ -157,7 +150,8 @@ match_slot PROC uses eax ebx ecx edx esi edi
 match_slot ENDP
 
 shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
-
+        ; this function is used to shuffle the deck when openning maps
+        ; so that everytime players have different experiences
         mov     esi, arr
         mov     ecx, n
         dec     ecx
@@ -182,6 +176,7 @@ shuffle PROC uses eax ebx ecx edx esi edi arr:DWORD, n:DWORD
 shuffle ENDP
 
 slot_x PROC uses ebx ecx edx esi edi slot_index:DWORD
+    ; this is for calculating the x-pos of the tile in slot
     mov ebx, SLOT_X_OFFSET
     add ebx, TILE_WIDTH
     mov eax, slot_index
@@ -191,7 +186,8 @@ slot_x PROC uses ebx ecx edx esi edi slot_index:DWORD
 slot_x ENDP
 
 
-print_eip PROC USES eax ebx ecx edx esi edi 
+print_eip PROC USES eax ebx ecx edx esi edi
+    ; for debugging and testing purposes
         call next_
     next_:
         pop eax
@@ -202,6 +198,7 @@ print_eip PROC USES eax ebx ecx edx esi edi
 print_eip ENDP
 
 insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
+        ; called when need to insert a button/tile into the slot
         String  insertprint, "Insert Slot", 0ah, 0dh
         String  inWhile, "inWile", 0ah, 0dh
         String  stat , "slot count = %d ",0ah,0dh
@@ -249,7 +246,6 @@ insert_slot PROC uses eax ebx ecx edx esi edi btn_insert:DWORD, index_:DWORD
         ; Print OFFSET newline
         L1:
         
-
         mov esi, btn_insert
         ; PINVOKE print_buttons
         Print   OFFSET decStr ,eax
@@ -281,6 +277,7 @@ insert_slot ENDP
 
 
 paint PROC uses eax ebx ecx edx esi edi hWnd:DWORD
+    ; for painting the game
     local ps:PAINTSTRUCT, hdc_window:HDC, hdc_memBuffer:HDC, hdc_loadBmp:HDC, blankBmp:DWORD
     String paint_failed, "Paint() error", 0ah, 0dh
     mov ebx, hWnd

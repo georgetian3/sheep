@@ -122,8 +122,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         .ENDW
 
         ; create a hWnd
-        String  cwstr, "CreateWindow x %d y %d wd %d ht %d parent %x id %d", 10, 13
-        Print   OFFSET cwstr, x, y, wd, ht, parent, __id_count
+        ;String  cwstr, "CreateWindow x %d y %d wd %d ht %d parent %x id %d", 10, 13
+        ;Print   OFFSET cwstr, x, y, wd, ht, parent, __id_count
         AINVOKE CreateWindowEx, 0, ADDR btnStr, 0, \
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW, \
                 x, y, wd, ht, parent, __id_count, 0, 0
