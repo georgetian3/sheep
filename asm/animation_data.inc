@@ -1,6 +1,7 @@
 FPS = 120
 MSPF = 8
-epsilon REAL8 1.0E-13   ;for comparing double with zero
+;for comparing double with zero
+epsilon REAL8 1.0E-13   
 floattest REAL8 ?
 
 slot_x PROTO slot_index:DWORD
