@@ -8,7 +8,7 @@ win PROC USES ebx ecx edx esi edi hWnd:DWORD
         .IF eax == 1
                 INVOKE  delete_all_buttons
                 mov     slot_count , 0
-                AINVOKE build_map, hWnd, OFFSET MAP2
+                AINVOKE build_map, hWnd, OFFSET MAP3
                 mov     total , eax
                 AINVOKE create_button, hWnd, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  update
