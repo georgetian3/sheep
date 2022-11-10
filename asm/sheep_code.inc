@@ -3,7 +3,7 @@ lost PROC USES eax ebx ecx edx esi edi hWnd:DWORD
         ret
 lost ENDP
 
-win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
+win PROC USES ebx ecx edx esi edi hWnd:DWORD
         mov eax, stage
         .IF eax == 1
                 INVOKE  delete_all_buttons
@@ -214,7 +214,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                 .ENDIF
                 mov eax, total
                 .IF eax == 0 
-                        PINVOKE win, parent
+                        AINVOKE win, parent
                         mov     total , eax
                 .ENDIF
         .ENDIF
