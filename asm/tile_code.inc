@@ -1,10 +1,16 @@
 load_bitmap PROC uses ebx ecx edx edx edi filename:DWORD
+        COMMENT !
+            loads a single bitmap and returns HBITMAP in eax
+        !
         INVOKE  LoadImageA, 0, filename, IMAGE_BITMAP,
                 0, 0, LR_LOADFROMFILE
      ret
 load_bitmap ENDP
 
 load_bitmaps PROC uses eax ebx ecx edx edx esi edi
+        COMMENT !
+            load the bitmaps of all tiles and the start, end and undo buttons
+        !
         LOCAL filename:DWORD
         String loadfailed, "LoadImage failed", 0ah, 0dh
 
