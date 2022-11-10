@@ -89,15 +89,20 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 
                 Print   OFFSET clicked
                 INVOKE  get_button, lParam
+                String  gbr, "get_button, %x", 10, 13
+                Print   OFFSET gbr, eax
                 mov     esi, eax
                 AINVOKE is_button, esi
                 .IF eax != 0
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0
-                                INVOKE  handle_button_click, hWnd, esi
+                                String  hbcb, "handle_button_click hWnd %x esi %x", 10, 13
+                                Print   OFFSET hbcb, hWnd, esi
+                                Print   OFFSET newline
+                                PINVOKE handle_button_click, hWnd, esi
                         .ENDIF
                 .ENDIF
-
+                PINVOKE print_buttons
         .ELSEIF ebx == WM_CREATE
 
                 AINVOKE LoadImageA, 0, OFFSET icon, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE
@@ -129,7 +134,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
 
                 INVOKE  play_sound, 0, 0, 0
                 ;PINVOKE update
-                ;PINVOKE print_buttons
+                PINVOKE print_buttons
         .ELSEIF ebx == WM_PAINT
                 INVOKE paint, hWnd
         .ELSEIF ebx == WM_CLOSE

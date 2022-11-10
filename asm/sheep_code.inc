@@ -221,9 +221,15 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                         AINVOKE win, parent
                         mov     total , eax
                 .ENDIF
+                ret
         .ENDIF
         ;ret
+        String  esistr, "ESI %x", 10, 13
         mov     esi, btn2
+        Print   OFFSET esistr, btn2
+        Print   OFFSET newline
+        Print   OFFSET esistr, esi
+        Print   OFFSET newline
         mov     ebx, (Button PTR [esi]).type_
         .IF ebx == TYPE_START
                 AINVOKE delete_all_buttons

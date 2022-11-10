@@ -90,6 +90,7 @@ get_button PROC uses ebx ecx edx esi edi hWnd:DWORD
         !
         AINVOKE __search_hwnd, hWnd
         .IF eax == 0
+                mov     eax, 0
                 ret
         .ENDIF
         mov     eax, [eax]
