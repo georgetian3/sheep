@@ -103,8 +103,8 @@ create_button PROC uses ebx ecx edx esi edi parent:DWORD, type_:DWORD, x:DWORD, 
         .ENDW
 
         ; create a hWnd
-        String  cwstr, "CreateWindow x %d y %d wd %d ht %d parent %x id %d", 10, 13
-        Print   OFFSET cwstr, x, y, wd, ht, parent, __id_count
+        ;String  cwstr, "CreateWindow x %d y %d wd %d ht %d parent %x id %d", 10, 13
+        ;Print   OFFSET cwstr, x, y, wd, ht, parent, __id_count
         AINVOKE CreateWindowEx, 0, ADDR btnStr, 0, \
                 WS_CHILD or WS_VISIBLE or BS_BITMAP or BS_OWNERDRAW, \
                 x, y, wd, ht, parent, __id_count, 0, 0
@@ -178,8 +178,8 @@ print_buttons ENDP
 
 
 delete_button PROC uses eax ebx ecx edx esi edi hWnd:DWORD
-        String  delbtn, "Deleting button hwnd %x", 10, 13
-        Print   OFFSET delbtn, hWnd
+        ;String  delbtn, "Deleting button hwnd %x", 10, 13
+        ;Print   OFFSET delbtn, hWnd
 
 
         String del_hwnd_err, "Delete hwnd not found", 0ah, 0dh
