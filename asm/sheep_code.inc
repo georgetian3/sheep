@@ -10,14 +10,15 @@ win PROC USES eax ebx ecx edx esi edi hWnd:DWORD
                 mov     slot_count , 0
                 AINVOKE build_map, hWnd, OFFSET MAP2
                 mov     eax, total
+                AINVOKE create_button, hWnd, TYPE_UNDO, 500, 730, -1, TILE_WIDTH, TILE_HEIGHT
                 INVOKE  update
                 inc     stage
                 mov     total, eax
                 ret
         .ELSE
                 PINVOKE delete_all_buttons
-                PINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 0, 0
-                PINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 0, 0
+                AINVOKE create_button, hWnd, TYPE_START, 320, 320, -1, 0, 0
+                AINVOKE create_button, hWnd, TYPE_END, 320, 400, -1, 0, 0
         .ENDIF
         ret
 win ENDP
