@@ -61,6 +61,7 @@ is_button PROC USES ebx ecx edx esi edi p:DWORD
                 inc     ecx
         .ENDW
         mov     eax, 0
+        ret
 is_button ENDP
 
 get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
