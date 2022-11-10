@@ -2,7 +2,7 @@
 
 if exist main.exe del main.exe
 
-C:\MASM32\BIN\Ml.exe /c /coff /Fl main.asm
+C:\MASM32\BIN\Ml.exe /c /coff main.asm
 if errorlevel 1 goto err
 
 C:\MASM32\BIN\Link.exe /debug /SUBSYSTEM:WINDOWS main.obj

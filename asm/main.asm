@@ -90,6 +90,7 @@ WndProc PROC hWnd:DWORD, uMsg:DWORD, wParam:DWORD, lParam:DWORD
                 Print   OFFSET clicked
                 INVOKE  get_button, lParam
                 mov     esi, eax
+                AINVOKE is_button, esi
                 .IF eax != 0
                         mov     eax, (Button PTR [esi]).active
                         .IF eax != 0

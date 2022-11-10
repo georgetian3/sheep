@@ -46,6 +46,23 @@ id_to_hwnd PROC USES ebx ecx edx esi edi parent:DWORD, id:DWORD
         ret
 id_to_hwnd ENDP
 
+is_button PROC USES ebx ecx edx esi edi p:DWORD
+        COMMENT !
+            checks if pointer p is in __buttons
+        !
+        mov     esi, p
+        mov     ecx, 0
+        .WHILE ecx < N_BUTTONS
+                AINVOKE get_button_at_index, ecx
+                .IF eax == esi
+                        mov     eax, 1
+                        ret
+                .ENDIF
+                inc     eax
+        .ENDW
+        mov     eax, 0
+is_button ENDP
+
 get_button_at_index PROC uses ebx ecx edx esi edi index:DWORD
         COMMENT !
             index: index of array
