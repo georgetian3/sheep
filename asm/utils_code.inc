@@ -1,7 +1,8 @@
 overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     local pa:DWORD, pb:DWORD, a_x:DWORD, a_y:DWORD, b_x:DWORD, b_y:DWORD
-
-
+    String pointpos , "point x = %x y= %x",0ah,0dh
+    String overlapstr ,"overlap start",0ah,0dh
+    Print OFFSET overlapstr
     COMMENT `
     mov     eax, a
     mov     ebx, b
@@ -20,6 +21,11 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
     ret
 
     `
+    INVOKE  crt_malloc, SIZEOF POINT
+    mov     pa,eax
+    INVOKE  crt_malloc, SIZEOF POINT
+    mov     pb,eax
+
 
     mov edx , a
     mov esi , b 
@@ -29,12 +35,11 @@ overlap PROC uses ebx ecx edx esi edi a:DWORD, b:DWORD
         mov eax, 0
         jmp F1
     .ENDIF
-    lea ebx, (Button PTR [edx]).in_slot
+    mov ebx, (Button PTR [edx]).in_slot
     .IF (ebx)
         mov eax, 0
         jmp F1
     .ENDIF
-
     mov ebx, (Button PTR [edx]).hWnd
     mov ecx, pa
     INVOKE win_pos, ebx, ecx
