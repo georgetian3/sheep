@@ -118,7 +118,8 @@ build_map PROC uses ebx ecx edx esi edi hWnd:DWORD, map_name:DWORD
                 .ENDW
                 inc     edx
         .ENDW
-
+        INVOKE crt_free ,map_filename
+        INVOKE crt_free ,item
         
         mov     eax, total_
         ret
