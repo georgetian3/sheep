@@ -230,16 +230,14 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
         .ELSEIF ebx == TYPE_UNDO
                 mov     eax, last_button
                 .IF eax != 0
-                        mov     (Button PTR [ebx]).callback, 1
-                        mov     (Button PTR [ebx]).in_slot, 0
+                        mov     (Button PTR [eax]).callback, 1
+                        mov     (Button PTR [eax]).in_slot, 0
                         PINVOKE move_button, eax, last_x, last_y, TIME_DOUBLE
-
                         inc total
                         mov last_button , 0
                         mov ecx , last_index
                         inc ecx
-                        mov eax, slot_count
-                        .WHILE ecx < eax
+                        .WHILE ecx < slot_count
                             push ecx
                             mov eax, 4
                             mul ecx
@@ -251,8 +249,7 @@ handle_button_click PROC USES eax ebx ecx edx esi edi parent:DWORD,btn2:DWORD
                             INVOKE move_button, esi, eax, SLOT_Y, SLOT_MOVE_TIME              
                             mov eax, 4
                             mul ebx
-                            mov edi, slot[eax]
-                            mov edi, esi
+                            mov slot[eax], esi
                             pop ecx 
                             inc ecx
                         .ENDW
